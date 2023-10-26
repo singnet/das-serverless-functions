@@ -1,4 +1,5 @@
 import json
+from config import load_env
 from exceptions import UnknownEventAction
 from actions import ActionType
 from validators.event import EventValidator
@@ -41,6 +42,9 @@ from validators.actions import (
     GetLinkTypeValidator,
     GetNodeTypeValidator,
 )
+
+
+load_env()
 
 
 def handle(event: str, context={}):
