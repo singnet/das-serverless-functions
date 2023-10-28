@@ -167,7 +167,7 @@ def handle(event: str, context=None):
     elif payload["action"] == ActionType.PING:
         result = {"message": "pong"}
     else:
-        raise UnknownEventAction()
+        raise UnknownEventAction(f'The action {payload["action"]} was not found')
 
     return (
         result
