@@ -3,7 +3,7 @@ from hyperon_das_atomdb.adapters import RedisMongoDB
 from typing import Optional, Tuple
 
 
-class ActionType(Enum):
+class ActionType(str, Enum):
     NODE_EXISTS = "node_exists"
     LINK_EXISTS = "link_exists"
     GET_NODE_HANDLE = "get_node_handle"
