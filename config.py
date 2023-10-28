@@ -3,13 +3,13 @@ import os
 
 def load_env():
     environments = {
-        "das-mongodb-name": "DAS_MONGODB_NAME",
-        "das-mongodb-port": "DAS_MONGODB_PORT",
-        "das-mongodb-hostname": "DAS_MONGODB_HOSTNAME",
-        "das-mongodb-username": "DAS_MONGODB_USERNAME",
-        "das-mongodb-password": "DAS_MONGODB_PASSWORD",
-        "das-redis-hostname": "DAS_REDIS_HOSTNAME",
-        "das-redis-port": "DAS_REDIS_PORT",
+        "dasmongodbname": "DAS_MONGODB_NAME",
+        "dasmongodbport": "DAS_MONGODB_PORT",
+        "dasmongodbhostname": "DAS_MONGODB_HOSTNAME",
+        "dasmongodbusername": "DAS_MONGODB_USERNAME",
+        "dasmongodbpassword": "DAS_MONGODB_PASSWORD",
+        "dasredishostname": "DAS_REDIS_HOSTNAME",
+        "dasredisport": "DAS_REDIS_PORT",
     }
 
     for key, value in environments.items():
