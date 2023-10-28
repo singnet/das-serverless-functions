@@ -16,6 +16,6 @@ def load_env():
         secret = "/var/openfaas/secrets/{key}"
         if os.path.exists(secret):
             with open(secret) as f:
-                os.environ[value] = f.readline()
+                os.environ[value] = f.readline().strip()
         else:
-            os.environ[value] = os.environ[key]
+            os.environ[value] = os.environ.get(key, "")
