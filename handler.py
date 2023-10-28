@@ -23,7 +23,6 @@ from .validators.actions import (
     GetNodeTypeValidator,
 )
 
-
 load_env()
 
 

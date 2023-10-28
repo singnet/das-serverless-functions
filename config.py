@@ -18,4 +18,10 @@ def load_env():
             with open(secret) as f:
                 os.environ[value] = f.readline().strip()
         else:
-            os.environ[value] = os.environ.get(key, "")
+            env_value = os.environ.get(key, None)
+            if env_value is None:
+                raise Exception(f"Environment variable {os.environ[value]} is empty")
+            os.environ[value] = env_value
+
+
+load_env()
