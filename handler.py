@@ -48,12 +48,12 @@ load_env()
 
 
 def handle(event: str, context=None):
-    payload = validate(EventValidator, json.loads(event))
+    payload = validate(EventValidator(), json.loads(event))
     result = None
 
     if payload.action == ActionType.NODE_EXISTS:
         node_exists_payload = validate(
-            NodeExistsValidator,
+            NodeExistsValidator(),
             payload.input,
         )
         result = node_exists(
@@ -62,7 +62,7 @@ def handle(event: str, context=None):
         )
     elif payload.action == ActionType.LINK_EXISTS:
         link_exists_payload = validate(
-            LinkExistsValidator,
+            LinkExistsValidator(),
             payload.input,
         )
         result = link_exists(
@@ -71,7 +71,7 @@ def handle(event: str, context=None):
         )
     elif payload.action == ActionType.GET_NODE_HANDLE:
         get_node_handle_payload = validate(
-            GetNodeHandleValidator,
+            GetNodeHandleValidator(),
             payload.input,
         )
         result = get_node_handle(
@@ -79,26 +79,26 @@ def handle(event: str, context=None):
             get_node_handle_payload.node_name,
         )
     elif payload.action == ActionType.GET_LINK_HANDLE:
-        get_link_handle_payload = validate(GetLinkHandleValidator)
+        get_link_handle_payload = validate(GetLinkHandleValidator())
         result = get_link_handle(
             get_link_handle_payload.link_type,
             get_link_handle_payload.target_handles,
         )
     elif payload.action == ActionType.GET_LINK_TARGETS:
         get_link_targets_payload = validate(
-            GetLinkTargetsValidator,
+            GetLinkTargetsValidator(),
             payload.input,
         )
         result = get_link_targets(get_link_targets_payload.link_handle)
     elif payload.action == ActionType.IS_ORDERED:
         is_ordered_payload = validate(
-            IsOrderedValidator,
+            IsOrderedValidator(),
             payload.input,
         )
         result = is_ordered(is_ordered_payload.link_handle)
     elif payload.action == ActionType.GET_MATCHED_LINKS:
         get_matched_links_payload = validate(
-            GetMatchedLinksValidator,
+            GetMatchedLinksValidator(),
             payload.input,
         )
         result = get_matched_links(
@@ -108,7 +108,7 @@ def handle(event: str, context=None):
         )
     elif payload.action == ActionType.GET_ALL_NODES:
         get_all_nodes_payload = validate(
-            GetAllNodeValidator,
+            GetAllNodeValidator(),
             payload.input,
         )
         result = get_all_nodes(
@@ -117,7 +117,7 @@ def handle(event: str, context=None):
         )
     elif payload.action == ActionType.GET_MATCHED_TYPE_TEMPLATE:
         get_matched_type_template_payload = validate(
-            GetMatchedTypeTemplateValidator,
+            GetMatchedTypeTemplateValidator(),
             payload.input,
         )
         result = get_matched_type_template(
@@ -126,7 +126,7 @@ def handle(event: str, context=None):
         )
     elif payload.action == ActionType.GET_MATCHED_TYPE:
         get_matched_type_payload = validate(
-            GetMatchedTypeValidator,
+            GetMatchedTypeValidator(),
             payload.input,
         )
         result = get_matched_type(
@@ -135,13 +135,13 @@ def handle(event: str, context=None):
         )
     elif payload.action == ActionType.GET_NODE_NAME:
         get_node_name_payload = validate(
-            GetNodeNameValidator,
+            GetNodeNameValidator(),
             payload.input,
         )
         result = get_node_name(get_node_name_payload.node_handle)
     elif payload.action == ActionType.GET_MATCHED_NODE_NAME:
         get_matched_node_name_payload = validate(
-            GetMatchedNodeNameValidator,
+            GetMatchedNodeNameValidator(),
             payload.input,
         )
         result = get_matched_node_name(
@@ -150,7 +150,7 @@ def handle(event: str, context=None):
         )
     elif payload.action == ActionType.GET_ATOM_AS_DICT:
         get_atom_as_dict_payload = validate(
-            GetAtomAsDictValidator,
+            GetAtomAsDictValidator(),
             payload.input,
         )
         result = get_atom_as_dict(
@@ -159,7 +159,8 @@ def handle(event: str, context=None):
         )
     elif payload.action == ActionType.GET_ATOM_AS_DEEP_REPRESENTATION:
         get_atom_as_deep_representation_payload = get_atom_as_deep_representation(
-            GetAtomAsDeepRepresentationValidator, payload.input
+            GetAtomAsDeepRepresentationValidator(),
+            payload.input,
         )
         result = get_atom_as_deep_representation(
             get_atom_as_deep_representation_payload.handle,
@@ -167,13 +168,13 @@ def handle(event: str, context=None):
         )
     elif payload.action == ActionType.GET_LINK_TYPE:
         get_link_type_payload = validate(
-            GetLinkTypeValidator,
+            GetLinkTypeValidator(),
             payload.input,
         )
         result = get_link_type(get_link_type_payload.link_handle)
     elif payload.action == ActionType.GET_NODE_TYPE:
         get_node_type_payload = validate(
-            GetNodeTypeValidator,
+            GetNodeTypeValidator(),
             payload.input,
         )
         result = get_node_type(get_node_type_payload.node_handle)
