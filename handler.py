@@ -1,9 +1,8 @@
 import json
 from .config import load_env
 from .exceptions import UnknownEventAction
-from .actions import ActionType
 from .validators.event import EventValidator
-from .actions import Actions
+from .actions import Actions, ActionType
 from .validators import validate
 from .validators.actions import (
     NodeExistsValidator,

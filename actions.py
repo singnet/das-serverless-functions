@@ -30,16 +30,16 @@ class Actions:
     def node_exists(self, node_type: str, node_name: str) -> bool:
         return self.redis_mongo_db.node_exists(node_type, node_name)
 
-    def link_exists(self, link_type: str, target_handles: list(str)) -> bool:
+    def link_exists(self, link_type: str, target_handles: list) -> bool:
         return self.redis_mongo_db.link_exists(link_type, target_handles)
 
     def get_node_handle(self, node_type: str, node_name: str) -> str:
         return self.redis_mongo_db.get_node_handle(node_type, node_name)
 
-    def get_link_handle(self, link_type: str, target_handles: list(str)) -> str:
+    def get_link_handle(self, link_type: str, target_handles: list) -> str:
         return self.redis_mongo_db.get_link_handle(link_type, target_handles)
 
-    def get_link_targets(self, link_handle: str) -> list(str):
+    def get_link_targets(self, link_handle: str) -> list:
         return self.redis_mongo_db.get_link_targets(link_handle)
 
     def is_ordered(self, link_handle: str) -> bool:
@@ -48,28 +48,28 @@ class Actions:
     def get_matched_links(
         self,
         link_type: str,
-        target_handles: list(str),
+        target_handles: list,
         extra_parameters: dict | None = None,
     ):
         return self.redis_mongo_db.get_matched_links(
             link_type, target_handles, extra_parameters
         )
 
-    def get_all_nodes(self, node_type: str, names: bool = False) -> list(str):
+    def get_all_nodes(self, node_type: str, names: bool = False) -> list:
         return self.redis_mongo_db.get_all_nodes(node_type, names)
 
     def get_matched_type_template(
         self,
         template: list,
         extra_parameters: dict = None,
-    ) -> list(str):
+    ) -> list:
         return self.redis_mongo_db.get_matched_type_template(template, extra_parameters)
 
     def get_matched_type(
         self,
         link_type: str,
         extra_parameters: dict = None,
-    ) -> list(str):
+    ) -> list:
         return self.redis_mongo_db.get_matched_type(link_type, extra_parameters)
 
     def get_node_name(self, node_handle: str) -> str:
