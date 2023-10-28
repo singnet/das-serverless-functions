@@ -1,5 +1,6 @@
 from enum import Enum
 from hyperon_das_atomdb.adapters import RedisMongoDB
+from typing import Optional, Tuple
 
 
 class ActionType(Enum):
@@ -49,7 +50,7 @@ class Actions:
         self,
         link_type: str,
         target_handles: list,
-        extra_parameters: dict | None = None,
+        extra_parameters: Optional[dict] = None,
     ):
         return self.redis_mongo_db.get_matched_links(
             link_type, target_handles, extra_parameters
@@ -61,14 +62,14 @@ class Actions:
     def get_matched_type_template(
         self,
         template: list,
-        extra_parameters: dict = None,
+        extra_parameters: Optional[dict] = None,
     ) -> list:
         return self.redis_mongo_db.get_matched_type_template(template, extra_parameters)
 
     def get_matched_type(
         self,
         link_type: str,
-        extra_parameters: dict = None,
+        extra_parameters: Optional[dict] = None,
     ) -> list:
         return self.redis_mongo_db.get_matched_type(link_type, extra_parameters)
 
@@ -94,7 +95,7 @@ class Actions:
     def get_node_type(self, node_handle: str) -> str:
         return self.redis_mongo_db.get_node_type(node_handle)
 
-    def count_atoms(self) -> tuple([int, int]):
+    def count_atoms(self) -> Tuple([int, int]):
         return self.redis_mongo_db.count_atoms()
 
     def clear_database(self) -> None:
