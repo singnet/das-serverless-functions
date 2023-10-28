@@ -22,6 +22,7 @@ class ActionType(Enum):
     GET_NODE_TYPE = "get_node_type"
     COUNT_ATOMS = "count_atoms"
     CLEAR_DATABASE = "clear_database"
+    PING = "ping"
 
 
 class Actions:
