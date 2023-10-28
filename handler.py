@@ -1,9 +1,9 @@
 import json
-from config import load_env
-from exceptions import UnknownEventAction
-from actions import ActionType
-from validators.event import EventValidator
-from actions.actions import (
+from .config import load_env
+from .exceptions import UnknownEventAction
+from .actions import ActionType
+from .validators.event import EventValidator
+from .actions.actions import (
     node_exists,
     link_exists,
     get_node_handle,
@@ -23,8 +23,8 @@ from actions.actions import (
     count_atoms,
     clear_database,
 )
-from validators import validate
-from validators.actions import (
+from .validators import validate
+from .validators.actions import (
     NodeExistsValidator,
     LinkExistsValidator,
     GetNodeHandleValidator,
