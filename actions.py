@@ -95,7 +95,7 @@ class Actions:
     def get_node_type(self, node_handle: str) -> str:
         return self.redis_mongo_db.get_node_type(node_handle)
 
-    def count_atoms(self) -> Tuple([int, int]):
+    def count_atoms(self) -> tuple([int, int]):
         return self.redis_mongo_db.count_atoms()
 
     def clear_database(self) -> None:
