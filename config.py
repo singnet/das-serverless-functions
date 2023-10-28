@@ -13,14 +13,14 @@ def load_env():
     }
 
     for key, value in environments.items():
-        secret = "/var/openfaas/secrets/{key}"
+        secret = f"/var/openfaas/secrets/{key}"
         if os.path.exists(secret):
             with open(secret) as f:
                 os.environ[value] = f.readline().strip()
         else:
             env_value = os.environ.get(key, None)
             if env_value is None:
-                raise Exception(f"Environment variable {os.environ[value]} is empty")
+                raise Exception(f"Environment variable {key} is empty")
             os.environ[value] = env_value
 
 
