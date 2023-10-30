@@ -1,3 +1,4 @@
+import time
 from enum import Enum
 from hyperon_das_atomdb.adapters import RedisMongoDB
 from typing import Optional, Tuple
@@ -27,7 +28,10 @@ class ActionType(str, Enum):
 
 class Actions:
     def __init__(self) -> None:
+        start_time = time.time()
         self.redis_mongo_db = RedisMongoDB()
+        end_time = time.time()
+        print(f"MongoDB time: {end_time - start_time}")
 
     def node_exists(self, node_type: str, node_name: str) -> bool:
         return self.redis_mongo_db.node_exists(node_type, node_name)
