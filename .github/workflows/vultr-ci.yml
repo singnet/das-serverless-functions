@@ -13,6 +13,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup OpenFaaS
+        run: curl -sSL https://cli.openfaas.com | sudo -E sh
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -29,14 +32,10 @@ jobs:
         run: cd ./das-infra-stack-vultr
 
       - name: Pull template
-        uses: docker://openfaas/faas-cli:latest-root
-        with:
-          args: template store pull python3
+        run: faas-cli template store pull python3
 
       - name: Run shrinkwrap build
-        uses: docker://openfaas/faas-cli:latest-root
-        with:
-          args: build -f ${{ env.DEPLOYMENT_FILE }}
+        run: faas-cli build -f ${{ env.DEPLOYMENT_FILE }}
 
       - name: Login to DockerHub
         if: success()
@@ -46,20 +45,17 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push Image to Registry
-        uses: docker://openfaas/faas-cli:latest-root
-        with:
-          args: push -f ${{ env.DEPLOYMENT_FILE }}
+        run: faas-cli push -f ${{ env.DEPLOYMENT_FILE }}
 
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup OpenFaaS
+        run: curl -sSL https://cli.openfaas.com | sudo -E sh
+
       - name: Login to OpenFaaS Gateway
-        uses: docker://openfaas/faas-cli:latest-root
-        with:
-          args: login -p ${{ secrets.OPENFAAS_GATEWAY_PASSWD }} \
-            -g ${{ secrets.OPENFAAS_GATEWAY }}
+        run: faas-cli login -p ${{ secrets.OPENFAAS_GATEWAY_PASSWD }} \
+          -g ${{ secrets.OPENFAAS_GATEWAY }}
 
       - name: Deploy the function
-        uses: docker://openfaas/faas-cli:latest-root
-        with:
-          args: deploy -f ${{ env.DEPLOYMENT_FILE }}
+        run: faas-cli deploy -f ${{ env.DEPLOYMENT_FILE }}
