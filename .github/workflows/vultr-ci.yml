@@ -28,13 +28,12 @@ jobs:
           path: das-infra-stack-vultr
           ref: master
 
-      - name: Go to das-infra-stack-vultr
-        run: cd ./das-infra-stack-vultr
-
       - name: Pull template
+        working-directory: ./das-infra-stack-vultr
         run: faas-cli template store pull python3
 
       - name: Run shrinkwrap build
+        working-directory: ./das-infra-stack-vultr
         run: faas-cli build -f ${{ env.DEPLOYMENT_FILE }}
 
       - name: Login to DockerHub
@@ -45,6 +44,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push Image to Registry
+        working-directory: ./das-infra-stack-vultr
         run: faas-cli push -f ${{ env.DEPLOYMENT_FILE }}
 
   deploy:
@@ -55,8 +55,10 @@ jobs:
         run: curl -sSL https://cli.openfaas.com | sudo -E sh
 
       - name: Login to OpenFaaS Gateway
+        working-directory: ./das-infra-stack-vultr
         run: faas-cli login -p ${{ secrets.OPENFAAS_GATEWAY_PASSWD }} \
           -g ${{ secrets.OPENFAAS_GATEWAY }}
 
       - name: Deploy the function
+        working-directory: ./das-infra-stack-vultr
         run: faas-cli deploy -f ${{ env.DEPLOYMENT_FILE }}
