@@ -48,6 +48,7 @@ jobs:
         run: faas-cli push -f ${{ env.DEPLOYMENT_FILE }}
 
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Setup OpenFaaS
