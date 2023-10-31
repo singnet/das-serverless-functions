@@ -54,10 +54,16 @@ jobs:
       - name: Setup OpenFaaS
         run: curl -sSL https://cli.openfaas.com | sudo -E sh
 
+      - name: Checkout das-infra-stack-vultr Repository
+        uses: actions/checkout@v4
+        with:
+          repository: singnet/das-infra-stack-vultr
+          path: das-infra-stack-vultr
+          ref: master
+
       - name: Login to OpenFaaS Gateway
         working-directory: ./das-infra-stack-vultr
-        run: faas-cli login -p ${{ secrets.OPENFAAS_GATEWAY_PASSWD }} \
-          -g ${{ secrets.OPENFAAS_GATEWAY }}
+        run: faas-cli login -p ${{ secrets.OPENFAAS_GATEWAY_PASSWD }} -g ${{ secrets.OPENFAAS_GATEWAY }}
 
       - name: Deploy the function
         working-directory: ./das-infra-stack-vultr
