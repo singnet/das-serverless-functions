@@ -10,8 +10,8 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_S3_BUCKET: das.singularitynet.io
+  AWS_S3_BUCKET_KEY: production
   FUNC_NAME: das-serverless-functions
-  FUNC_FILE_PATH: production/${{ env.FUNC_NAME }}.zip
 
 jobs:
   build:
@@ -32,10 +32,11 @@ jobs:
         run: zip -r ${{ env.FUNC_NAME }}.zip .
 
       - name: Push function to s3
-        run: aws s3 cp ./${{ env.FUNC_NAME }} s3://${{ env.AWS_S3_BUCKET }}/${{ env.FUNC_FILE_PATH }}
+        run: aws s3 cp ./${{ env.FUNC_NAME }} s3://${{ env.AWS_S3_BUCKET }}/${{ env.AWS_S3_BUCKET_KEY }}/${{ env.FUNC_NAME }}.zip
 
   deploy:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Update lambda function
         run: aws lambda update-function-code --function-name  ${{ env.FUNC_NAME }} --s3-bucket ${{ env.AWS_S3_BUCKET }} --s3-key ${{ env.FUNC_FILE_PATH }}
