@@ -32,7 +32,7 @@ jobs:
         run: zip -r ${{ env.FUNC_NAME }}.zip .
 
       - name: Push function to s3
-        run: aws s3 cp ./${{ env.FUNC_NAME }} s3://${{ env.AWS_S3_BUCKET }}/${{ env.AWS_S3_BUCKET_KEY }}/${{ env.FUNC_NAME }}.zip
+        run: aws s3 cp ./${{ env.FUNC_NAME }}.zip s3://${{ env.AWS_S3_BUCKET }}/${{ env.AWS_S3_BUCKET_KEY }}
 
   deploy:
     runs-on: ubuntu-latest
