@@ -13,6 +13,7 @@ env:
   FUNC_NAME: das-serverless-functions
   FUNC_FILE_PATH: production/${{ env.FUNC_NAME }}.zip
 
+jobs:
   build:
     runs-on: ubuntu-latest
     steps:

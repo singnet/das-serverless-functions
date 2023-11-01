@@ -4,7 +4,7 @@ name: Vultr Build & Deployment
 on:
   push:
     branches:
-      - feat/deployment
+      - master
 
 env:
   DEPLOYMENT_FILE: das-function.yml
