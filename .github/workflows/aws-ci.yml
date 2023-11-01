@@ -39,5 +39,5 @@ jobs:
     needs: build
     steps:
       - name: Update lambda function
-        run: aws lambda update-function-code --function-name  ${{ env.FUNC_NAME }} --s3-bucket ${{ env.AWS_S3_BUCKET }} --s3-key ${{ env.AWS_S3_BUCKET_KEY }}/${{ env.FUNC_NAME }}.zip
+        run: aws lambda update-function-code --function-name  ${{ env.FUNC_NAME }} --s3-bucket ${{ env.AWS_S3_BUCKET }} --s3-key ${{ env.AWS_S3_BUCKET_KEY }}/${{ env.FUNC_NAME }}.zip --publish --debug
         
