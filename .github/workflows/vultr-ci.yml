@@ -2,7 +2,9 @@
 name: Vultr Build & Deployment
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Versioning"]
+    types: [requested]
     branches:
       - master
 

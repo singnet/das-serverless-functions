@@ -2,9 +2,11 @@
 name: AWS Build & Deployment
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Versioning"]
+    types: [requested]
     branches:
-      - feat/deployment
+      - master
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
