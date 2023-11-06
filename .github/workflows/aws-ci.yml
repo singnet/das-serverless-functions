@@ -1,0 +1,46 @@
+---
+name: AWS Build & Deployment
+
+on:
+  workflow_run:
+    workflows: ["Versioning"]
+    types: [requested]
+    branches:
+      - master
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: us-east-1
+  AWS_S3_BUCKET: das.singularitynet.io
+  AWS_S3_BUCKET_KEY: production
+  FUNC_NAME: das-serverless-functions
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install function requirements
+        run: |-
+          pip3 install awscli
+          pip3 install -r ./requirements.txt -t .
+
+      - name: Download DocumentDB pem
+        run: wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
+
+      - name: Bundle function into a ZIP file
+        run: zip -r ${{ env.FUNC_NAME }}.zip .
+
+      - name: Push function to s3
+        run: aws s3 cp ./${{ env.FUNC_NAME }}.zip s3://${{ env.AWS_S3_BUCKET }}/${{ env.AWS_S3_BUCKET_KEY }}/${{ env.FUNC_NAME }}.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Update lambda function
+        run: aws lambda update-function-code --function-name  ${{ env.FUNC_NAME }} --s3-bucket ${{ env.AWS_S3_BUCKET }} --s3-key ${{ env.AWS_S3_BUCKET_KEY }}/${{ env.FUNC_NAME }}.zip --publish --region ${{ env.AWS_REGION }} 
+        

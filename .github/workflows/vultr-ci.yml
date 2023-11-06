@@ -1,0 +1,76 @@
+---
+name: Vultr Build & Deployment
+
+on:
+  workflow_run:
+    workflows: ["Versioning"]
+    types: [requested]
+    branches:
+      - master
+
+env:
+  DEPLOYMENT_FILE: das-function.yml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup OpenFaaS
+        run: curl -sSL https://cli.openfaas.com | sudo -E sh
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: das-servless-functions
+
+      - name: Checkout das-infra-stack-vultr Repository
+        uses: actions/checkout@v4
+        with:
+          repository: singnet/das-infra-stack-vultr
+          path: das-infra-stack-vultr
+          ref: master
+
+      - name: Pull template
+        working-directory: ./das-infra-stack-vultr
+        run: faas-cli template store pull python3
+
+      - name: Run shrinkwrap build
+        working-directory: ./das-infra-stack-vultr
+        run: faas-cli build -f ${{ env.DEPLOYMENT_FILE }}
+
+      - name: Login to DockerHub
+        if: success()
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Image to Registry
+        working-directory: ./das-infra-stack-vultr
+        run: faas-cli push -f ${{ env.DEPLOYMENT_FILE }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup OpenFaaS
+        run: curl -sSL https://cli.openfaas.com | sudo -E sh
+
+      - name: Checkout das-infra-stack-vultr Repository
+        uses: actions/checkout@v4
+        with:
+          repository: singnet/das-infra-stack-vultr
+          path: das-infra-stack-vultr
+          ref: master
+
+      - name: Login to OpenFaaS Gateway
+        working-directory: ./das-infra-stack-vultr
+        run: faas-cli login -p ${{ secrets.OPENFAAS_GATEWAY_PASSWD }} -g ${{ secrets.OPENFAAS_GATEWAY }}
+
+      - name: Pull template
+        working-directory: ./das-infra-stack-vultr
+        run: faas-cli template store pull python3
+
+      - name: Deploy the function
+        working-directory: ./das-infra-stack-vultr
+        run: faas-cli deploy -f ${{ env.DEPLOYMENT_FILE }}
