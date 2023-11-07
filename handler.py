@@ -78,7 +78,10 @@ def handle(event: str, context=None):
             result = dict(error=e.message)
             http_code_response = 500
     elif payload["action"] == ActionType.GET_LINK_HANDLE:
-        get_link_handle_payload = validate(GetLinkHandleValidator())
+        get_link_handle_payload = validate(
+            GetLinkHandleValidator(),
+            payload["input"],
+        )
         try:
             result = actions.get_link_handle(
                 get_link_handle_payload["link_type"],
@@ -124,7 +127,7 @@ def handle(event: str, context=None):
         result = actions.get_matched_links(
             get_matched_links_payload["link_type"],
             get_matched_links_payload["target_handles"],
-            get_matched_links_payload["extra_parameters"],
+            payload["input"].get("extra_parameters"),
         )
     elif payload["action"] == ActionType.GET_ALL_NODES:
         get_all_nodes_payload = validate(
@@ -133,7 +136,7 @@ def handle(event: str, context=None):
         )
         try:
             result = actions.get_all_nodes(
-                get_all_nodes_payload["link_type"],
+                get_all_nodes_payload["node_type"],
                 get_all_nodes_payload["names"],
             )
         except ValueError as e:
@@ -150,7 +153,7 @@ def handle(event: str, context=None):
         try:
             result = actions.get_matched_type_template(
                 get_matched_type_template_payload["template"],
-                get_matched_type_template_payload["extra_parameters"],
+                payload["input"].get("extra_parameters"),
             )
         except ValueError as e:
             result = dict(error=e.message)
@@ -166,7 +169,7 @@ def handle(event: str, context=None):
         try:
             result = actions.get_matched_type(
                 get_matched_type_payload["link_type"],
-                get_matched_type_payload["extra_parameters"],
+                payload["input"].get("extra_parameters"),
             )
         except Exception as e:
             result = dict(error=e.message)
@@ -211,11 +214,9 @@ def handle(event: str, context=None):
             result = dict(error=e.message)
             http_code_response = 500
     elif payload["action"] == ActionType.GET_ATOM_AS_DEEP_REPRESENTATION:
-        get_atom_as_deep_representation_payload = (
-            actions.get_atom_as_deep_representation(
-                GetAtomAsDeepRepresentationValidator(),
-                payload["input"],
-            )
+        get_atom_as_deep_representation_payload = validate(
+            GetAtomAsDeepRepresentationValidator(),
+            payload["input"],
         )
         try:
             result = actions.get_atom_as_deep_representation(

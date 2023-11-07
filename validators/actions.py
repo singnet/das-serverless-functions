@@ -23,7 +23,7 @@ class GetLinkHandleValidator(PayloadValidator):
 
 
 class GetLinkTargetsValidator(PayloadValidator):
-    target_handle = datatypes.String()
+    link_handle = datatypes.String()
 
 
 class IsOrderedValidator(PayloadValidator):
@@ -33,22 +33,22 @@ class IsOrderedValidator(PayloadValidator):
 class GetMatchedLinksValidator(PayloadValidator):
     link_type = datatypes.String()
     target_handles = datatypes.Array()
-    extra_parameters = datatypes.JSON(validate_dict)
+    #extra_parameters = datatypes.JSON(validate_dict)
 
 
 class GetAllNodeValidator(PayloadValidator):
-    link_type = datatypes.String()
+    node_type = datatypes.String()
     names = datatypes.Boolean()
 
 
 class GetMatchedTypeTemplateValidator(PayloadValidator):
     template = datatypes.Array()
-    extra_parameters = datatypes.JSON(validate_dict)
+    #extra_parameters = datatypes.JSON(validate_dict)
 
 
 class GetMatchedTypeValidator(PayloadValidator):
     link_type = datatypes.String()
-    extra_parameters = datatypes.JSON(validate_dict)
+    #extra_parameters = datatypes.JSON(validate_dict)
 
 
 class GetNodeNameValidator(PayloadValidator):
