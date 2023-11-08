@@ -1,4 +1,5 @@
 import json
+import time
 from .config import load_env
 from .validators.event import EventValidator
 from .actions import Actions, ActionType
@@ -30,6 +31,8 @@ load_env()
 
 
 def handle(event: str, context=None):
+    start = time.time()
+
     payload = validate(EventValidator(), json.loads(event))
     result = None
     actions = Actions()
@@ -264,12 +267,20 @@ def handle(event: str, context=None):
         result = dict(error=f'The action {payload["action"]} was not found')
         http_code_response = 400
 
+    end = time.time()
+    total = end - start
+
+    data = {
+        "result": result,
+        "timestamp": total,
+    }
+
     return (
-        result
+        data
         if context is None
         else (
             context.status(http_code_response)
             .headers({"Content-Type": "application/json"})
-            .success(result)
+            .success(data)
         )
     )
