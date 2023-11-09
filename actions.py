@@ -1,6 +1,6 @@
 import time
 from enum import Enum
-from das_atomdb.adapters import RedisMongoDB
+from function.das_atomdb.adapters import RedisMongoDB
 from typing import Optional
 
 

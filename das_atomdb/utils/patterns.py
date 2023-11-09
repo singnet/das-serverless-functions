@@ -1,7 +1,7 @@
 from typing import List
 
-from das_atomdb.i_database import WILDCARD
-from das_atomdb.utils.expression_hasher import ExpressionHasher
+from function.das_atomdb.i_database import WILDCARD
+from function.das_atomdb.utils.expression_hasher import ExpressionHasher
 
 # def generate_binary_matrix(numbers: int) -> list:
 #     """This function is more efficient if numbers are greater than 5"""
@@ -34,9 +34,7 @@ def multiply_binary_matrix_by_string_matrix(
 
 def build_patern_keys(hash_list: List[str]) -> List[str]:
     binary_matrix = generate_binary_matrix(len(hash_list))
-    result_matrix = multiply_binary_matrix_by_string_matrix(
-        binary_matrix, hash_list
-    )
+    result_matrix = multiply_binary_matrix_by_string_matrix(binary_matrix, hash_list)
     keys = [
         ExpressionHasher.expression_hash(matrix_item[:1][0], matrix_item[1:])
         for matrix_item in result_matrix
