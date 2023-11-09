@@ -10,6 +10,8 @@ def load_env():
         "dasmongodbpassword": "DAS_MONGODB_PASSWORD",
         "dasredishostname": "DAS_REDIS_HOSTNAME",
         "dasredisport": "DAS_REDIS_PORT",
+        "dasredispassword": "DAS_REDIS_PASSWORD",
+        "dasredisusername": "DAS_REDIS_USERNAME",
     }
 
     for key, value in environments.items():

@@ -1,7 +1,7 @@
 import time
 from enum import Enum
-from hyperon_das_atomdb.adapters import RedisMongoDB
-from typing import Optional, Tuple
+from das_atomdb.adapters import RedisMongoDB
+from typing import Optional
 
 
 class ActionType(str, Enum):
