@@ -22,7 +22,7 @@ from .validators.actions import (
     GetLinkTypeValidator,
     GetNodeTypeValidator,
 )
-from hyperon_function.das_atomdb.exceptions import (
+from function.das_atomdb.exceptions import (
     NodeDoesNotExistException,
     LinkDoesNotExistException,
 )
