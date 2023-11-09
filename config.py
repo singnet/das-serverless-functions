@@ -21,8 +21,8 @@ def load_env():
                 os.environ[value] = f.readline().strip()
         else:
             env_value = os.environ.get(key, None)
-            if env_value is None:
-                raise Exception(f"Environment variable {key} is empty")
+            # if env_value is None:
+            #     raise Exception(f"Environment variable {key} is empty")
             os.environ[value] = env_value
 
 
