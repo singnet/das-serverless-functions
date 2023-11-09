@@ -23,7 +23,7 @@ def load_env():
             env_value = os.environ.get(key, None)
             # if env_value is None:
             #     raise Exception(f"Environment variable {key} is empty")
-            os.environ[value] = env_value
+            os.environ[value] = env_value if isinstance(env_value, str) else ""
 
 
 load_env()
