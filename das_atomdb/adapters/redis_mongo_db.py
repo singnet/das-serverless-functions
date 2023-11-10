@@ -136,8 +136,12 @@ class RedisMongoDB(IAtomDB):
         )
 
         try:
+            timeout_milliseconds = 300000
             self.mongo_db = MongoClient(
-                f'mongodb://{mongo_username}:{mongo_password}@{mongo_hostname}:{mongo_port}'
+                f'mongodb://{mongo_username}:{mongo_password}@{mongo_hostname}:{mongo_port}',
+                serverSelectionTimeoutMS=timeout_milliseconds,
+                connectTimeoutMS=timeout_milliseconds,  # ajuste este valor conforme necessário
+                socketTimeoutMS=timeout_milliseconds
             )[self.database_name]
             return self.mongo_db
         except ValueError as e:
