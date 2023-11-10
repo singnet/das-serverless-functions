@@ -73,7 +73,7 @@ class RedisMongoDB(IAtomDB):
     def __repr__(self) -> str:
         return "<Atom database RedisMongo>"  # pragma no cover
 
-    def __init__(self, database_name: str = 'das') -> None:
+    def __init__(self, database_name: str = "das") -> None:
         """
         Initialize an instance of a custom class with Redis
         and MongoDB connections.
@@ -81,15 +81,9 @@ class RedisMongoDB(IAtomDB):
         self.database_name = database_name
         self._setup_databases()
         self.mongo_link_collection = {
-            '1': self.mongo_db.get_collection(
-                MongoCollectionNames.LINKS_ARITY_1
-            ),
-            '2': self.mongo_db.get_collection(
-                MongoCollectionNames.LINKS_ARITY_2
-            ),
-            'N': self.mongo_db.get_collection(
-                MongoCollectionNames.LINKS_ARITY_N
-            ),
+            "1": self.mongo_db.get_collection(MongoCollectionNames.LINKS_ARITY_1),
+            "2": self.mongo_db.get_collection(MongoCollectionNames.LINKS_ARITY_2),
+            "N": self.mongo_db.get_collection(MongoCollectionNames.LINKS_ARITY_N),
         }
         self.mongo_nodes_collection = self.mongo_db.get_collection(
             MongoCollectionNames.NODES
@@ -126,32 +120,30 @@ class RedisMongoDB(IAtomDB):
         self.redis = self._connection_redis()
 
     def _connection_mongo_db(self) -> Database:
-        mongo_hostname = os.environ.get('DAS_MONGODB_HOSTNAME')
-        mongo_port = os.environ.get('DAS_MONGODB_PORT')
-        mongo_username = os.environ.get('DAS_MONGODB_USERNAME')
-        mongo_password = os.environ.get('DAS_MONGODB_PASSWORD')
+        mongo_hostname = os.environ.get("DAS_MONGODB_HOSTNAME")
+        mongo_port = os.environ.get("DAS_MONGODB_PORT")
+        mongo_username = os.environ.get("DAS_MONGODB_USERNAME")
+        mongo_password = os.environ.get("DAS_MONGODB_PASSWORD")
 
-        logger().info(
-            f"Connecting to MongoDB at {mongo_hostname}:{mongo_port}"
-        )
+        logger().info(f"Connecting to MongoDB at {mongo_hostname}:{mongo_port}")
 
         try:
             timeout_milliseconds = 300000
             self.mongo_db = MongoClient(
-                f'mongodb://{mongo_username}:{mongo_password}@{mongo_hostname}:{mongo_port}',
+                f"mongodb://{mongo_username}:{mongo_password}@{mongo_hostname}:{mongo_port}",
                 serverSelectionTimeoutMS=timeout_milliseconds,
-                connectTimeoutMS=timeout_milliseconds,  # ajuste este valor conforme necessário
-                socketTimeoutMS=timeout_milliseconds
+                connectTimeoutMS=timeout_milliseconds,
+                socketTimeoutMS=timeout_milliseconds,
             )[self.database_name]
             return self.mongo_db
         except ValueError as e:
             raise ConnectionMongoDBException(
-                message='error creating a MongoClient', details=str(e)
+                message="error creating a MongoClient", details=str(e)
             )
 
     def _connection_redis(self) -> Redis:
-        redis_hostname = os.environ.get('DAS_REDIS_HOSTNAME')
-        redis_port = os.environ.get('DAS_REDIS_PORT')
+        redis_hostname = os.environ.get("DAS_REDIS_HOSTNAME")
+        redis_port = os.environ.get("DAS_REDIS_PORT")
 
         if redis_port == "7000":
             logger().info(
@@ -162,8 +154,7 @@ class RedisMongoDB(IAtomDB):
             )
         else:
             logger().info(
-                "Connecting to standalone Redis at "
-                f"{redis_hostname}:{redis_port}"
+                "Connecting to standalone Redis at " f"{redis_hostname}:{redis_port}"
             )
             self.redis = Redis(
                 host=redis_hostname, port=redis_port, decode_responses=False
@@ -198,20 +189,18 @@ class RedisMongoDB(IAtomDB):
                 document[MongoFieldNames.NODE_NAME]
                 self.node_documents.add(node_id, document)
         else:
-            self.node_documents.count = (
-                self.mongo_nodes_collection.count_documents({})
-            )
+            self.node_documents.count = self.mongo_nodes_collection.count_documents({})
         if USE_CACHED_LINK_TYPES:
             for tag in ["1", "2", "N"]:
                 for document in self.mongo_link_collection[tag].find():
-                    self.link_type_cache[
-                        document[MongoFieldNames.ID_HASH]
-                    ] = document[MongoFieldNames.TYPE_NAME]
+                    self.link_type_cache[document[MongoFieldNames.ID_HASH]] = document[
+                        MongoFieldNames.TYPE_NAME
+                    ]
         if USE_CACHED_NODE_TYPES:
             for document in self.mongo_nodes_collection.find():
-                self.node_type_cache[
-                    document[MongoFieldNames.ID_HASH]
-                ] = document[MongoFieldNames.TYPE_NAME]
+                self.node_type_cache[document[MongoFieldNames.ID_HASH]] = document[
+                    MongoFieldNames.TYPE_NAME
+                ]
         for document in self.mongo_types_collection.find():
             hash_id = document[MongoFieldNames.ID_HASH]
             named_type = document[MongoFieldNames.TYPE_NAME]
@@ -223,9 +212,7 @@ class RedisMongoDB(IAtomDB):
             self.named_type_hash[named_type] = named_type_hash
             self.named_type_hash_reverse[named_type_hash] = named_type
             if type_document is not None:
-                self.named_types[named_type] = type_document[
-                    MongoFieldNames.TYPE_NAME
-                ]
+                self.named_types[named_type] = type_document[MongoFieldNames.TYPE_NAME]
                 self.parent_type[named_type_hash] = type_document[
                     MongoFieldNames.TYPE_NAME_HASH
                 ]
@@ -237,16 +224,14 @@ class RedisMongoDB(IAtomDB):
             if arity == 0:
                 return self.mongo_nodes_collection.find_one(mongo_filter)
             elif arity == 2:
-                return self.mongo_link_collection['2'].find_one(mongo_filter)
+                return self.mongo_link_collection["2"].find_one(mongo_filter)
             elif arity == 1:
-                return self.mongo_link_collection['1'].find_one(mongo_filter)
+                return self.mongo_link_collection["1"].find_one(mongo_filter)
             else:
-                return self.mongo_link_collection['N'].find_one(mongo_filter)
+                return self.mongo_link_collection["N"].find_one(mongo_filter)
         # The order of keys in search is important. Greater to smallest
         # probability of proper arity
-        for collection in [
-            self.mongo_link_collection[key] for key in ['2', '1', 'N']
-        ]:
+        for collection in [self.mongo_link_collection[key] for key in ["2", "1", "N"]]:
             document = collection.find_one(mongo_filter)
             if document:
                 return document
@@ -271,9 +256,7 @@ class RedisMongoDB(IAtomDB):
                 answer.append(v)
             return answer
 
-    def _build_named_type_template(
-        self, template: Union[str, List[Any]]
-    ) -> List[Any]:
+    def _build_named_type_template(self, template: Union[str, List[Any]]) -> List[Any]:
         if isinstance(template, str):
             ret = self.named_type_hash_reverse.get(template, None)
             return ret
@@ -291,9 +274,7 @@ class RedisMongoDB(IAtomDB):
         answer = []
         index = 0
         while True:
-            key = document.get(
-                f'{MongoFieldNames.KEY_PREFIX.value}_{index}', None
-            )
+            key = document.get(f"{MongoFieldNames.KEY_PREFIX.value}_{index}", None)
             if key is None:
                 return answer
             else:
@@ -308,9 +289,7 @@ class RedisMongoDB(IAtomDB):
             answer["type"] = document[MongoFieldNames.TYPE_NAME]
             answer["targets"] = []
             for target_handle in self._get_mongo_document_keys(document):
-                answer["targets"].append(
-                    self._build_deep_representation(target_handle)
-                )
+                answer["targets"].append(self._build_deep_representation(target_handle))
         else:
             answer["type"] = document[MongoFieldNames.TYPE_NAME]
             answer["name"] = document[MongoFieldNames.NODE_NAME]
@@ -319,9 +298,7 @@ class RedisMongoDB(IAtomDB):
     def _create_node_handle(self, node_type: str, node_name: str) -> str:
         return ExpressionHasher.terminal_hash(node_type, node_name)
 
-    def _create_link_handle(
-        self, link_type: str, target_handles: List[str]
-    ) -> str:
+    def _create_link_handle(self, link_type: str, target_handles: List[str]) -> str:
         return ExpressionHasher.expression_hash(
             self._get_atom_type_hash(link_type), target_handles
         )
@@ -346,26 +323,22 @@ class RedisMongoDB(IAtomDB):
         node_handle = self._create_node_handle(node_type, node_name)
         document = self._retrieve_mongo_document(node_handle, 0)
         if document is not None:
-            return document['_id']
+            return document["_id"]
         else:
             raise NodeDoesNotExistException(
-                message='This node does not exist',
-                details=f'{node_type}:{node_name}',
+                message="This node does not exist",
+                details=f"{node_type}:{node_name}",
             )
 
-    def get_link_handle(
-        self, link_type: str, target_handles: List[str]
-    ) -> str:
+    def get_link_handle(self, link_type: str, target_handles: List[str]) -> str:
         link_handle = self._create_link_handle(link_type, target_handles)
-        document = self._retrieve_mongo_document(
-            link_handle, len(target_handles)
-        )
+        document = self._retrieve_mongo_document(link_handle, len(target_handles))
         if document is not None:
-            return document['_id']
+            return document["_id"]
         else:
             raise LinkDoesNotExistException(
-                message='This link does not exist',
-                details=f'{link_type}:{target_handles}',
+                message="This link does not exist",
+                details=f"{link_type}:{target_handles}",
             )
 
     def get_link_targets(self, link_handle: str) -> List[str]:
@@ -377,7 +350,7 @@ class RedisMongoDB(IAtomDB):
     def is_ordered(self, link_handle: str) -> bool:
         document = self._retrieve_mongo_document(link_handle)
         if document is None:
-            raise ValueError(f'Invalid handle: {link_handle}')
+            raise ValueError(f"Invalid handle: {link_handle}")
         return True
 
     def get_matched_links(
@@ -411,12 +384,10 @@ class RedisMongoDB(IAtomDB):
             [link_type_hash, *target_handles]
         )
 
-        patterns_matched = self._retrieve_key_value(
-            KeyPrefix.PATTERNS, pattern_hash
-        )
+        patterns_matched = self._retrieve_key_value(KeyPrefix.PATTERNS, pattern_hash)
 
         if len(patterns_matched) > 0:
-            if extra_parameters and extra_parameters.get('toplevel_only'):
+            if extra_parameters and extra_parameters.get("toplevel_only"):
                 return self._filter_non_toplevel(patterns_matched)
 
         return patterns_matched
@@ -424,7 +395,7 @@ class RedisMongoDB(IAtomDB):
     def get_all_nodes(self, node_type: str, names: bool = False) -> List[str]:
         node_type_hash = self._get_atom_type_hash(node_type)
         if node_type_hash is None:
-            raise ValueError(f'Invalid node type: {node_type}')
+            raise ValueError(f"Invalid node type: {node_type}")
         if names:
             return [
                 document[MongoFieldNames.NODE_NAME]
@@ -450,7 +421,7 @@ class RedisMongoDB(IAtomDB):
                 KeyPrefix.TEMPLATES, template_hash
             )
             if len(templates_matched) > 0:
-                if extra_parameters and extra_parameters.get('toplevel_only'):
+                if extra_parameters and extra_parameters.get("toplevel_only"):
                     return self._filter_non_toplevel(templates_matched)
             return templates_matched
         except Exception as exception:
@@ -464,14 +435,12 @@ class RedisMongoDB(IAtomDB):
             KeyPrefix.TEMPLATES, named_type_hash
         )
         if len(templates_matched) > 0:
-            if extra_parameters and extra_parameters.get('toplevel_only'):
+            if extra_parameters and extra_parameters.get("toplevel_only"):
                 return self._filter_non_toplevel(templates_matched)
         return templates_matched
 
     def get_node_name(self, node_handle: str) -> str:
-        answer = self._retrieve_key_value(
-            KeyPrefix.NAMED_ENTITIES, node_handle
-        )
+        answer = self._retrieve_key_value(KeyPrefix.NAMED_ENTITIES, node_handle)
         if not answer:
             raise ValueError(f"Invalid handle: {node_handle}")
         return answer[0].decode()
@@ -480,7 +449,7 @@ class RedisMongoDB(IAtomDB):
         node_type_hash = self._get_atom_type_hash(node_type)
         mongo_filter = {
             MongoFieldNames.TYPE: node_type_hash,
-            MongoFieldNames.NODE_NAME: {'$regex': substring},
+            MongoFieldNames.NODE_NAME: {"$regex": substring},
         }
         return [
             document[MongoFieldNames.ID_HASH]
@@ -489,9 +458,7 @@ class RedisMongoDB(IAtomDB):
 
     def get_atom_as_dict(self, handle, arity=-1) -> dict:
         answer = {}
-        document = (
-            self.node_documents.get(handle, None) if arity <= 0 else None
-        )
+        document = self.node_documents.get(handle, None) if arity <= 0 else None
         if document is None:
             document = self._retrieve_mongo_document(handle, arity)
             if document:
@@ -553,6 +520,6 @@ class RedisMongoDB(IAtomDB):
         for match in matches:
             link_handle = match[0]
             link = self._retrieve_mongo_document(link_handle, len(match[-1]))
-            if link['is_toplevel']:
+            if link["is_toplevel"]:
                 matches_toplevel_only.append(match)
         return matches_toplevel_only
