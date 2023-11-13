@@ -1,5 +1,5 @@
 from incoming import datatypes, PayloadValidator
-from .custom_validator_types import validate_dict
+from custom_validator_types import validate_dict
 
 
 class NodeExistsValidator(PayloadValidator):
@@ -33,7 +33,7 @@ class IsOrderedValidator(PayloadValidator):
 class GetMatchedLinksValidator(PayloadValidator):
     link_type = datatypes.String()
     target_handles = datatypes.Array()
-    #extra_parameters = datatypes.JSON(validate_dict)
+    # extra_parameters = datatypes.JSON(validate_dict)
 
 
 class GetAllNodeValidator(PayloadValidator):
@@ -43,12 +43,12 @@ class GetAllNodeValidator(PayloadValidator):
 
 class GetMatchedTypeTemplateValidator(PayloadValidator):
     template = datatypes.Array()
-    #extra_parameters = datatypes.JSON(validate_dict)
+    # extra_parameters = datatypes.JSON(validate_dict)
 
 
 class GetMatchedTypeValidator(PayloadValidator):
     link_type = datatypes.String()
-    #extra_parameters = datatypes.JSON(validate_dict)
+    # extra_parameters = datatypes.JSON(validate_dict)
 
 
 class GetNodeNameValidator(PayloadValidator):
