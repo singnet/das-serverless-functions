@@ -44,7 +44,7 @@ def _get_payload(event: any):
 
 
 def handle(event: any, context=None):
-    start = time.time()
+    # start = time.time()
 
     payload = validate(EventValidator(), _get_payload(event))
     result = None
@@ -280,20 +280,20 @@ def handle(event: any, context=None):
         result = dict(error=f'The action {payload["action"]} was not found')
         http_code_response = 400
 
-    end = time.time()
-    total = end - start
+    # end = time.time()
+    # total = end - start
 
-    data = {
-        "result": result,
-        "timestamp": total,
-    }
+    # data = {
+    #     "result": result,
+    #     "timestamp": total,
+    # }
 
     return (
-        data
+        result
         if context is None
         else (
             context.status(http_code_response)
             .headers({"Content-Type": "application/json"})
-            .success(data)
+            .success(result)
         )
     )
