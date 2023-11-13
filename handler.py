@@ -1,4 +1,5 @@
 import json
+import base64
 import time
 from config import load_env
 from validators.event import EventValidator
@@ -30,10 +31,22 @@ from hyperon_das_atomdb.exceptions import (
 load_env()
 
 
-def handle(event: str, context=None):
+def _get_payload(event: any):
+    if isinstance(event, str):  # vultr
+        return json.loads(event)
+
+    body = event.get("body", event)
+
+    if isinstance(body, str):
+        return json.loads(base64.b64decode(body))  # aws
+
+    return event
+
+
+def handle(event: any, context=None):
     start = time.time()
 
-    payload = validate(EventValidator(), json.loads(event))
+    payload = validate(EventValidator(), _get_payload(event))
     result = None
     actions = Actions()
     http_code_response = 200
