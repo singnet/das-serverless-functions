@@ -30,21 +30,23 @@ from hyperon_das_atomdb.exceptions import (
 
 load_env()
 
-def get_payload(event: any):
-    if isinstance(event, str): # vultr
+
+def _get_payload(event: any):
+    if isinstance(event, str):  # vultr
         return json.loads(event)
-    
+
     body = event.get("body", event)
 
     if isinstance(body, str):
-        return json.loads(base64.b64decode(body)) # aws
-    
+        return json.loads(base64.b64decode(body))  # aws
+
     return event
+
 
 def handle(event: any, context=None):
     start = time.time()
 
-    payload = validate(EventValidator(), get_payload(event))
+    payload = validate(EventValidator(), _get_payload(event))
     result = None
     actions = Actions()
     http_code_response = 200
