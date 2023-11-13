@@ -1,6 +1,5 @@
 import json
 import base64
-import time
 from config import load_env
 from validators.event import EventValidator
 from actions import Actions, ActionType
@@ -44,8 +43,6 @@ def _get_payload(event: any):
 
 
 def handle(event: any, context=None):
-    # start = time.time()
-
     payload = validate(EventValidator(), _get_payload(event))
     result = None
     actions = Actions()
@@ -280,20 +277,11 @@ def handle(event: any, context=None):
         result = dict(error=f'The action {payload["action"]} was not found')
         http_code_response = 400
 
-    # end = time.time()
-    # total = end - start
+    if context is None:
+        return result
 
-    # data = {
-    #     "result": result,
-    #     "timestamp": total,
-    # }
-
-    return (
-        result
-        if context is None
-        else (
-            context.status(http_code_response)
-            .headers({"Content-Type": "application/json"})
-            .success(result)
-        )
-    )
+    return {
+        "statusCode": http_code_response,
+        "body": json.dumps(result),
+        "headers": {"Content-Type": "application/json"},
+    }
