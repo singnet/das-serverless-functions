@@ -67,7 +67,7 @@ jobs:
 
       - name: Pull template
         working-directory: ./das-infra-stack-vultr
-        run: faas-cli template store pull python3
+        run: faas-cli template pull https://github.com/singnet/das-openfaas-templates
 
       - name: Deploy the function
         working-directory: ./das-infra-stack-vultr

@@ -1,10 +1,10 @@
 import json
 import time
-from .config import load_env
-from .validators.event import EventValidator
-from .actions import Actions, ActionType
-from .validators import validate
-from .validators.actions import (
+from config import load_env
+from validators.event import EventValidator
+from actions import Actions, ActionType
+from validators import validate
+from validators.actions import (
     NodeExistsValidator,
     LinkExistsValidator,
     GetNodeHandleValidator,
