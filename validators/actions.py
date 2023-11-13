@@ -1,5 +1,4 @@
 from incoming import datatypes, PayloadValidator
-from custom_validator_types import validate_dict
 
 
 class NodeExistsValidator(PayloadValidator):
