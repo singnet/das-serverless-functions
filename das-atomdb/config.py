@@ -10,6 +10,8 @@ def load_env():
         "dasmongodbpassword": "DAS_MONGODB_PASSWORD",
         "dasredishostname": "DAS_REDIS_HOSTNAME",
         "dasredisport": "DAS_REDIS_PORT",
+        "dasredispassword": "DAS_REDIS_PASSWORD",
+        "dasredisusername": "DAS_REDIS_USERNAME",
         "dasmongodbtlscafile": "DAS_MONGODB_TLS_CA_FILE",
         "dasuserediscluster": "DAS_USE_REDIS_CLUSTER",
         "dasusecachednodes": "DAS_USE_CACHED_NODES",
@@ -24,8 +26,6 @@ def load_env():
                 os.environ[value] = f.readline().strip()
         else:
             env_value = os.environ.get(key, None)
-            # if env_value is None:
-            #     raise Exception(f"Environment variable {key} is empty")
             os.environ[value] = env_value if isinstance(env_value, str) else ""
 
 
