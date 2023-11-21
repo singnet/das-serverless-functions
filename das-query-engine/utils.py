@@ -19,6 +19,8 @@ def load_env():
         "dasmongodbpassword": "DAS_MONGODB_PASSWORD",
         "dasredishostname": "DAS_REDIS_HOSTNAME",
         "dasredisport": "DAS_REDIS_PORT",
+        "dasredispassword": "DAS_REDIS_PASSWORD",
+        "dasredisusername": "DAS_REDIS_USERNAME",
         "dasmongodbtlscafile": "DAS_MONGODB_TLS_CA_FILE",
         "dasuserediscluster": "DAS_USE_REDIS_CLUSTER",
         "dasusecachednodes": "DAS_USE_CACHED_NODES",
