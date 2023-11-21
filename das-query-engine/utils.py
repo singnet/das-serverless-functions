@@ -1,4 +1,13 @@
 import os
+from hyperon_das.pattern_matcher import (
+    LogicalExpression,
+    Variable,
+    Node,
+    Link,
+    Or,
+    And,
+    Not,
+)
 
 
 def load_env():
@@ -29,4 +38,25 @@ def load_env():
             os.environ[value] = env_value if isinstance(env_value, str) else ""
 
 
-load_env()
+class LogicalExpressionParser:
+    def from_dict(self, query: dict) -> LogicalExpression:
+        key = next(iter(query))
+        value = query[key]
+
+        if key == "Variable":
+            return Variable(value["variable_name"])
+        elif key == "Node":
+            return Node(value["node_type"], value["node_name"])
+        elif key == "Link":
+            ordered = value.get("ordered", True)
+            targets = [self.from_dict(target) for target in value["targets"]]
+            return Link(value["link_type"], targets, ordered)
+        elif key == "And":
+            conditions = [self.from_dict(condition) for condition in value]
+            return And(conditions)
+        elif key == "Or":
+            conditions = [self.from_dict(condition) for condition in value]
+            return Or(conditions)
+        elif key == "Not":
+            condition = self.from_dict(value)
+            return Not(condition)
