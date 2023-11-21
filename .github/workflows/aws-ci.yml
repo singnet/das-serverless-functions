@@ -67,10 +67,10 @@ jobs:
 
       - name: Update lambda function
         run: |-
-        for dir in */; do
-          if [[ $dir != .* ]]; then
-            FUNC_NAME=$(basename "$dir")
+          for dir in */; do
+            if [[ $dir != .* ]]; then
+              FUNC_NAME=$(basename "$dir")
 
-            aws lambda update-function-code --function-name  ${{ env.FUNC_NAME }} --s3-bucket ${{ env.AWS_S3_BUCKET }} --s3-key ${{ env.AWS_S3_BUCKET_KEY }}/${{ env.FUNC_NAME }}.zip --publish --region ${{ env.AWS_REGION }}
-          fi
-        done
+              aws lambda update-function-code --function-name  ${{ env.FUNC_NAME }} --s3-bucket ${{ env.AWS_S3_BUCKET }} --s3-key ${{ env.AWS_S3_BUCKET_KEY }}/${{ env.FUNC_NAME }}.zip --publish --region ${{ env.AWS_REGION }}
+            fi
+          done
