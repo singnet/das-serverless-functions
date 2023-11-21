@@ -48,7 +48,7 @@ class LogicalExpressionParser:
         elif key == "Node":
             return Node(value["node_type"], value["node_name"])
         elif key == "Link":
-            ordered = value.get("ordered", False)
+            ordered = value.get("ordered", True)
             targets = [self.from_dict(target) for target in value["targets"]]
             return Link(value["link_type"], targets, ordered)
         elif key == "And":
