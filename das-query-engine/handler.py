@@ -72,7 +72,10 @@ def handle(event: any, context=None):
             payload["input"],
         )
         try:
-            result = actions.get_atom(**get_atom_payload)
+            result = actions.get_atom(
+                handle=get_atom_payload["handle"],
+                output_format=get_atom_payload.get("output_format"),
+            )
         except Exception as e:
             result = dict(error=str(e))
             http_code_response = 500
@@ -82,7 +85,11 @@ def handle(event: any, context=None):
             payload["input"],
         )
         try:
-            result = actions.get_node(**get_node_payload)
+            result = actions.get_node(
+                node_type=get_node_payload["node_type"],
+                node_name=get_node_payload["node_name"],
+                output_format=get_node_payload.get("output_format"),
+            )
         except Exception as e:
             result = dict(error=str(e))
             http_code_response = 500
@@ -92,7 +99,11 @@ def handle(event: any, context=None):
             payload["input"],
         )
         try:
-            result = actions.get_nodes(**get_nodes_payload)
+            result = actions.get_nodes(
+                node_type=get_nodes_payload["node_type"],
+                node_name=get_nodes_payload["node_name"],
+                output_format=get_nodes_payload.get("output_format"),
+            )
         except Exception as e:
             result = dict(error=str(e))
             http_code_response = 500
@@ -102,7 +113,11 @@ def handle(event: any, context=None):
             payload["input"],
         )
         try:
-            result = actions.get_link(**get_link_payload)
+            result = actions.get_link(
+                link_type=get_link_payload["link_type"],
+                targets=get_link_payload.get("targets"),
+                output_format=get_link_payload.get("output_format"),
+            )
         except Exception as e:
             result = dict(error=str(e))
             http_code_response = 500
@@ -112,7 +127,12 @@ def handle(event: any, context=None):
             payload["input"],
         )
         try:
-            result = actions.get_links(**get_links_payload)
+            result = actions.get_links(
+                link_type=get_links_payload["link_type"],
+                target_types=get_links_payload.get("target_types"),
+                targets=get_links_payload.get("targets"),
+                output_format=get_links_payload.get("output_format"),
+            )
         except Exception as e:
             result = dict(error=str(e))
             http_code_response = 500
@@ -122,7 +142,9 @@ def handle(event: any, context=None):
             payload["input"],
         )
         try:
-            result = actions.get_link_type(**get_link_type_payload)
+            result = actions.get_link_type(
+                link_handle=get_link_type_payload["link_handle"],
+            )
         except Exception as e:
             result = dict(error=str(e))
             http_code_response = 500
@@ -132,7 +154,9 @@ def handle(event: any, context=None):
             payload["input"],
         )
         try:
-            result = actions.get_link_targets(**get_link_targets_payload)
+            result = actions.get_link_targets(
+                link_handle=get_link_targets_payload["link_handle"],
+            )
         except Exception as e:
             result = dict(error=str(e))
             http_code_response = 500
@@ -142,7 +166,9 @@ def handle(event: any, context=None):
             payload["input"],
         )
         try:
-            result = actions.get_node_type(**get_node_type_payload)
+            result = actions.get_node_type(
+                node_handle=get_node_type_payload["node_handle"],
+            )
         except Exception as e:
             result = dict(error=str(e))
             http_code_response = 500
@@ -152,7 +178,9 @@ def handle(event: any, context=None):
             payload["input"],
         )
         try:
-            result = actions.get_node_name(**get_node_name_payload)
+            result = actions.get_node_name(
+                node_handle=get_node_name_payload["node_handle"],
+            )
         except Exception as e:
             result = dict(error=str(e))
             http_code_response = 500
@@ -162,7 +190,10 @@ def handle(event: any, context=None):
             payload["input"],
         )
         try:
-            result = actions.query(**query_payload)
+            result = actions.query(
+                query=query_payload["query"],
+                extra_parameters=query_payload.get("extra_parameters"),
+            )
         except Exception as e:
             result = dict(error=str(e))
             http_code_response = 500
@@ -179,32 +210,12 @@ def handle(event: any, context=None):
 
             pattern_matcher_query_payload["query"] = query
 
-            result = actions.pattern_matcher_query(**pattern_matcher_query_payload)
+            result = actions.pattern_matcher_query(
+                query=pattern_matcher_query_payload["query"],
+                extra_parameters=pattern_matcher_query_payload.get("extra_parameters"),
+            )
         except Exception as e:
             result = dict(error=str(e))
             http_code_response = 500
-    # elif payload["action"] == ActionType.ADD_NODE:
-    #     add_node_payload = validate(
-    #         AddNodeValidator(),
-    #         payload["input"],
-    #     )
-    #     try:
-    #         result = actions.add_node(**add_node_payload)
-    #     except Exception as e:
-    #         result = dict(error=str(e))
-    #         http_code_response = 500
-    # elif payload["action"] == ActionType.ADD_LINK:
-    #     add_link_payload = validate(
-    #         AddLinkValidator(),
-    #         payload["input"],
-    #     )
-    #     try:
-    #         result = actions.add_link(**add_link_payload)
-    #     except Exception as e:
-    #         result = dict(error=str(e))
-    #         http_code_response = 500
-    # else:
-    #     result = dict(error=f'The action {payload["action"]} was not found')
-    #     http_code_response = 400
 
     return _response(http_code_response, result, context)

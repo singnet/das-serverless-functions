@@ -1,6 +1,7 @@
 from enum import Enum
 from hyperon_das.api import DistributedAtomSpace, QueryOutputFormat, LogicalExpression
 from typing import List, Dict, Any, Tuple
+from utils import remove_none_args
 
 
 class ActionType(str, Enum):
@@ -35,6 +36,7 @@ class Actions:
     def count_atoms(self) -> Tuple[int, int]:
         return self.distributed_atom_space.count_atoms()
 
+    @remove_none_args
     def get_atom(
         self,
         handle: str,
@@ -47,6 +49,7 @@ class Actions:
         )
         return self.distributed_atom_space.get_atom(handle, output_format_enum)
 
+    @remove_none_args
     def get_node(
         self,
         node_type: str,
@@ -60,9 +63,12 @@ class Actions:
         )
 
         return self.distributed_atom_space.get_node(
-            node_type, node_name, output_format_enum
+            node_type,
+            node_name,
+            output_format_enum,
         )
 
+    @remove_none_args
     def get_nodes(
         self,
         node_type: str,
@@ -81,6 +87,7 @@ class Actions:
             output_format_enum,
         )
 
+    @remove_none_args
     def get_link(
         self,
         link_type: str,
@@ -99,6 +106,7 @@ class Actions:
             output_format_enum,
         )
 
+    @remove_none_args
     def get_links(
         self,
         link_type: str,
@@ -134,6 +142,7 @@ class Actions:
     def get_node_name(self, node_handle: str) -> str:
         return self.distributed_atom_space.get_node_name(node_handle)
 
+    @remove_none_args
     def query(
         self,
         query: Dict[str, Any],
@@ -141,15 +150,12 @@ class Actions:
     ) -> List[Dict[str, Any]]:
         return self.distributed_atom_space.query(query, extra_parameters)
 
+    @remove_none_args
     def pattern_matcher_query(
-        self, query: LogicalExpression, extra_parameters: Dict[str, Any] | None = None
+        self,
+        query: LogicalExpression,
+        extra_parameters: Dict[str, Any] | None = None,
     ) -> dict | list | None:
         return self.distributed_atom_space.pattern_matcher_query(
             query, extra_parameters
         )
-
-    # def add_node(self, node_params: Dict[str, Any]) -> Dict[str, Any]:
-    #     return self.distributed_atom_space.add_node(node_params)
-
-    # def add_link(self, link_params: Dict[str, Any]) -> Dict[str, Any]:
-    #     return self.distributed_atom_space.add_link(link_params)
