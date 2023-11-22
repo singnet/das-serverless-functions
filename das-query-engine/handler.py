@@ -15,8 +15,6 @@ from validators.actions import (
     GetNodeTypeValidator,
     QueryValidator,
     PatternMatcherQueryValidator,
-    AddNodeValidator,
-    AddLinkValidator,
 )
 
 
@@ -76,7 +74,7 @@ def handle(event: any, context=None):
         try:
             result = actions.get_atom(**get_atom_payload)
         except Exception as e:
-            result = dict(error=e.message)
+            result = dict(error=str(e))
             http_code_response = 500
     elif payload["action"] == ActionType.GET_NODE:
         get_node_payload = validate(
@@ -86,7 +84,7 @@ def handle(event: any, context=None):
         try:
             result = actions.get_node(**get_node_payload)
         except Exception as e:
-            result = dict(error=e.message)
+            result = dict(error=str(e))
             http_code_response = 500
     elif payload["action"] == ActionType.GET_NODES:
         get_nodes_payload = validate(
@@ -96,7 +94,7 @@ def handle(event: any, context=None):
         try:
             result = actions.get_nodes(**get_nodes_payload)
         except Exception as e:
-            result = dict(error=e.message)
+            result = dict(error=str(e))
             http_code_response = 500
     elif payload["action"] == ActionType.GET_LINK:
         get_link_payload = validate(
@@ -106,7 +104,7 @@ def handle(event: any, context=None):
         try:
             result = actions.get_link(**get_link_payload)
         except Exception as e:
-            result = dict(error=e.message)
+            result = dict(error=str(e))
             http_code_response = 500
     elif payload["action"] == ActionType.GET_LINKS:
         get_links_payload = validate(
@@ -116,7 +114,7 @@ def handle(event: any, context=None):
         try:
             result = actions.get_links(**get_links_payload)
         except Exception as e:
-            result = dict(error=e.message)
+            result = dict(error=str(e))
             http_code_response = 500
     elif payload["action"] == ActionType.GET_LINK_TYPE:
         get_link_type_payload = validate(
@@ -126,7 +124,7 @@ def handle(event: any, context=None):
         try:
             result = actions.get_link_type(**get_link_type_payload)
         except Exception as e:
-            result = dict(error=e.message)
+            result = dict(error=str(e))
             http_code_response = 500
     elif payload["action"] == ActionType.GET_LINK_TARGETS:
         get_link_targets_payload = validate(
@@ -136,7 +134,7 @@ def handle(event: any, context=None):
         try:
             result = actions.get_link_targets(**get_link_targets_payload)
         except Exception as e:
-            result = dict(error=e.message)
+            result = dict(error=str(e))
             http_code_response = 500
     elif payload["action"] == ActionType.GET_NODE_TYPE:
         get_node_type_payload = validate(
@@ -146,7 +144,7 @@ def handle(event: any, context=None):
         try:
             result = actions.get_node_type(**get_node_type_payload)
         except Exception as e:
-            result = dict(error=e.message)
+            result = dict(error=str(e))
             http_code_response = 500
     elif payload["action"] == ActionType.GET_NODE_NAME:
         get_node_name_payload = validate(
@@ -156,7 +154,7 @@ def handle(event: any, context=None):
         try:
             result = actions.get_node_name(**get_node_name_payload)
         except Exception as e:
-            result = dict(error=e.message)
+            result = dict(error=str(e))
             http_code_response = 500
     elif payload["action"] == ActionType.QUERY:
         query_payload = validate(
@@ -166,7 +164,7 @@ def handle(event: any, context=None):
         try:
             result = actions.query(**query_payload)
         except Exception as e:
-            result = dict(error=e.message)
+            result = dict(error=str(e))
             http_code_response = 500
     elif payload["action"] == ActionType.PATTERN_MATCHER_QUERY:
         pattern_matcher_query_payload = validate(
@@ -183,30 +181,30 @@ def handle(event: any, context=None):
 
             result = actions.pattern_matcher_query(**pattern_matcher_query_payload)
         except Exception as e:
-            result = dict(error=e.message)
+            result = dict(error=str(e))
             http_code_response = 500
-    elif payload["action"] == ActionType.ADD_NODE:
-        add_node_payload = validate(
-            AddNodeValidator(),
-            payload["input"],
-        )
-        try:
-            result = actions.add_node(**add_node_payload)
-        except Exception as e:
-            result = dict(error=e.message)
-            http_code_response = 500
-    elif payload["action"] == ActionType.ADD_LINK:
-        add_link_payload = validate(
-            AddLinkValidator(),
-            payload["input"],
-        )
-        try:
-            result = actions.add_link(**add_link_payload)
-        except Exception as e:
-            result = dict(error=e.message)
-            http_code_response = 500
-    else:
-        result = dict(error=f'The action {payload["action"]} was not found')
-        http_code_response = 400
+    # elif payload["action"] == ActionType.ADD_NODE:
+    #     add_node_payload = validate(
+    #         AddNodeValidator(),
+    #         payload["input"],
+    #     )
+    #     try:
+    #         result = actions.add_node(**add_node_payload)
+    #     except Exception as e:
+    #         result = dict(error=str(e))
+    #         http_code_response = 500
+    # elif payload["action"] == ActionType.ADD_LINK:
+    #     add_link_payload = validate(
+    #         AddLinkValidator(),
+    #         payload["input"],
+    #     )
+    #     try:
+    #         result = actions.add_link(**add_link_payload)
+    #     except Exception as e:
+    #         result = dict(error=str(e))
+    #         http_code_response = 500
+    # else:
+    #     result = dict(error=f'The action {payload["action"]} was not found')
+    #     http_code_response = 400
 
     return _response(http_code_response, result, context)
