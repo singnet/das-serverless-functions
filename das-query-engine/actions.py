@@ -1,6 +1,7 @@
 from enum import Enum
 from hyperon_das.api import DistributedAtomSpace, QueryOutputFormat, LogicalExpression
 from typing import List, Dict, Any, Tuple
+from utils import remove_none_args
 
 
 class ActionType(str, Enum):
@@ -35,46 +36,95 @@ class Actions:
     def count_atoms(self) -> Tuple[int, int]:
         return self.distributed_atom_space.count_atoms()
 
+    @remove_none_args
     def get_atom(
-        self, handle: str, output_format: QueryOutputFormat = QueryOutputFormat.HANDLE
+        self,
+        handle: str,
+        output_format: str = "HANDLE",
     ) -> str | dict:
-        return self.distributed_atom_space.get_atom(handle, output_format)
+        output_format_enum = getattr(
+            QueryOutputFormat,
+            output_format.upper(),
+            QueryOutputFormat.HANDLE,
+        )
+        return self.distributed_atom_space.get_atom(handle, output_format_enum)
 
+    @remove_none_args
     def get_node(
         self,
         node_type: str,
         node_name: str,
-        output_format: QueryOutputFormat = QueryOutputFormat.HANDLE,
+        output_format: str = "HANDLE",
     ) -> str | dict:
-        return self.distributed_atom_space.get_node(node_type, node_name, output_format)
+        output_format_enum = getattr(
+            QueryOutputFormat,
+            output_format.upper(),
+            QueryOutputFormat.HANDLE,
+        )
 
+        return self.distributed_atom_space.get_node(
+            node_type,
+            node_name,
+            output_format_enum,
+        )
+
+    @remove_none_args
     def get_nodes(
         self,
         node_type: str,
         node_name: str,
-        output_format: QueryOutputFormat = QueryOutputFormat.HANDLE,
+        output_format: str = "HANDLE",
     ) -> List[str] | List[Dict]:
-        return self.distributed_atom_space.get_nodes(
-            node_type, node_name, output_format
+        output_format_enum = getattr(
+            QueryOutputFormat,
+            output_format.upper(),
+            QueryOutputFormat.HANDLE,
         )
 
+        return self.distributed_atom_space.get_nodes(
+            node_type,
+            node_name,
+            output_format_enum,
+        )
+
+    @remove_none_args
     def get_link(
         self,
         link_type: str,
         targets: List[str] = None,
-        output_format: QueryOutputFormat = QueryOutputFormat.HANDLE,
+        output_format: str = "HANDLE",
     ) -> str | Dict:
-        return self.distributed_atom_space.get_link(link_type, targets, output_format)
+        output_format_enum = getattr(
+            QueryOutputFormat,
+            output_format.upper(),
+            QueryOutputFormat.HANDLE,
+        )
 
+        return self.distributed_atom_space.get_link(
+            link_type,
+            targets,
+            output_format_enum,
+        )
+
+    @remove_none_args
     def get_links(
         self,
         link_type: str,
         target_types: str = None,
         targets: List[str] = None,
-        output_format: QueryOutputFormat = QueryOutputFormat.HANDLE,
+        output_format: str = "HANDLE",
     ) -> List[str] | List[Dict]:
+        output_format_enum = getattr(
+            QueryOutputFormat,
+            output_format.upper(),
+            QueryOutputFormat.HANDLE,
+        )
+
         return self.distributed_atom_space.get_links(
-            link_type, target_types, targets, output_format
+            link_type,
+            target_types,
+            targets,
+            output_format_enum,
         )
 
     def get_link_type(self, link_handle: str) -> str:
@@ -92,6 +142,7 @@ class Actions:
     def get_node_name(self, node_handle: str) -> str:
         return self.distributed_atom_space.get_node_name(node_handle)
 
+    @remove_none_args
     def query(
         self,
         query: Dict[str, Any],
@@ -99,15 +150,12 @@ class Actions:
     ) -> List[Dict[str, Any]]:
         return self.distributed_atom_space.query(query, extra_parameters)
 
+    @remove_none_args
     def pattern_matcher_query(
-        self, query: LogicalExpression, extra_parameters: Dict[str, Any] | None = None
+        self,
+        query: LogicalExpression,
+        extra_parameters: Dict[str, Any] | None = None,
     ) -> dict | list | None:
         return self.distributed_atom_space.pattern_matcher_query(
             query, extra_parameters
         )
-
-    def add_node(self, node_params: Dict[str, Any]) -> Dict[str, Any]:
-        return self.distributed_atom_space.add_node(node_params)
-
-    def add_link(self, link_params: Dict[str, Any]) -> Dict[str, Any]:
-        return self.distributed_atom_space.add_link(link_params)

@@ -1,4 +1,5 @@
 import os
+from functools import wraps
 from hyperon_das.pattern_matcher import (
     LogicalExpression,
     Variable,
@@ -62,3 +63,13 @@ class LogicalExpressionParser:
         elif key == "Not":
             condition = self.from_dict(value)
             return Not(condition)
+
+
+def remove_none_args(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        new_args = [arg for arg in args if arg is not None]
+        new_kwargs = {key: value for key, value in kwargs.items() if value is not None}
+        return func(*new_args, **new_kwargs)
+
+    return wrapper
