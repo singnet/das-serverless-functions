@@ -36,45 +36,87 @@ class Actions:
         return self.distributed_atom_space.count_atoms()
 
     def get_atom(
-        self, handle: str, output_format: QueryOutputFormat = QueryOutputFormat.HANDLE
+        self,
+        handle: str,
+        output_format: str = "HANDLE",
     ) -> str | dict:
-        return self.distributed_atom_space.get_atom(handle, output_format)
+        output_format_enum = getattr(
+            QueryOutputFormat,
+            output_format.upper(),
+            QueryOutputFormat.HANDLE,
+        )
+        return self.distributed_atom_space.get_atom(handle, output_format_enum)
 
     def get_node(
         self,
         node_type: str,
         node_name: str,
-        output_format: QueryOutputFormat = QueryOutputFormat.HANDLE,
+        output_format: str = "HANDLE",
     ) -> str | dict:
-        return self.distributed_atom_space.get_node(node_type, node_name, output_format)
+        output_format_enum = getattr(
+            QueryOutputFormat,
+            output_format.upper(),
+            QueryOutputFormat.HANDLE,
+        )
+
+        return self.distributed_atom_space.get_node(
+            node_type, node_name, output_format_enum
+        )
 
     def get_nodes(
         self,
         node_type: str,
         node_name: str,
-        output_format: QueryOutputFormat = QueryOutputFormat.HANDLE,
+        output_format: str = "HANDLE",
     ) -> List[str] | List[Dict]:
+        output_format_enum = getattr(
+            QueryOutputFormat,
+            output_format.upper(),
+            QueryOutputFormat.HANDLE,
+        )
+
         return self.distributed_atom_space.get_nodes(
-            node_type, node_name, output_format
+            node_type,
+            node_name,
+            output_format_enum,
         )
 
     def get_link(
         self,
         link_type: str,
         targets: List[str] = None,
-        output_format: QueryOutputFormat = QueryOutputFormat.HANDLE,
+        output_format: str = "HANDLE",
     ) -> str | Dict:
-        return self.distributed_atom_space.get_link(link_type, targets, output_format)
+        output_format_enum = getattr(
+            QueryOutputFormat,
+            output_format.upper(),
+            QueryOutputFormat.HANDLE,
+        )
+
+        return self.distributed_atom_space.get_link(
+            link_type,
+            targets,
+            output_format_enum,
+        )
 
     def get_links(
         self,
         link_type: str,
         target_types: str = None,
         targets: List[str] = None,
-        output_format: QueryOutputFormat = QueryOutputFormat.HANDLE,
+        output_format: str = "HANDLE",
     ) -> List[str] | List[Dict]:
+        output_format_enum = getattr(
+            QueryOutputFormat,
+            output_format.upper(),
+            QueryOutputFormat.HANDLE,
+        )
+
         return self.distributed_atom_space.get_links(
-            link_type, target_types, targets, output_format
+            link_type,
+            target_types,
+            targets,
+            output_format_enum,
         )
 
     def get_link_type(self, link_handle: str) -> str:
@@ -106,8 +148,8 @@ class Actions:
             query, extra_parameters
         )
 
-    def add_node(self, node_params: Dict[str, Any]) -> Dict[str, Any]:
-        return self.distributed_atom_space.add_node(node_params)
+    # def add_node(self, node_params: Dict[str, Any]) -> Dict[str, Any]:
+    #     return self.distributed_atom_space.add_node(node_params)
 
-    def add_link(self, link_params: Dict[str, Any]) -> Dict[str, Any]:
-        return self.distributed_atom_space.add_link(link_params)
+    # def add_link(self, link_params: Dict[str, Any]) -> Dict[str, Any]:
+    #     return self.distributed_atom_space.add_link(link_params)
