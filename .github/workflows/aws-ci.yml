@@ -6,7 +6,6 @@ on:
     workflows: ["Versioning"]
     types: [requested]
 
-
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -26,7 +25,7 @@ jobs:
           pip3 install awscli
           for dir in */; do
             if [[ $dir != .* ]]; then
-              pip3 install -r ./requirements.txt -t .
+              cd $dir; pip3 install -r ./requirements.txt -t .; cd ..
             fi
           done
 
@@ -34,7 +33,7 @@ jobs:
         run: |-
           for dir in */; do
             if [[ $dir != .* ]]; then
-              wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem
+              cd $dir; wget https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem; cd ..
             fi
           done
 
@@ -43,8 +42,7 @@ jobs:
           for dir in */; do
             if [[ $dir != .* ]]; then
               FUNC_NAME=$(basename "$dir")
-
-              zip -r $FUNC_NAME.zip .
+              cd $dir; zip -r $FUNC_NAME.zip .; cd ..
             fi
           done
 
@@ -53,8 +51,7 @@ jobs:
           for dir in */; do
             if [[ $dir != .* ]]; then
               FUNC_NAME=$(basename "$dir")
-
-              aws s3 cp ./$FUNC_NAME.zip s3://${{ env.AWS_S3_BUCKET }}/${{ env.AWS_S3_BUCKET_KEY }}/$FUNC_NAME.zip
+              cd $dir; aws s3 cp ./$FUNC_NAME.zip s3://${{ env.AWS_S3_BUCKET }}/${{ env.AWS_S3_BUCKET_KEY }}/$FUNC_NAME.zip; cd ..
             fi
           done
 
@@ -70,7 +67,6 @@ jobs:
           for dir in */; do
             if [[ $dir != .* ]]; then
               FUNC_NAME=$(basename "$dir")
-
-              aws lambda update-function-code --function-name  ${{ env.FUNC_NAME }} --s3-bucket ${{ env.AWS_S3_BUCKET }} --s3-key ${{ env.AWS_S3_BUCKET_KEY }}/${{ env.FUNC_NAME }}.zip --publish --region ${{ env.AWS_REGION }}
+              cd $dir; aws lambda update-function-code --function-name  $FUNC_NAME --s3-bucket ${{ env.AWS_S3_BUCKET }} --s3-key ${{ env.AWS_S3_BUCKET_KEY }}/$FUNC_NAME.zip --publish --region ${{ env.AWS_REGION }}; cd ..
             fi
           done

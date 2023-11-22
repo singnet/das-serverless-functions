@@ -23,23 +23,44 @@ from validators.actions import (
 load_env()
 
 
+def _response(http_code_response, result, context):
+    if context is None:
+        return result
+
+    return {
+        "statusCode": http_code_response,
+        "body": json.dumps(result),
+        "headers": {"Content-Type": "application/json"},
+    }
+
+
 def _get_payload(event: any):
     if isinstance(event, str):  # vultr
         return json.loads(event)
 
-    body = event.get("body", event)
+    body = event.get("body", event)  # aws
 
     if isinstance(body, str):
-        return json.loads(base64.b64decode(body))  # aws
+        if event.get("isBase64Encoded") is True:
+            return json.loads(base64.b64decode(body))
 
-    return event
+        return json.loads(body)
+
+    return body
 
 
 def handle(event: any, context=None):
     payload = validate(EventValidator(), _get_payload(event))
     result = None
-    actions = Actions()
+    actions = None
     http_code_response = 200
+
+    try:
+        actions = Actions()
+    except Exception as e:
+        result = dict(error=str(e))
+        http_code_response = 400
+        return _response(http_code_response, result, context)
 
     if payload["action"] == ActionType.PING:
         result = dict(message="pong")
@@ -188,11 +209,4 @@ def handle(event: any, context=None):
         result = dict(error=f'The action {payload["action"]} was not found')
         http_code_response = 400
 
-    if context is None:
-        return result
-
-    return {
-        "statusCode": http_code_response,
-        "body": json.dumps(result),
-        "headers": {"Content-Type": "application/json"},
-    }
+    return _response(http_code_response, result, context)
