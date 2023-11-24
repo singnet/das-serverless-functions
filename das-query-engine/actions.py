@@ -91,7 +91,7 @@ class Actions:
     def get_link(
         self,
         link_type: str,
-        targets: List[str] = None,
+        targets: List[str],
         output_format: str = "HANDLE",
     ) -> str | Dict:
         output_format_enum = getattr(

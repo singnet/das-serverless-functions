@@ -20,7 +20,7 @@ class GetNodesValidator(PayloadValidator):
 
 class GetLinkValidator(PayloadValidator):
     link_type = datatypes.String(required=True)
-    targets = datatypes.Array(required=False)
+    targets = datatypes.Array(required=True)
     output_format = datatypes.String(required=False)
 
 
