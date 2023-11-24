@@ -25,7 +25,7 @@ class ActionType(str, Enum):
 
 class Actions:
     def __init__(self) -> None:
-        self.distributed_atom_space = DistributedAtomSpace("redis_mongo")
+        self.distributed_atom_space = DistributedAtomSpace("server")
 
     def ping(self) -> dict:
         return dict(message="pong")
