@@ -24,7 +24,10 @@ load_env()
 
 def _response(http_code_response: int, result: str, context: any = None):
     if context is None:
-        return result
+        try:
+            return json.loads(result)
+        except:
+            return result
 
     return {
         "statusCode": http_code_response,
