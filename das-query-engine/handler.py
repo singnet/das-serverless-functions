@@ -116,7 +116,7 @@ def handle(event: any, context=None):
         try:
             result = actions.get_link(
                 link_type=get_link_payload["link_type"],
-                targets=get_link_payload.get("targets", None),
+                targets=get_link_payload["targets"],
                 output_format=get_link_payload.get("output_format", None),
             )
         except Exception as e:
