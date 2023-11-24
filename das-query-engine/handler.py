@@ -15,13 +15,14 @@ from validators.actions import (
     GetNodeTypeValidator,
     QueryValidator,
     PatternMatcherQueryValidator,
+    GetNodeNameValidator,
 )
 
 
 load_env()
 
 
-def _response(http_code_response, result, context):
+def _response(http_code_response: int, result: str, context: any = None):
     if context is None:
         return result
 
@@ -74,7 +75,7 @@ def handle(event: any, context=None):
         try:
             result = actions.get_atom(
                 handle=get_atom_payload["handle"],
-                output_format=get_atom_payload.get("output_format"),
+                output_format=get_atom_payload.get("output_format", None),
             )
         except Exception as e:
             result = dict(error=str(e))
@@ -88,7 +89,7 @@ def handle(event: any, context=None):
             result = actions.get_node(
                 node_type=get_node_payload["node_type"],
                 node_name=get_node_payload["node_name"],
-                output_format=get_node_payload.get("output_format"),
+                output_format=get_node_payload.get("output_format", None),
             )
         except Exception as e:
             result = dict(error=str(e))
@@ -102,7 +103,7 @@ def handle(event: any, context=None):
             result = actions.get_nodes(
                 node_type=get_nodes_payload["node_type"],
                 node_name=get_nodes_payload["node_name"],
-                output_format=get_nodes_payload.get("output_format"),
+                output_format=get_nodes_payload.get("output_format", None),
             )
         except Exception as e:
             result = dict(error=str(e))
@@ -115,8 +116,8 @@ def handle(event: any, context=None):
         try:
             result = actions.get_link(
                 link_type=get_link_payload["link_type"],
-                targets=get_link_payload.get("targets"),
-                output_format=get_link_payload.get("output_format"),
+                targets=get_link_payload.get("targets", None),
+                output_format=get_link_payload.get("output_format", None),
             )
         except Exception as e:
             result = dict(error=str(e))
@@ -129,9 +130,9 @@ def handle(event: any, context=None):
         try:
             result = actions.get_links(
                 link_type=get_links_payload["link_type"],
-                target_types=get_links_payload.get("target_types"),
-                targets=get_links_payload.get("targets"),
-                output_format=get_links_payload.get("output_format"),
+                target_types=get_links_payload.get("target_types", None),
+                targets=get_links_payload.get("targets", None),
+                output_format=get_links_payload.get("output_format", None),
             )
         except Exception as e:
             result = dict(error=str(e))
@@ -174,7 +175,7 @@ def handle(event: any, context=None):
             http_code_response = 500
     elif payload["action"] == ActionType.GET_NODE_NAME:
         get_node_name_payload = validate(
-            GetNodeTypeValidator(),
+            GetNodeNameValidator(),
             payload["input"],
         )
         try:
@@ -192,7 +193,7 @@ def handle(event: any, context=None):
         try:
             result = actions.query(
                 query=query_payload["query"],
-                extra_parameters=query_payload.get("extra_parameters"),
+                extra_parameters=query_payload.get("extra_parameters", None),
             )
         except Exception as e:
             result = dict(error=str(e))
@@ -212,7 +213,9 @@ def handle(event: any, context=None):
 
             result = actions.pattern_matcher_query(
                 query=pattern_matcher_query_payload["query"],
-                extra_parameters=pattern_matcher_query_payload.get("extra_parameters"),
+                extra_parameters=pattern_matcher_query_payload.get(
+                    "extra_parameters", None
+                ),
             )
         except Exception as e:
             result = dict(error=str(e))

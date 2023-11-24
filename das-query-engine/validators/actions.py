@@ -43,6 +43,10 @@ class GetNodeTypeValidator(PayloadValidator):
     node_handle = datatypes.String(required=True)
 
 
+class GetNodeNameValidator(PayloadValidator):
+    node_handle = datatypes.String(required=True)
+
+
 class QueryValidator(PayloadValidator):
     query = datatypes.Function(
         lambda value, *args, **kwargs: isinstance(value, dict),
