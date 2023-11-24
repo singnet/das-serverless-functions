@@ -32,10 +32,7 @@ class GetLinksValidator(PayloadValidator):
 
 
 class GetLinkTypeValidator(PayloadValidator):
-    link_type = datatypes.String(required=True)
-    target_types = datatypes.Array(required=False)
-    targets = datatypes.Array(required=False)
-    output_format = datatypes.String(required=False)
+    link_handle = datatypes.String(required=True)
 
 
 class GetLinkTargetsValidator(PayloadValidator):
@@ -43,6 +40,10 @@ class GetLinkTargetsValidator(PayloadValidator):
 
 
 class GetNodeTypeValidator(PayloadValidator):
+    node_handle = datatypes.String(required=True)
+
+
+class GetNodeNameValidator(PayloadValidator):
     node_handle = datatypes.String(required=True)
 
 
