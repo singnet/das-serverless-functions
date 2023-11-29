@@ -1,6 +1,6 @@
 import json
 import base64
-from utils import load_env, LogicalExpressionParser
+from utils import load_env, logger, LogicalExpressionParser
 from validators.event import EventValidator
 from actions import Actions, ActionType
 from validators import validate
@@ -23,6 +23,8 @@ load_env()
 
 
 def _response(http_code_response: int, result: str, context: any = None):
+    logger().info(f"Function response ({http_code_response}): {result}")
+
     if context is None:
         try:
             return json.loads(result)
@@ -38,16 +40,20 @@ def _response(http_code_response: int, result: str, context: any = None):
 
 def _get_payload(event: any):
     if isinstance(event, str):  # vultr
+        logger().info(f"Received Vultr source payload: {event}")
         return json.loads(event)
 
     body = event.get("body", event)  # aws
 
     if isinstance(body, str):
         if event.get("isBase64Encoded") is True:
+            logger().info(f"Received AWS source payload (Base64 encoded): {body}")
             return json.loads(base64.b64decode(body))
 
+        logger().info(f"Received AWS source payload: {body}")
         return json.loads(body)
 
+    logger().info(f"Received unknown payload source: {event}")
     return body
 
 
@@ -60,6 +66,7 @@ def handle(event: any, context=None):
     try:
         actions = Actions()
     except Exception as e:
+        logger().error(f"Exception caught at Actions instance: {str(e)}")
         result = dict(error=str(e))
         http_code_response = 400
         return _response(http_code_response, result, context)
@@ -92,15 +99,15 @@ def handle(event: any, context=None):
             )
 
         elif payload["action"] == ActionType.GET_NODES:
-                get_nodes_payload = validate(
-                    GetNodesValidator(),
-                    payload["input"],
-                )
-                result = actions.get_nodes(
-                    node_type=get_nodes_payload["node_type"],
-                    node_name=get_nodes_payload["node_name"],
-                    output_format=get_nodes_payload.get("output_format", None),
-                )
+            get_nodes_payload = validate(
+                GetNodesValidator(),
+                payload["input"],
+            )
+            result = actions.get_nodes(
+                node_type=get_nodes_payload["node_type"],
+                node_name=get_nodes_payload["node_name"],
+                output_format=get_nodes_payload.get("output_format", None),
+            )
         elif payload["action"] == ActionType.GET_LINK:
             get_link_payload = validate(
                 GetLinkValidator(),
@@ -182,6 +189,7 @@ def handle(event: any, context=None):
                 ),
             )
     except Exception as e:
+        logger().error(f"Exception caught at action {payload['action']}: {str(e)}")
         result = dict(error=str(e))
         http_code_response = 500
 
