@@ -31,7 +31,9 @@ def load_env():
             logger().error(error_message)
             raise Exception(error_message)
 
-        env_value_display = "*****" if value["hidden"] else env_value
+        env_value_display = (
+            "*****" if value["hidden"] else env_value if env_value != "" else "(empty)"
+        )
         logger().info(f'{value["key"]} - {env_value_display}')
 
 
