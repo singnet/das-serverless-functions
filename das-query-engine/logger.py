@@ -1,5 +1,5 @@
 import logging
-import sys
+import os
 
 
 class Logger:
@@ -16,7 +16,7 @@ class Logger:
             raise Exception("Invalid re-instantiation of Logger")
         else:
             logging.basicConfig(
-                stream=sys.stdout,
+                filename="/var/log/das/das-query-engine.log",
                 level=logging.INFO,
                 format="%(asctime)s %(levelname)-8s %(message)s",
                 datefmt="%Y-%m-%d %H:%M:%S",
