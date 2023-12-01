@@ -1,6 +1,7 @@
 import json
 import base64
-from utils import load_env, logger, LogicalExpressionParser
+from hyperon_das.logger import logger
+from utils import load_env, LogicalExpressionParser
 from validators.event import EventValidator
 from actions import Actions, ActionType
 from validators import validate
@@ -18,12 +19,11 @@ from validators.actions import (
     GetNodeNameValidator,
 )
 
-
 load_env()
 
 
 def _response(http_code_response: int, result: str, context: any = None):
-    logger().info(f"Function response ({http_code_response}): {result}")
+    logger().info(f"Function status code response - {http_code_response}")
 
     if context is None:
         try:

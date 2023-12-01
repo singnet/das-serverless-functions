@@ -1,6 +1,6 @@
 import os
 from env import env_schema
-from logger import Logger
+from hyperon_das.logger import logger
 from functools import wraps
 from hyperon_das.pattern_matcher import (
     LogicalExpression,
@@ -14,6 +14,8 @@ from hyperon_das.pattern_matcher import (
 
 
 def load_env():
+    env_log_entries = []
+
     for key, value in env_schema.items():
         secret = f"/var/openfaas/secrets/{key}"
         env_value = None
@@ -34,7 +36,9 @@ def load_env():
         env_value_display = (
             "*****" if value["hidden"] else env_value if env_value != "" else "(empty)"
         )
-        logger().info(f'{value["key"]} - {env_value_display}')
+        env_log_entries.append(f'{value["key"]} - {env_value_display}')
+
+    logger().info("\n".join(env_log_entries))
 
 
 class LogicalExpressionParser:
@@ -69,7 +73,3 @@ def remove_none_args(func):
         return func(*new_args, **new_kwargs)
 
     return wrapper
-
-
-def logger():
-    return Logger.get_instance()
