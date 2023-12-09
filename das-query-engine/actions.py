@@ -72,7 +72,7 @@ class Actions:
     def get_nodes(
         self,
         node_type: str,
-        node_name: str,
+        node_name: str = None,
         output_format: str = "HANDLE",
     ) -> List[str] | List[Dict]:
         output_format_enum = getattr(
