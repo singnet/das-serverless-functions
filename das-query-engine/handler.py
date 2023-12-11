@@ -105,7 +105,7 @@ def handle(event: any, context=None):
             )
             result = actions.get_nodes(
                 node_type=get_nodes_payload["node_type"],
-                node_name=get_nodes_payload["node_name"],
+                node_name=get_nodes_payload.get("node_name", None),
                 output_format=get_nodes_payload.get("output_format", None),
             )
         elif payload["action"] == ActionType.GET_LINK:
