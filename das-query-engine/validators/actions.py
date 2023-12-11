@@ -14,7 +14,7 @@ class GetNodeValidator(PayloadValidator):
 
 class GetNodesValidator(PayloadValidator):
     node_type = datatypes.String(required=True)
-    node_name = datatypes.String(required=True)
+    node_name = datatypes.String(required=False)
     output_format = datatypes.String(required=False)
 
 
