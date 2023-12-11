@@ -1,4 +1,6 @@
 import os
+from env import env_schema
+from hyperon_das.logger import logger
 from functools import wraps
 from hyperon_das.pattern_matcher import (
     LogicalExpression,
@@ -12,34 +14,31 @@ from hyperon_das.pattern_matcher import (
 
 
 def load_env():
-    environments = {
-        "dasmongodbname": "DAS_MONGODB_NAME",
-        "dasmongodbport": "DAS_MONGODB_PORT",
-        "dasmongodbhostname": "DAS_MONGODB_HOSTNAME",
-        "dasmongodbusername": "DAS_MONGODB_USERNAME",
-        "dasmongodbpassword": "DAS_MONGODB_PASSWORD",
-        "dasredishostname": "DAS_REDIS_HOSTNAME",
-        "dasredisport": "DAS_REDIS_PORT",
-        "dasredispassword": "DAS_REDIS_PASSWORD",
-        "dasredisusername": "DAS_REDIS_USERNAME",
-        "dasuseredisssl": "DAS_USE_REDIS_SSL",
-        "dasmongodbtlscafile": "DAS_MONGODB_TLS_CA_FILE",
-        "dasuserediscluster": "DAS_USE_REDIS_CLUSTER",
-        "dasusecachednodes": "DAS_USE_CACHED_NODES",
-        "dasusecachedlinktypes": "DAS_USE_CACHED_LINK_TYPES",
-        "dasusecachednodetypes": "DAS_USE_CACHED_NODE_TYPES",
-    }
+    env_log_entries = []
 
-    for key, value in environments.items():
+    for key, value in env_schema.items():
         secret = f"/var/openfaas/secrets/{key}"
+        env_value = None
+
         if os.path.exists(secret):
             with open(secret) as f:
-                os.environ[value] = f.readline().strip()
+                env_value = f.readline().strip()
         else:
-            env_value = os.environ.get(key, None)
-            # if env_value is None:
-            #     raise Exception(f"Environment variable {key} is empty")
-            os.environ[value] = env_value if isinstance(env_value, str) else ""
+            env_value = os.environ.get(key, "")
+
+        os.environ[value["key"]] = env_value if isinstance(env_value, str) else ""
+
+        if value["required"] and not env_value:
+            error_message = f"Environment variable {key} is empty"
+            logger().error(error_message)
+            raise Exception(error_message)
+
+        env_value_display = (
+            "*****" if value["hidden"] else env_value if env_value != "" else "(empty)"
+        )
+        env_log_entries.append(f'{value["key"]} - {env_value_display}')
+
+    logger().info("\n".join(env_log_entries))
 
 
 class LogicalExpressionParser:
