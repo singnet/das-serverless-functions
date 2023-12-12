@@ -2,6 +2,7 @@ from enum import Enum
 from hyperon_das.api import DistributedAtomSpace, QueryOutputFormat, LogicalExpression
 from typing import List, Dict, Any, Tuple
 from utils import remove_none_args
+import os
 
 
 class ActionType(str, Enum):
@@ -25,7 +26,20 @@ class ActionType(str, Enum):
 
 class Actions:
     def __init__(self) -> None:
-        self.distributed_atom_space = DistributedAtomSpace("server")
+        self.distributed_atom_space = DistributedAtomSpace(
+            atomdb="redis_mongo",
+            mongo_hostname=os.getenv("dasmongodbhostname"),
+            mongo_port=os.getenv("dasmongodbport"),
+            mongo_username=os.getenv("dasmongodbusername"),
+            mongo_password=os.getenv("dasmongodbpassword"),
+            redis_hostname=os.getenv("dasredishostname"),
+            redis_port=os.getenv("dasredisport"),
+            mongo_tls_ca_file=os.getenv("dasmongodbtlscafile"),
+            redis_username=os.getenv("dasredisusername"),
+            redis_password=os.getenv("dasredispassword"),
+            redis_cluster=os.getenv("dasuserediscluster"),
+            redis_ss=os.getenv("dasuseredisssl"),
+        )
 
     def ping(self) -> dict:
         return dict(message="pong")
