@@ -1,40 +1,53 @@
 ---
-name: Vultr Build & Deployment
+name: Vultr Build
 
 on:
-  workflow_run:
-    workflows: ["Versioning"]
-    types: [requested]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version"
+        required: true
+
+      FUNCTION_FOLDER:
+        type: choice
+        description: "Select a function to build:"
+        options:
+          - das-atomdb
+          - das-query-engine
 
 env:
-  DEPLOYMENT_FILE: das-function.yml
+  FUNCTION_FOLDER: "das-query-engine"
+  VERSION: ${{ github.event.inputs.version }}
 
 jobs:
-  build:
+  tag:
+    uses: singnet/das-scripts-pipeline/.github/workflows/action.yml@master
+    with:
+      version: ${{ env.VERSION }}
+      version-strategy: bump-version-from-variable-value
+      job-image-namespace: trueagi
+      job-image-version-semver: semantic-versioning
+      main-branch: master
+      version-tag-regex-pattern: /^v\d+\.\d+\.\d+$/
+      version-require-confirmation: "true"
+
+  build-vultr:
     runs-on: ubuntu-latest
+    needs: tag
     steps:
       - name: Setup OpenFaaS
         run: curl -sSL https://cli.openfaas.com | sudo -E sh
 
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          path: das-servless-functions
-
-      - name: Checkout das-infra-stack-vultr Repository
-        uses: actions/checkout@v4
-        with:
-          repository: singnet/das-infra-stack-vultr
-          path: das-infra-stack-vultr
-          ref: master
 
       - name: Pull template
-        working-directory: ./das-infra-stack-vultr
         run: faas-cli template pull https://github.com/singnet/das-openfaas-templates
 
       - name: Run shrinkwrap build
-        working-directory: ./das-infra-stack-vultr
-        run: faas-cli build -f ${{ env.DEPLOYMENT_FILE }}
+        run: |-
+          FUNCTION_NAME=$(echo ${{ env.FUNCTION_PATH }} | sed 's/^das-//;s/-//g')
+          faas-cli build --image trueagi/das:${{ env.VERSION }}-${FUNCTION_NAME} --name $FUNCTION_NAME --lang python3-http --handler ${{ env.FUNCTION_FOLDER }}
 
       - name: Login to DockerHub
         if: success()
@@ -44,31 +57,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push Image to Registry
-        working-directory: ./das-infra-stack-vultr
-        run: faas-cli push -f ${{ env.DEPLOYMENT_FILE }}
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup OpenFaaS
-        run: curl -sSL https://cli.openfaas.com | sudo -E sh
-
-      - name: Checkout das-infra-stack-vultr Repository
-        uses: actions/checkout@v4
-        with:
-          repository: singnet/das-infra-stack-vultr
-          path: das-infra-stack-vultr
-          ref: master
-
-      - name: Login to OpenFaaS Gateway
-        working-directory: ./das-infra-stack-vultr
-        run: faas-cli login -p ${{ secrets.OPENFAAS_GATEWAY_PASSWD }} -g ${{ secrets.OPENFAAS_GATEWAY }}
-
-      - name: Pull template
-        working-directory: ./das-infra-stack-vultr
-        run: faas-cli template pull https://github.com/singnet/das-openfaas-templates
-
-      - name: Deploy the function
-        working-directory: ./das-infra-stack-vultr
-        run: faas-cli deploy -f ${{ env.DEPLOYMENT_FILE }}
+        run: docker image push trueagi/das:${{ env.VERSION }}-${{ FUNCTION_NAME }}
