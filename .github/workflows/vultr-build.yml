@@ -15,15 +15,12 @@ on:
           - das-atomdb
           - das-query-engine
 
-env:
-  FUNCTION_FOLDER: ${{ github.event.inputs.function }}
-  VERSION: ${{ github.event.inputs.version }}
 
 jobs:
   tag:
     uses: singnet/das-scripts-pipeline/.github/workflows/action.yml@master
     with:
-      version: ${{ env.VERSION }}
+      version: ${{ github.event.inputs.version }}
       version-strategy: bump-version-from-variable-value
       job-image-namespace: trueagi
       job-image-version-semver: semantic-versioning
@@ -31,25 +28,29 @@ jobs:
       version-tag-regex-pattern: /^v\d+\.\d+\.\d+$/
       version-require-confirmation: "true"
 
+
   build-vultr-production:
     runs-on: ubuntu-latest
     needs: tag
     environment: production
-    if: ${{ github.ref }} == refs/heads/master
+    if: github.ref == 'refs/heads/master'
     steps:
-      - name: Setup OpenFaaS
-        run: curl -sSL https://cli.openfaas.com | sudo -E sh
-
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Install Openfaas
+        run: curl -sSL https://cli.openfaas.com | sudo -E sh
+
+      - name: Set function name up
+        run: |-
+          FUNCTION_NAME=$(echo ${{ github.event.inputs.function }} | sed 's/^das-//;s/-//g')
+          echo "FUNCTION_NAME=$FUNCTION_NAME" >> $GITHUB_ENV
 
       - name: Pull template
         run: faas-cli template pull https://github.com/singnet/das-openfaas-templates
 
       - name: Run shrinkwrap build
-        run: |-
-          FUNCTION_NAME=$(echo ${{ env.FUNCTION_PATH }} | sed 's/^das-//;s/-//g')
-          faas-cli build --image trueagi/das:${{ env.VERSION }}-${FUNCTION_NAME} --name $FUNCTION_NAME --lang python3-http --handler ${{ env.FUNCTION_FOLDER }}
+        run: faas-cli build --image trueagi/das:${{ github.event.inputs.version }}-${{ env.FUNCTION_NAME }} --name ${{ env.FUNCTION_NAME }} --lang python3-http --handler ./${{ github.event.inputs.function }}
 
       - name: Login to DockerHub
         if: success()
@@ -59,27 +60,31 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push Image to Registry
-        run: docker image push trueagi/das:${{ env.VERSION }}-${{ FUNCTION_NAME }}
+        run: docker image push trueagi/das:${{ github.event.inputs.version }}-${{ env.FUNCTION_NAME }}
+
 
   build-vultr-develop:
     runs-on: ubuntu-latest
     needs: tag
-    if: ${{ github.ref }} == refs/heads/develop
+    if: github.ref == 'refs/heads/develop'
     environment: develop
     steps:
-      - name: Setup OpenFaaS
-        run: curl -sSL https://cli.openfaas.com | sudo -E sh
-
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Install Openfaas
+        run: curl -sSL https://cli.openfaas.com | sudo -E sh
+
+      - name: Set function name up
+        run: |-
+          FUNCTION_NAME=$(echo ${{ github.event.inputs.function }} | sed 's/^das-//;s/-//g')
+          echo "FUNCTION_NAME=$FUNCTION_NAME" >> $GITHUB_ENV
 
       - name: Pull template
         run: faas-cli template pull https://github.com/singnet/das-openfaas-templates
 
       - name: Run shrinkwrap build
-        run: |-
-          FUNCTION_NAME=$(echo ${{ env.FUNCTION_PATH }} | sed 's/^das-//;s/-//g')
-          faas-cli build --image trueagi/das:${{ env.VERSION }}-${FUNCTION_NAME} --name $FUNCTION_NAME --lang python3-http --handler ${{ env.FUNCTION_FOLDER }}
+        run: faas-cli build --image trueagi/das:${{ github.event.inputs.version }}-${{ env.FUNCTION_NAME }} --name ${{ env.FUNCTION_NAME }} --lang python3-http --handler ./${{ github.event.inputs.function }}
 
       - name: Login to DockerHub
         if: success()
@@ -89,4 +94,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push Image to Registry
-        run: docker image push trueagi/das:${{ env.VERSION }}-${{ FUNCTION_NAME }}
+        run: docker image push trueagi/das:${{ github.event.inputs.version }}-${{ env.FUNCTION_NAME }}
