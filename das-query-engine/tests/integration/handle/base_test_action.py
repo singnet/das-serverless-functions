@@ -2,14 +2,7 @@ import os
 import pytest
 import json
 from abc import ABC, abstractmethod
-from unittest.mock import patch
 from handler import handle, UnreachableConnection
-
-from dotenv import load_dotenv
-
-env_path = ".env.testing"
-if os.path.exists(env_path):
-    load_dotenv(dotenv_path=env_path)
 
 
 class BaseTestHandlerAction(ABC):

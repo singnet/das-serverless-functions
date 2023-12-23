@@ -9,7 +9,7 @@ from action_dispatcher import ActionDispatcher
 from exceptions import UnknownActionDispatcher, UnreachableConnection, PayloadMalformed
 from action_mapper import ActionMapper
 
-# load_env()
+load_env()
 
 
 def _response(
