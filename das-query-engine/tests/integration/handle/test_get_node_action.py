@@ -1,5 +1,6 @@
 from actions import ActionType
 from tests.integration.handle.base_test_action import BaseTestHandlerAction
+from hyperon_das_atomdb.utils.expression_hasher import ExpressionHasher
 import pytest
 
 
@@ -19,8 +20,10 @@ class TestGetNodeAction(BaseTestHandlerAction):
 
     @pytest.fixture
     def expected_output(self):
+        monkey_handle = ExpressionHasher.terminal_hash("Concept", "monkey")
+
         return {
-            "handle": "af12f10f9ae2002a1607ba0b47ba8407",
+            "handle": monkey_handle,
             "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
             "name": "human",
             "named_type": "Concept",

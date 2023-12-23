@@ -48,7 +48,7 @@ class TestQueryAction(BaseTestHandlerAction):
             }
         ]
 
-    def test_ping_action(
+    def test_query_action(
         self,
         valid_event,
         expected_output,

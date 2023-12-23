@@ -1,5 +1,6 @@
 from actions import ActionType
 from tests.integration.handle.base_test_action import BaseTestHandlerAction
+from hyperon_das_atomdb.utils.expression_hasher import ExpressionHasher
 import pytest
 
 
@@ -10,15 +11,15 @@ class TestGetLinkAction(BaseTestHandlerAction):
 
     @pytest.fixture
     def valid_event(self, action_type):
+        human_handle = ExpressionHasher.terminal_hash("Concept", "human")
+        monkey_handle = ExpressionHasher.terminal_hash("Concept", "monkey")
+
         return {
             "body": {
                 "action": action_type,
                 "input": {
-                    "link_type": "Inheritance",
-                    "link_targets": [
-                        "4e8e26e3276af8a5c2ac2cc2dc95c6d2",
-                        "80aff30094874e75028033a38ce677bb",
-                    ],
+                    "link_type": "Similarity",
+                    "link_targets": [human_handle, monkey_handle],
                 },
             }
         }
