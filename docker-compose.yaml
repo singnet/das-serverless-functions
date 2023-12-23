@@ -27,7 +27,7 @@ services:
       start_period: 40s
 
   canonical-load:
-    image: trueagi/canonical-load:latest
+    image: levisingnet/canonical-load:latest # TODO: push this image to trueagie
     container_name: das-canonical-load
     command: python3 scripts/load_das.py --knowledge-base ${DAS_KNOWLEDGE_BASE}
     volumes:
