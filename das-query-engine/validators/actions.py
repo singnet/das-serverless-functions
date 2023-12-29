@@ -28,6 +28,12 @@ class GetLinksValidator(PayloadValidator):
     target_types = datatypes.String(required=False)
     link_targets = datatypes.Array(required=False)
 
+class GetIncomingLinksValidator(PayloadValidator):
+    strict = True
+
+    atom_handle = datatypes.String(required=True)
+    handles_only = datatypes.Boolean(required=False)
+
 
 class QueryValidator(PayloadValidator):
     strict = True

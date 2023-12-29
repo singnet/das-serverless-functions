@@ -5,6 +5,7 @@ from validators.actions import (
     GetLinkValidator,
     GetLinksValidator,
     QueryValidator,
+    GetIncomingLinksValidator,
 )
 from actions import ActionType
 from exceptions import UnknownActionDispatcher
@@ -50,6 +51,10 @@ class ActionMapper:
             ActionType.COMMIT_CHANGES: {
                 "action": actions.commit_changes,
                 "validator": None,
+            },
+            ActionType.GET_INCOMING_LINKS: {
+                "action": actions.get_incoming_links,
+                "validator": GetIncomingLinksValidator,
             },
         }
 
