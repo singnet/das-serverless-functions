@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7.2.3-alpine
+    container_name: das-redis
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  mongodb:
+    image: mongo:latest
+    container_name: das-mongodb
+    restart: always
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "echo", 'db.runCommand("ping").ok', "|", "mongo", "das-mongo:27017/test", "--quiet"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  canonical-load:
+    image: levisingnet/canonical-load:latest # TODO: push this image to trueagie
+    container_name: das-canonical-load
+    command: python3 scripts/load_das.py --knowledge-base ${DAS_KNOWLEDGE_BASE}
+    volumes:
+      - /tmp:/tmp
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - mongodb
+
+  openfaas:
+    container_name: openfaas
+    privileged: true
+    build: .
+    volumes:
+      - ./das-query-engine:/usr/local/function/das-query-engine
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
+    depends_on:
+      - canonical-load
+

@@ -15,7 +15,6 @@ on:
           - das-atomdb
           - das-query-engine
 
-
 jobs:
   tag:
     uses: singnet/das-scripts-pipeline/.github/workflows/action.yml@master
@@ -27,7 +26,7 @@ jobs:
       main-branch: master
       version-tag-regex-pattern: /^v\d+\.\d+\.\d+$/
       version-require-confirmation: "true"
-
+    secrets: inherit
 
   build-vultr-production:
     runs-on: ubuntu-latest
@@ -61,7 +60,6 @@ jobs:
 
       - name: Push Image to Registry
         run: docker image push trueagi/das:${{ github.event.inputs.version }}-${{ env.FUNCTION_NAME }}
-
 
   build-vultr-develop:
     runs-on: ubuntu-latest

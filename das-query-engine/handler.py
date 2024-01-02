@@ -7,6 +7,7 @@ from validators import validate
 from validators.event import EventValidator
 from action_dispatcher import ActionDispatcher
 from exceptions import UnknownActionDispatcher, UnreachableConnection, PayloadMalformed
+from action_mapper import ActionMapper
 
 load_env()
 
@@ -60,7 +61,7 @@ def handle(event: any, context=None):
     try:
         payload = validate(EventValidator(), _get_payload(event))
 
-        action_dispatcher = ActionDispatcher()
+        action_dispatcher = ActionDispatcher(action_mapper=ActionMapper())
 
         result, elapsed_time = action_dispatcher.dispatch(
             action_type=payload["action"],
@@ -79,9 +80,7 @@ def handle(event: any, context=None):
         http_code_response = 404
     except (Exception, UnreachableConnection) as e:
         trace = traceback.format_exc()
-        logger().error(
-            f"Exception caught at action {payload['action']}: {str(e)} \n{trace}"
-        )
+        logger().error(f"{str(e)}\n{trace}")
         result = dict(error=str(e))
         http_code_response = 500
 
