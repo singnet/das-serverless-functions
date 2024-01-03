@@ -1,6 +1,7 @@
 import pytest
 from abc import ABC, abstractmethod
 from handler import handle, UnreachableConnection
+import json
 
 
 class BaseTestHandlerAction(ABC):
@@ -27,7 +28,7 @@ class BaseTestHandlerAction(ABC):
     def assert_successful_execution(self, valid_event, expected_output):
         response = handle(valid_event, context={})
         assert response["statusCode"] == 200
-        # assert response["body"] == json.dumps(expected_output)
+        assert response["body"] == json.dumps(expected_output)
 
     def assert_payload_malformed(self, malformed_event):
         response = handle(malformed_event, context={})

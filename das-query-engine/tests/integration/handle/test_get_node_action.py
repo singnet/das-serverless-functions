@@ -20,10 +20,10 @@ class TestGetNodeAction(BaseTestHandlerAction):
 
     @pytest.fixture
     def expected_output(self):
-        monkey_handle = ExpressionHasher.terminal_hash("Concept", "monkey")
+        human_handle = ExpressionHasher.terminal_hash("Concept", "human")
 
         return {
-            "handle": monkey_handle,
+            "handle": human_handle,
             "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
             "name": "human",
             "named_type": "Concept",

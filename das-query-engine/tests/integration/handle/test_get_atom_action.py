@@ -4,22 +4,22 @@ from hyperon_das_atomdb.utils.expression_hasher import ExpressionHasher
 import pytest
 
 
-class TestGetLinkAction(BaseTestHandlerAction):
+class TestGetAtomAction(BaseTestHandlerAction):
+    named_type = "Concept"
+    terminal_name = "human"
+    human_handle = ExpressionHasher.terminal_hash(named_type, terminal_name)
+
     @pytest.fixture
     def action_type(self):
-        return ActionType.GET_LINK
+        return ActionType.GET_ATOM
 
     @pytest.fixture
     def valid_event(self, action_type):
-        human_handle = ExpressionHasher.terminal_hash("Concept", "human")
-        monkey_handle = ExpressionHasher.terminal_hash("Concept", "monkey")
-
         return {
             "body": {
                 "action": action_type,
                 "input": {
-                    "link_type": "Similarity",
-                    "link_targets": [human_handle, monkey_handle],
+                    "handle": self.human_handle,
                 },
             }
         }
@@ -27,23 +27,13 @@ class TestGetLinkAction(BaseTestHandlerAction):
     @pytest.fixture
     def expected_output(self):
         return {
-            "handle": "bad7472f41a0e7d601ca294eb4607c3a",
-            "composite_type_hash": "ed73ea081d170e1d89fc950820ce1cee",
-            "is_toplevel": True,
-            "composite_type": [
-                "a9dea78180588431ec64d6bc4872fdbc",
-                "d99a604c79ce3c2e76a2f43488d5d4c3",
-                "d99a604c79ce3c2e76a2f43488d5d4c3",
-            ],
-            "named_type": "Similarity",
-            "named_type_hash": "a9dea78180588431ec64d6bc4872fdbc",
-            "targets": [
-                "af12f10f9ae2002a1607ba0b47ba8407",
-                "1cdffc6b0b89ff41d68bec237481d1e1",
-            ],
+            "handle": self.human_handle,
+            "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
+            "name": self.terminal_name,
+            "named_type": self.named_type,
         }
 
-    def test_get_link_action(
+    def test_get_atom_action(
         self,
         valid_event,
         expected_output,
