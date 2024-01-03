@@ -14,6 +14,7 @@ class ActionType(str, Enum):
     GET_NODE = "get_node"
     GET_LINK = "get_link"
     GET_LINKS = "get_links"
+    GET_INCOMING_LINKS = "get_incoming_links"
     QUERY = "query"
     COMMIT_CHANGES = "commit_changes"
 
@@ -86,13 +87,25 @@ class Actions:
     def get_links(
         self,
         link_type: str,
-        target_types: str = None,
+        target_types: List[str] = None,
         link_targets: List[str] = None,
     ) -> List[str] | List[Dict]:
         return self.distributed_atom_space.get_links(
             link_type,
             target_types,
             link_targets,
+        )
+
+    @remove_none_args
+    @execution_time_tracker
+    def get_incoming_links(
+        self,
+        atom_handle: str,
+        handles_only: bool = False,
+    ) -> str | List[Dict]:
+        return self.distributed_atom_space.get_incoming_links(
+            atom_handle,
+            handles_only,
         )
 
     @execution_time_tracker
