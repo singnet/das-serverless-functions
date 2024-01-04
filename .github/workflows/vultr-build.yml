@@ -28,9 +28,24 @@ jobs:
       version-require-confirmation: "true"
     secrets: inherit
 
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set dotenv
+        run: cp .env.example .env
+
+      - name: Build services stack
+        run: docker compose up -d
+
+      - name: Run Unit & Integration Tests
+        run: ./scripts/run-tests.sh
+
   build-vultr-production:
     runs-on: ubuntu-latest
-    needs: tag
+    needs: testing
     environment: production
     if: github.ref == 'refs/heads/master'
     steps:
@@ -63,7 +78,7 @@ jobs:
 
   build-vultr-develop:
     runs-on: ubuntu-latest
-    needs: tag
+    needs: testing
     if: github.ref == 'refs/heads/develop'
     environment: develop
     steps:
