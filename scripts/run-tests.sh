@@ -12,7 +12,7 @@ fi
 
 while ! docker exec $OPENFAAS_CONTAINER pgrep -f $QUERY_ENGINE_SERVICE > /dev/null; do
     echo "Waiting for $QUERY_ENGINE_SERVICE in container $OPENFAAS_CONTAINER to start..."
-    sleep 30
+    sleep 10
 done
 
 docker exec -it $OPENFAAS_CONTAINER sh -c "docker exec -it $QUERY_ENGINE_SERVICE sh -c 'python3 -m pytest --verbose tests/$1'"
