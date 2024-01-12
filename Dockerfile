@@ -14,7 +14,7 @@ RUN apk update && apk add curl docker git && \
 WORKDIR $FUNCTION_HOME
 
 RUN faas-cli template pull https://github.com/singnet/das-openfaas-templates && \
-        curl https://raw.githubusercontent.com/singnet/das-infra-stack-vultr/feat/run-local-faas/das-function.yml -o $FUNCTION_HOME/stack.yml
+        curl https://raw.githubusercontent.com/singnet/das-infra-stack-vultr/develop/das-function.yml -o $FUNCTION_HOME/stack.yml
 
 COPY ./scripts/initd.sh ./
 
