@@ -14,7 +14,7 @@ if ! docker ps --format '{{.Names}}' | grep -q "$OPENFAAS_CONTAINER"; then
         docker compose up -d --build --force-recreate openfaas
         echo "Initializing the OpenFaaS container for remote database connection..."
     fi
-
+    unset REMOTE
 fi
 
 while ! docker exec $OPENFAAS_CONTAINER pgrep -f $QUERY_ENGINE_SERVICE >/dev/null; do
