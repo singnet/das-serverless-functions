@@ -7,7 +7,14 @@ OPENFAAS_CONTAINER="openfaas"
 QUERY_ENGINE_SERVICE="query-engine"
 
 if ! docker ps --format '{{.Names}}' | grep -q "$OPENFAAS_CONTAINER"; then
-    docker compose up -d --build
+    if [ -z "$REMOTE" ]; then
+        docker compose up -d --build --force-recreate
+        echo "Initializing the OpenFaaS and required containers for local connection..."
+    else
+        docker compose up -d --build --force-recreate openfaas
+        echo "Initializing the OpenFaaS container for remote database connection..."
+    fi
+
 fi
 
 while ! docker exec $OPENFAAS_CONTAINER pgrep -f $QUERY_ENGINE_SERVICE >/dev/null; do
