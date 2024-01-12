@@ -21,6 +21,6 @@ else
     TEST_COMMAND="python3 -m pytest -sx -vv tests/$1"
 fi
 
-docker exec -it $OPENFAAS_CONTAINER sh -c "docker exec -it $QUERY_ENGINE_SERVICE sh -c '$TEST_COMMAND'"
+docker exec --tty $OPENFAAS_CONTAINER sh -c "docker exec --tty $QUERY_ENGINE_SERVICE sh -c '$TEST_COMMAND'"
 
 docker compose down
