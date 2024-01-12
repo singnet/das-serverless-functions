@@ -25,11 +25,8 @@ jobs:
       - name: Set dotenv
         run: cp .env.example .env
 
-      - name: Build services stack
-        run: docker compose up -d
-
       - name: Run Unit & Integration Tests
-        run: ./scripts/run-tests.sh
+        run: make unit-tests unit-tests-coverage integration-tests
 
   tag:
     needs: testing
