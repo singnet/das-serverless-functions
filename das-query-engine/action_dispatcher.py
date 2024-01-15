@@ -13,7 +13,7 @@ class ActionDispatcher:
         self,
         action_type: ActionType,
         payload: dict = {},
-    ) -> Union[tuple, None]:
+    ) -> Union[any, None]:
         action_map = self.action_mapper.get_action_dispatcher(action_type)
 
         if action_map is None:

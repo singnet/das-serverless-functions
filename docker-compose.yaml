@@ -20,7 +20,16 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: ["CMD", "echo", 'db.runCommand("ping").ok', "|", "mongo", "das-mongo:27017/test", "--quiet"]
+      test:
+        [
+          "CMD",
+          "echo",
+          'db.runCommand("ping").ok',
+          "|",
+          "mongo",
+          "das-mongo:27017/test",
+          "--quiet",
+        ]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -48,6 +57,3 @@ services:
       - 8080:8080
     env_file:
       - .env
-    depends_on:
-      - canonical-load
-
