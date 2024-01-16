@@ -1,8 +1,9 @@
 import re
-import pytest
-from actions import ActionType
-from action_mapper import ActionMapper
 from unittest.mock import Mock
+
+import pytest
+from action_mapper import ActionMapper
+from actions import ActionType
 from exceptions import UnknownActionDispatcher
 
 
@@ -93,10 +94,7 @@ def test_build_dispatcher_commit_changes_action():
 
     dispatchers = action_mapper._build_dispatcher()
 
-    assert (
-        dispatchers[ActionType.COMMIT_CHANGES]["action"]
-        == expected_actions.commit_changes
-    )
+    assert dispatchers[ActionType.COMMIT_CHANGES]["action"] == expected_actions.commit_changes
     assert dispatchers[ActionType.COMMIT_CHANGES]["validator"] is None
 
 

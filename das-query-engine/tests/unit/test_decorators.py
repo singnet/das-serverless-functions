@@ -1,6 +1,7 @@
 # test_execution_helpers.py
 import time
-from utils.decorators import remove_none_args, execution_time_tracker
+
+from utils.decorators import execution_time_tracker, remove_none_args
 
 
 def test_remove_none_args():
@@ -11,9 +12,7 @@ def test_remove_none_args():
     result = example_function(1, 2, kwarg1="value", kwarg2=None)
     assert result == (1, 2, "value", "kwarg2")
 
-    result_all_not_none = example_function(
-        1, "2", kwarg1="value", kwarg2="another_value"
-    )
+    result_all_not_none = example_function(1, "2", kwarg1="value", kwarg2="another_value")
     assert result_all_not_none == (1, "2", "value", "another_value")
 
 

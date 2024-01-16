@@ -1,8 +1,9 @@
 from typing import Union
-from actions import ActionType
-from exceptions import UnknownActionDispatcher, PayloadMalformed
-from validators import validate
+
 from action_mapper import ActionMapper
+from actions import ActionType
+from exceptions import PayloadMalformed, UnknownActionDispatcher
+from validators import validate
 
 
 class ActionDispatcher:
@@ -17,9 +18,7 @@ class ActionDispatcher:
         action_map = self.action_mapper.get_action_dispatcher(action_type)
 
         if action_map is None:
-            raise UnknownActionDispatcher(
-                f"Exception at dispatch: action {action_type} unknown"
-            )
+            raise UnknownActionDispatcher(f"Exception at dispatch: action {action_type} unknown")
 
         action = action_map["action"]
         validator = action_map.get("validator", None)
