@@ -1,10 +1,10 @@
 import os
 from enum import Enum
-from hyperon_das import DistributedAtomSpace
-from hyperon_das.utils import QueryOutputFormat
-from typing import List, Dict, Any, Tuple
-from utils.decorators import remove_none_args, execution_time_tracker
+from typing import Any, Dict, List, Tuple
+
 from exceptions import UnreachableConnection
+from hyperon_das import DistributedAtomSpace
+from utils.decorators import execution_time_tracker, remove_none_args
 
 
 class ActionType(str, Enum):

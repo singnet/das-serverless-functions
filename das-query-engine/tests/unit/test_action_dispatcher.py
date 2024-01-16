@@ -1,10 +1,11 @@
-import pytest
 from unittest.mock import MagicMock
+
+import pytest
 from action_dispatcher import (
     ActionDispatcher,
     ActionType,
-    UnknownActionDispatcher,
     PayloadMalformed,
+    UnknownActionDispatcher,
 )
 from validators.actions import GetAtomValidator
 

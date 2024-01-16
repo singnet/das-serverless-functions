@@ -2,6 +2,14 @@
 
 Serverless Functions represent an innovative approach to implementing and executing code in cloud computing environments. This architecture enables developers to create and execute code fragments in a granular manner, without concerns about the underlying infrastructure.
 
+## Pre-Commit Setup
+
+Before pushing your changes, it's recommended to set up pre-commit to run automated tests locally. Run the following command (needs to be done once):
+
+```bash
+pre-commit install
+```
+
 ## OpenFaaS: Simplifying Serverless Functions Management
 
 OpenFaaS, or Open Functions as a Service, is an open-source platform simplifying the entire life cycle of Serverless Functions. It provides a highly flexible and scalable framework for developing and executing functions in both cloud environments and local infrastructures.

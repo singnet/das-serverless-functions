@@ -1,6 +1,7 @@
 import json
-from incoming import PayloadValidator
+
 from exceptions import PayloadMalformed
+from incoming import PayloadValidator
 
 
 def validate(validator: PayloadValidator, payload: any) -> any:
@@ -14,6 +15,6 @@ def validate(validator: PayloadValidator, payload: any) -> any:
         return payload
     except Exception as e:
         raise PayloadMalformed(
-            message=f"Exception at validate: payload malformed",
+            message="Exception at validate: payload malformed",
             details=str(e),
         )

@@ -1,4 +1,5 @@
 import os
+
 from config import env_schema
 from hyperon_das.logger import logger
 
@@ -15,11 +16,7 @@ def load_env():
             raise Exception(error_message)
 
         var_value_display = (
-            "*****"
-            if constraints["hidden"]
-            else var_value
-            if var_value != ""
-            else "(empty)"
+            "*****" if constraints["hidden"] else var_value if var_value != "" else "(empty)"
         )
         env_log_entries.append(f"{var} - {var_value_display}")
 

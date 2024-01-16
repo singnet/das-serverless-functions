@@ -1,4 +1,4 @@
-from incoming import datatypes, PayloadValidator
+from incoming import PayloadValidator, datatypes
 
 
 class GetAtomValidator(PayloadValidator):
@@ -28,6 +28,7 @@ class GetLinksValidator(PayloadValidator):
     target_types = datatypes.String(required=False)
     link_targets = datatypes.Array(required=False)
 
+
 class GetIncomingLinksValidator(PayloadValidator):
     strict = True
 
@@ -44,8 +45,6 @@ class QueryValidator(PayloadValidator):
     )
 
     parameters = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, dict)
-        if value is not None
-        else True,
+        lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
         required=False,
     )

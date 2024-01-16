@@ -1,7 +1,8 @@
-import pytest
-from abc import ABC, abstractmethod
-from handler import handle, UnreachableConnection
 import json
+from abc import ABC, abstractmethod
+
+import pytest
+from handler import UnreachableConnection, handle
 
 
 class BaseTestHandlerAction(ABC):
