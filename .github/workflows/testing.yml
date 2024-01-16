@@ -1,0 +1,33 @@
+---
+name: Testing
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set dotenv
+        run: cp .env.example .env
+
+      - name: Run Unit Tests
+        run: make unit-tests unit-tests-coverage
+
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set dotenv
+        run: cp .env.example .env
+
+      - name: Run Unit Tests
+        run: make integration-tests

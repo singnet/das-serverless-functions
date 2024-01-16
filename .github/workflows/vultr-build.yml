@@ -16,7 +16,20 @@ on:
           - das-query-engine
 
 jobs:
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set dotenv
+        run: cp .env.example .env
+
+      - name: Run Unit & Integration Tests
+        run: make unit-tests unit-tests-coverage integration-tests
+
   tag:
+    needs: testing
     uses: singnet/das-scripts-pipeline/.github/workflows/action.yml@master
     with:
       version: ${{ github.event.inputs.version }}
