@@ -101,12 +101,13 @@ class Actions:
     def get_incoming_links(
         self,
         atom_handle: str,
-        handles_only: bool = False,
-    ) -> str | List[Dict]:
+        kwargs,
+    ) -> List[Tuple[dict, List[dict]] | dict]:
         return self.distributed_atom_space.get_incoming_links(
             atom_handle,
-            handles_only,
+            **kwargs,
         )
+        
 
     @execution_time_tracker
     @remove_none_args
