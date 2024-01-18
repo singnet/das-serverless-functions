@@ -33,7 +33,12 @@ class GetIncomingLinksValidator(PayloadValidator):
     strict = True
 
     atom_handle = datatypes.String(required=True)
-    handles_only = datatypes.Boolean(required=False)
+    kwargs = datatypes.Function(
+        lambda value, *args, **kwargs: isinstance(value, dict)
+        if value is not None
+        else True,
+        required=False,
+    )
 
 
 class QueryValidator(PayloadValidator):
