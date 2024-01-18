@@ -1,10 +1,10 @@
 import os
 from enum import Enum
-from hyperon_das import DistributedAtomSpace
-from hyperon_das.utils import QueryOutputFormat
-from typing import List, Dict, Any, Tuple
-from utils.decorators import remove_none_args, execution_time_tracker
+from typing import Any, Dict, List, Tuple
+
 from exceptions import UnreachableConnection
+from hyperon_das import DistributedAtomSpace
+from utils.decorators import execution_time_tracker, remove_none_args
 
 
 class ActionType(str, Enum):
@@ -101,12 +101,13 @@ class Actions:
     def get_incoming_links(
         self,
         atom_handle: str,
-        handles_only: bool = False,
-    ) -> str | List[Dict]:
+        kwargs,
+    ) -> List[Tuple[dict, List[dict]] | dict]:
         return self.distributed_atom_space.get_incoming_links(
             atom_handle,
-            handles_only,
+            **kwargs,
         )
+        
 
     @execution_time_tracker
     @remove_none_args

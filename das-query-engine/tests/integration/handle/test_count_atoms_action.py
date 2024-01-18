@@ -1,6 +1,6 @@
+import pytest
 from actions import ActionType
 from tests.integration.handle.base_test_action import BaseTestHandlerAction
-import pytest
 
 
 class TestCountAtomsAction(BaseTestHandlerAction):

@@ -1,4 +1,4 @@
-from incoming import datatypes, PayloadValidator
+from incoming import PayloadValidator, datatypes
 from validators.custom_validator_types import validate_dict
 
 

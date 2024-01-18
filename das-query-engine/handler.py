@@ -1,13 +1,14 @@
-import json
 import base64
+import json
 import traceback
+
+from action_dispatcher import ActionDispatcher
+from action_mapper import ActionMapper
+from exceptions import PayloadMalformed, UnknownActionDispatcher, UnreachableConnection
 from hyperon_das.logger import logger
 from utils.dotenv import load_env
 from validators import validate
 from validators.event import EventValidator
-from action_dispatcher import ActionDispatcher
-from exceptions import UnknownActionDispatcher, UnreachableConnection, PayloadMalformed
-from action_mapper import ActionMapper
 
 load_env()
 
@@ -15,25 +16,16 @@ load_env()
 def _response(
     http_code_response: int,
     result: str,
-    context: any = None,
     headers: dict = {},
 ):
     logger().info(f"Function status code response - {http_code_response}")
-
-    if context is None:
-        try:
-            return json.loads(result)
-        except:
-            return result
 
     return {
         "statusCode": http_code_response,
         "body": json.dumps(result),
         "headers": {
             "Content-Type": "application/json",
-            "X-Handler-Method-Timestamp": headers.get(
-                "X-Handler-Method-Timestamp", None
-            ),
+            "X-Handler-Method-Timestamp": headers.get("X-Handler-Method-Timestamp", None),
         },
     }
 
@@ -87,7 +79,6 @@ def handle(event: any, context=None):
     return _response(
         http_code_response,
         result,
-        context=context,
         headers={
             "X-Handler-Method-Timestamp": elapsed_time,
         },

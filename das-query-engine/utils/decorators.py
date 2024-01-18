@@ -1,5 +1,6 @@
 import time
 from functools import wraps
+
 from hyperon_das.logger import logger
 
 
@@ -20,9 +21,7 @@ def execution_time_tracker(func):
         result = func(*args, **kwargs)
         end_time = time.time()
         elapsed_time = end_time - start_time
-        logger().info(
-            f"The function '{func.__name__}' took {elapsed_time} seconds to execute"
-        )
+        logger().info(f"The function '{func.__name__}' took {elapsed_time} seconds to execute")
         return result, elapsed_time
 
     return wrapper

@@ -1,15 +1,15 @@
-from actions import Actions
+from typing import Any, Dict
+
+from actions import Actions, ActionType
+from exceptions import UnknownActionDispatcher
 from validators.actions import (
     GetAtomValidator,
-    GetNodeValidator,
-    GetLinkValidator,
-    GetLinksValidator,
-    QueryValidator,
     GetIncomingLinksValidator,
+    GetLinksValidator,
+    GetLinkValidator,
+    GetNodeValidator,
+    QueryValidator,
 )
-from actions import ActionType
-from exceptions import UnknownActionDispatcher
-from typing import Any, Dict
 
 
 class ActionMapper:
@@ -62,7 +62,5 @@ class ActionMapper:
         action_map = self._build_dispatcher().get(action_type)
 
         if action_map is None:
-            raise UnknownActionDispatcher(
-                f"Exception at dispatch: action {action_type} unknown"
-            )
+            raise UnknownActionDispatcher(f"Exception at dispatch: action {action_type} unknown")
         return action_map
