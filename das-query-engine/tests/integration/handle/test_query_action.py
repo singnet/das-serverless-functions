@@ -32,7 +32,6 @@ class TestQueryAction(BaseTestHandlerAction):
             {
                 "handle": "bad7472f41a0e7d601ca294eb4607c3a",
                 "type": "Similarity",
-                "template": ["Similarity", "Concept", "Concept"],
                 "targets": [
                     {
                         "handle": "af12f10f9ae2002a1607ba0b47ba8407",

@@ -29,7 +29,6 @@ class TestGetLinksAction(BaseTestHandlerAction):
             {
                 "handle": "ee1c03e6d1f104ccd811cfbba018451a",
                 "type": "Inheritance",
-                "template": ["Inheritance", "Concept", "Concept"],
                 "targets": [
                     "4e8e26e3276af8a5c2ac2cc2dc95c6d2",
                     "80aff30094874e75028033a38ce677bb",
