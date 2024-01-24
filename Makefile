@@ -19,3 +19,12 @@ integration-tests:
 	./scripts/run-tests.sh integration
 
 pre-commit: unit-tests-coverage lint
+
+run:
+	@docker compose up --build --force-recreate -d
+
+stop:
+	@docker compose down
+
+local-run:
+	@docker compose -f docker-compose.yaml -f docker-compose-local.yaml up --build --force-recreate -d

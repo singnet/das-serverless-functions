@@ -1,0 +1,6 @@
+version: "3.9"
+
+services:
+  openfaas:
+    volumes:
+      - /home/rafaellevi/.pyenv/versions/3.10.12/lib/python3.10/site-packages:/opt/repos

@@ -13,5 +13,12 @@ else
 	done
 fi
 
-faas-cli local-run --network host --watch
+faas-cli build
+
+docker run --name query-engine \
+	--network host \
+	--env-file .env \
+	-v /opt/repos:/opt/repos \
+	trueagi/das:v1.5.0-queryengine
+
 #tail -f /dev/null
