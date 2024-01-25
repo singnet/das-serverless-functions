@@ -25,7 +25,7 @@ class GetLinksValidator(PayloadValidator):
     strict = True
 
     link_type = datatypes.String(required=True)
-    target_types = datatypes.String(required=False)
+    target_types = datatypes.Array(required=False)
     link_targets = datatypes.Array(required=False)
 
 
