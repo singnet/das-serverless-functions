@@ -34,9 +34,7 @@ class GetIncomingLinksValidator(PayloadValidator):
 
     atom_handle = datatypes.String(required=True)
     kwargs = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, dict)
-        if value is not None
-        else True,
+        lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
         required=False,
     )
 
