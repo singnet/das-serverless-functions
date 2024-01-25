@@ -20,8 +20,6 @@ COPY ./scripts/initd.sh ./
 
 COPY ./das-query-engine/ ./das-query-engine/
 
-COPY .env ./
-
 RUN chmod +x ./initd.sh && touch .gitignore
 
 SHELL ["sh"]
