@@ -17,6 +17,7 @@ OpenFaaS, or Open Functions as a Service, is an open-source platform simplifying
 ## Running an OpenFaaS Function Locally
 
 ### Requirements
+
 - Docker
 - Docker Compose
 
@@ -33,11 +34,10 @@ The project architecture consists of:
 - **das-query-engine**: Operates on the same network as the 'openfaas' container.
 - **Port 8080**: Exposed for connection to the host machine.
 
-
 ### Step-by-Step Guide
 
 1. **Cloning the Project**
-   
+
    Clone the project repository to your local environment.
 
    ```bash
@@ -58,7 +58,7 @@ The project architecture consists of:
    Execute the following command at the root of the project to start the required services:
 
    ```bash
-   docker compose up -d
+   make serve
    ```
 
    This will start containers for Redis, MongoDB, and a temporary container named 'canonical-load'. The latter is used to load initial data into the Redis and MongoDB databases. After its execution, a container named 'openfaas' will start, which includes the faas-cli.
@@ -72,7 +72,7 @@ The project architecture consists of:
    To shut down the containers and clean up the environment, execute the following command:
 
    ```bash
-   docker compose down
+   make stop
    ```
 
 ### Testing
@@ -80,12 +80,36 @@ The project architecture consists of:
 To run automated tests for the project, use the following script:
 
 ```bash
-./scripts/run-tests.sh
+make integration-tests
+```
+
+```bash
+make unit-tests
 ```
 
 This script will set up the necessary environment for testing.
 
+### Use the hyperon-das and hyperon-das-atomdb from the host machine
 
+This feature has been implemented to allow developers to test the integration of AtomDB and Query Engine packages locally, even before publishing them on PyPI. This facilitates efficient testing during the development phase.
+
+1. Open the `.env` file at the root of your project.
+
+2. Add the following environment variables, adjusting the paths as necessary:
+
+   ```dotenv
+   ATOMDB_PACKAGE_PATH=/path/to/your/atomdb/package
+   QUERY_ENGINE_PACKAGE_PATH=/path/to/your/query/engine/package
+   ```
+
+   Make sure to replace `/path/to/your/atomdb/package` and `/path/to/your/query/engine/package` with the actual paths of the AtomDB and Query Engine packages on your system.
+
+3. If you prefer to use the latest versions of the AtomDB and Query Engine packages published on PyPI, leave the variables empty:
+
+   ```dotenv
+   ATOMDB_PACKAGE_PATH=
+   QUERY_ENGINE_PACKAGE_PATH=
+   ```
 
 ## Obtaining Function Logs in faasd Using the `ctr` Command
 

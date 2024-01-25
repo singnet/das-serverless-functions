@@ -1,0 +1,7 @@
+env/
+.vscode
+docs
+build
+.github
+__pycache__
+.pytest_cache
