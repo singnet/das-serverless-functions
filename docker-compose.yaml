@@ -41,6 +41,8 @@ services:
     command: python3 scripts/load_das.py --knowledge-base ${DAS_KNOWLEDGE_BASE}
     volumes:
       - /tmp:/tmp
+    environment:
+      - PYTHONPATH=/app
     env_file:
       - .env
     depends_on:
@@ -52,7 +54,17 @@ services:
     privileged: true
     build: .
     volumes:
-      - ./das-query-engine:/usr/local/function/das-query-engine
+      - type: bind
+        source: ./das-query-engine
+        target: /usr/local/function/das-query-engine
+
+      - type: bind
+        source: ${ATOMDB_PACKAGE_PATH:-/tmp}
+        target: /opt/repos/hyperon_das_atomdb
+
+      - type: bind
+        source: ${QUERY_ENGINE_PACKAGE_PATH:-/tmp}
+        target: /opt/repos/hyperon_das
     ports:
       - 8080:8080
     env_file:

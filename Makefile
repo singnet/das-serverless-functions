@@ -20,11 +20,8 @@ integration-tests:
 
 pre-commit: unit-tests-coverage lint
 
-run:
+serve:
 	@docker compose up --build --force-recreate -d
 
 stop:
 	@docker compose down
-
-local-run:
-	@docker compose -f docker-compose.yaml -f docker-compose-local.yaml up --build --force-recreate -d

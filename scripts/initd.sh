@@ -15,10 +15,13 @@ fi
 
 faas-cli build
 
-docker run --name query-engine \
+FUNCTION_NAME=$(grep -A6 "^functions:" "./stack.yml" | grep -E "^ +query-engine:" -A8 | awk '/^ +image:/ {print $2}')
+
+docker run --rm --name query-engine \
 	--network host \
 	--env-file .env \
 	-v /opt/repos:/opt/repos \
-	trueagi/das:v1.5.0-queryengine
+	-e PYTHONPATH=/opt/repos \
+	$FUNCTION_NAME
 
 #tail -f /dev/null
