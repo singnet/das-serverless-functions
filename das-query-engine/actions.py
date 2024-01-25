@@ -107,7 +107,6 @@ class Actions:
             atom_handle,
             **kwargs,
         )
-        
 
     @execution_time_tracker
     @remove_none_args

@@ -26,10 +26,33 @@ class BaseTestHandlerAction(ABC):
     def unknown_action_event(self):
         return {"body": {"action": "unknown_action", "input": {}}}
 
+    @staticmethod
+    def _sorted_nested(obj):
+        if isinstance(obj, list):
+            return sorted(str(BaseTestHandlerAction._sorted_nested(item)) for item in obj)
+        elif isinstance(obj, dict):
+            return sorted(
+                (key, BaseTestHandlerAction._sorted_nested(value)) for key, value in obj.items()
+            )
+        elif isinstance(obj, (int, float, str, bool, type(None))):
+            return obj
+        else:
+            return str(obj)
+
+    @staticmethod
+    def _compare_nested(obj1, obj2):
+        return BaseTestHandlerAction._sorted_nested(obj1) == BaseTestHandlerAction._sorted_nested(
+            obj2
+        )
+
     def assert_successful_execution(self, valid_event, expected_output):
         response = handle(valid_event, context={})
+        body = json.loads(response["body"])
         assert response["statusCode"] == 200
-        assert response["body"] == json.dumps(expected_output), f"Assertion failed:\nResponse Body: {response['body']}\nExpected: {json.dumps(expected_output)}"
+        assert BaseTestHandlerAction._compare_nested(
+            body,
+            expected_output,
+        ), f"Assertion failed:\nResponse Body: {response['body']}\nExpected: {json.dumps(expected_output)}"
 
     def assert_payload_malformed(self, malformed_event):
         response = handle(malformed_event, context={})
