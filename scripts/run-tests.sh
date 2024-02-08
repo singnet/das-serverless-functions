@@ -6,6 +6,8 @@ OPENFAAS_CONTAINER="openfaas"
 
 QUERY_ENGINE_SERVICE="query-engine"
 
+docker compose down
+
 if ! docker ps --format '{{.Names}}' | grep -q "$OPENFAAS_CONTAINER"; then
     if [ -z "$REMOTE" ]; then
         docker compose up -d --build --force-recreate
