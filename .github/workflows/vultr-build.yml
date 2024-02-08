@@ -8,11 +8,6 @@ on:
         description: "Version"
         required: true
 
-      changelog:
-        description: "Version changelog"
-        required: true
-        type: string
-
       function:
         type: choice
         description: "Select a function to build:"
@@ -44,7 +39,6 @@ jobs:
       main-branch: master
       version-tag-regex-pattern: /^v\d+\.\d+\.\d+$/
       version-require-confirmation: "true"
-      changelog: ${{ inputs.changelog }}
     secrets: inherit
 
   build-vultr-production:
