@@ -41,6 +41,7 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "af12f10f9ae2002a1607ba0b47ba8407",
                         "4e8e26e3276af8a5c2ac2cc2dc95c6d2",
                     ],
+                    "type": "Similarity",
                 },
                 [
                     {
@@ -48,12 +49,14 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "human",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                     {
                         "handle": "4e8e26e3276af8a5c2ac2cc2dc95c6d2",
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "ent",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                 ],
             ],
@@ -73,6 +76,7 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "4e8e26e3276af8a5c2ac2cc2dc95c6d2",
                         "af12f10f9ae2002a1607ba0b47ba8407",
                     ],
+                    "type": "Similarity",
                 },
                 [
                     {
@@ -80,12 +84,14 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "ent",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                     {
                         "handle": "af12f10f9ae2002a1607ba0b47ba8407",
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "human",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                 ],
             ],
@@ -105,6 +111,7 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "5b34c54bee150c04f9fa584b899dc030",
                         "af12f10f9ae2002a1607ba0b47ba8407",
                     ],
+                    "type": "Similarity",
                 },
                 [
                     {
@@ -112,12 +119,14 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "chimp",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                     {
                         "handle": "af12f10f9ae2002a1607ba0b47ba8407",
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "human",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                 ],
             ],
@@ -137,6 +146,7 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "af12f10f9ae2002a1607ba0b47ba8407",
                         "5b34c54bee150c04f9fa584b899dc030",
                     ],
+                    "type": "Similarity",
                 },
                 [
                     {
@@ -144,12 +154,14 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "human",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                     {
                         "handle": "5b34c54bee150c04f9fa584b899dc030",
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "chimp",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                 ],
             ],
@@ -169,6 +181,7 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "af12f10f9ae2002a1607ba0b47ba8407",
                         "bdfe4e7a431f73386f37c6448afe5840",
                     ],
+                    "type": "Inheritance",
                 },
                 [
                     {
@@ -176,12 +189,14 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "human",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                     {
                         "handle": "bdfe4e7a431f73386f37c6448afe5840",
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "mammal",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                 ],
             ],
@@ -201,6 +216,7 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "1cdffc6b0b89ff41d68bec237481d1e1",
                         "af12f10f9ae2002a1607ba0b47ba8407",
                     ],
+                    "type": "Similarity",
                 },
                 [
                     {
@@ -208,12 +224,14 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "monkey",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                     {
                         "handle": "af12f10f9ae2002a1607ba0b47ba8407",
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "human",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                 ],
             ],
@@ -233,6 +251,7 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "af12f10f9ae2002a1607ba0b47ba8407",
                         "1cdffc6b0b89ff41d68bec237481d1e1",
                     ],
+                    "type": "Similarity",
                 },
                 [
                     {
@@ -240,12 +259,14 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "human",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                     {
                         "handle": "1cdffc6b0b89ff41d68bec237481d1e1",
                         "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
                         "name": "monkey",
                         "named_type": "Concept",
+                        "type": "Concept",
                     },
                 ],
             ],

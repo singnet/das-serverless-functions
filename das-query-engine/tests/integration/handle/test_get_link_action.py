@@ -41,6 +41,7 @@ class TestGetLinkAction(BaseTestHandlerAction):
                 "af12f10f9ae2002a1607ba0b47ba8407",
                 "1cdffc6b0b89ff41d68bec237481d1e1",
             ],
+            "type": "Similarity",
         }
 
     def test_get_link_action(
