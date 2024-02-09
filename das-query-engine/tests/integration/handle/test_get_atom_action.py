@@ -31,6 +31,7 @@ class TestGetAtomAction(BaseTestHandlerAction):
             "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
             "name": self.terminal_name,
             "named_type": self.named_type,
+            "type": self.named_type,
         }
 
     def test_get_atom_action(
