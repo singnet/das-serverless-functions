@@ -21,7 +21,8 @@ class TestQueryAction(BaseTestHandlerAction):
                             {"atom_type": "node", "type": "Concept", "name": "human"},
                             {"atom_type": "node", "type": "Concept", "name": "monkey"},
                         ],
-                    }
+                    },
+                    "parameters": {"no_iterator": True},
                 },
             }
         }
@@ -29,22 +30,25 @@ class TestQueryAction(BaseTestHandlerAction):
     @pytest.fixture
     def expected_output(self):
         return [
-            {
-                "handle": "bad7472f41a0e7d601ca294eb4607c3a",
-                "type": "Similarity",
-                "targets": [
-                    {
-                        "handle": "af12f10f9ae2002a1607ba0b47ba8407",
-                        "type": "Concept",
-                        "name": "human",
-                    },
-                    {
-                        "handle": "1cdffc6b0b89ff41d68bec237481d1e1",
-                        "type": "Concept",
-                        "name": "monkey",
-                    },
-                ],
-            }
+            [
+                None,
+                {
+                    "handle": "bad7472f41a0e7d601ca294eb4607c3a",
+                    "type": "Similarity",
+                    "targets": [
+                        {
+                            "handle": "af12f10f9ae2002a1607ba0b47ba8407",
+                            "type": "Concept",
+                            "name": "human",
+                        },
+                        {
+                            "handle": "1cdffc6b0b89ff41d68bec237481d1e1",
+                            "type": "Concept",
+                            "name": "monkey",
+                        },
+                    ],
+                },
+            ]
         ]
 
     def test_query_action(

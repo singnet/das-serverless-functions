@@ -113,7 +113,7 @@ class Actions:
     def query(
         self,
         query: Dict[str, Any],
-        parameters: Dict[str, Any] | None = None,
+        parameters: Dict[str, Any] = {"no_iterator": True},
     ) -> List[Dict[str, Any]]:
         return self.distributed_atom_space.query(query, parameters)
 
