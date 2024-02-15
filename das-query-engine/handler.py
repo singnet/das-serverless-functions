@@ -22,7 +22,7 @@ def _response(
 
     return {
         "statusCode": http_code_response,
-        "body": json.dumps(result),
+        "body": result,
         "headers": {
             "Content-Type": "application/json",
             "X-Handler-Method-Timestamp": headers.get("X-Handler-Method-Timestamp", None),
