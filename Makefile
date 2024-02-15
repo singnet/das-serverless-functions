@@ -18,6 +18,9 @@ unit-tests-coverage:
 integration-tests:
 	./scripts/run-tests.sh integration
 
+build: 
+	docker compose build --no-cache
+
 pre-commit: unit-tests-coverage lint
 
 serve:
