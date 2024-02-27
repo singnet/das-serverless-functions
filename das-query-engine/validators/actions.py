@@ -27,7 +27,10 @@ class GetLinksValidator(PayloadValidator):
     link_type = datatypes.String(required=True)
     target_types = datatypes.Array(required=False)
     link_targets = datatypes.Array(required=False)
-
+    kwargs = datatypes.Function(
+        lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
+        required=False,
+    )
 
 class GetIncomingLinksValidator(PayloadValidator):
     strict = True
