@@ -9,6 +9,7 @@ from utils.decorators import execution_time_tracker, remove_none_args
 
 class ActionType(str, Enum):
     PING = "ping"
+    HANDSHAKE = "handshake"
     COUNT_ATOMS = "count_atoms"
     GET_ATOM = "get_atom"
     GET_NODE = "get_node"
@@ -45,6 +46,10 @@ class Actions:
     @execution_time_tracker
     def ping(self) -> dict:
         return dict(message="pong")
+
+    @execution_time_tracker
+    def handshake(self) -> dict:
+        return 
 
     @execution_time_tracker
     def count_atoms(self) -> Tuple[int, int]:
