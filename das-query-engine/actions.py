@@ -5,7 +5,11 @@ from typing import Any, Dict, List, Tuple
 from exceptions import UnreachableConnection, Conflict
 from hyperon_das import DistributedAtomSpace
 from utils.decorators import execution_time_tracker, remove_none_args
+from hyperon_das.logger import logger
 
+class HttpStatusCode(int, Enum):
+    OK = 200
+    CONFLICT = 409
 
 class ActionType(str, Enum):
     PING = "ping"
@@ -45,28 +49,31 @@ class Actions:
 
     @execution_time_tracker
     def ping(self) -> dict:
-        return dict(message="pong")
+        return dict(message="pong"), HttpStatusCode.OK
 
 
     @execution_time_tracker
     def handshake(self, das_version: str, atomdb_version: str) -> dict:
         remote_info = self.distributed_atom_space.about()
+        http_status_code = HttpStatusCode.OK
 
         remote_das_version = remote_info["das"]["version"]
         remote_atomdb_version = remote_info["atom_db"]["version"]
 
         if remote_das_version != das_version:
-            raise Conflict(f"The version sent by the on-premises Hyperon-DAS is {das_version}, but the expected version on the remote server is {remote_das_version}.")
+            logger().error(f"The version sent by the on-premises Hyperon-DAS is {das_version}, but the expected version on the remote server is {remote_das_version}.")
+            http_status_code = HttpStatusCode.CONFLICT
 
         if remote_atomdb_version != atomdb_version:
-            raise Conflict(f"The version sent by the on-premises Hyperon-DAS-AtomDB is {atomdb_version}, but the expected version on the remote server is {remote_atomdb_version}.")
+            logger().error(f"The version sent by the on-premises Hyperon-DAS-AtomDB is {atomdb_version}, but the expected version on the remote server is {remote_atomdb_version}.")
+            http_status_code = HttpStatusCode.CONFLICT
 
-        return remote_info
+        return remote_info, http_status_code
 
 
     @execution_time_tracker
     def count_atoms(self) -> Tuple[int, int]:
-        return self.distributed_atom_space.count_atoms()
+        return self.distributed_atom_space.count_atoms(), HttpStatusCode.OK
 
     @remove_none_args
     @execution_time_tracker
@@ -74,7 +81,7 @@ class Actions:
         self,
         handle: str,
     ) -> str | dict:
-        return self.distributed_atom_space.get_atom(handle)
+        return self.distributed_atom_space.get_atom(handle), HttpStatusCode.OK
 
     @remove_none_args
     @execution_time_tracker
@@ -86,7 +93,7 @@ class Actions:
         return self.distributed_atom_space.get_node(
             node_type,
             node_name,
-        )
+        ), HttpStatusCode.OK
 
     @remove_none_args
     @execution_time_tracker
@@ -98,7 +105,7 @@ class Actions:
         return self.distributed_atom_space.get_link(
             link_type,
             link_targets,
-        )
+        ), HttpStatusCode.OK
 
     @remove_none_args
     @execution_time_tracker
@@ -114,7 +121,7 @@ class Actions:
             target_types,
             link_targets,
             **kwargs,
-        )
+        ), HttpStatusCode.OK
 
     @remove_none_args
     @execution_time_tracker
@@ -126,7 +133,7 @@ class Actions:
         return self.distributed_atom_space.get_incoming_links(
             atom_handle,
             **kwargs,
-        )
+        ), HttpStatusCode.OK
 
     @execution_time_tracker
     @remove_none_args
@@ -135,9 +142,9 @@ class Actions:
         query: List[Dict[str, Any]] | Dict[str, Any],
         parameters: Dict[str, Any] = {"no_iterator": True},
     ) -> List[Dict[str, Any]]:
-        return self.distributed_atom_space.query(query, parameters)
+        return self.distributed_atom_space.query(query, parameters), HttpStatusCode.OK
 
     @execution_time_tracker
     @remove_none_args
     def commit_changes(self) -> None:
-        return self.distributed_atom_space.commit_changes()
+        return self.distributed_atom_space.commit_changes(), HttpStatusCode.OK

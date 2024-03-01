@@ -18,10 +18,10 @@ def execution_time_tracker(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         start_time = time.time()
-        result = func(*args, **kwargs)
+        result, status_code = func(*args, **kwargs)
         end_time = time.time()
         elapsed_time = end_time - start_time
         logger().info(f"The function '{func.__name__}' took {elapsed_time} seconds to execute")
-        return result, elapsed_time
+        return result, status_code, elapsed_time
 
     return wrapper

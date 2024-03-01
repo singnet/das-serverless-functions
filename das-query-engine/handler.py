@@ -45,9 +45,10 @@ def _get_payload(event: any):
     return body  # vultr
 
 
+# TODO: refactor status code comes from actions now and the handler only returns it to the client
 def handle(event: any, context=None):
     result = None
-    http_code_response = 200
+    http_code_response = None
     elapsed_time = None
 
     try:
@@ -55,7 +56,7 @@ def handle(event: any, context=None):
 
         action_dispatcher = ActionDispatcher(action_mapper=ActionMapper())
 
-        result, elapsed_time = action_dispatcher.dispatch(
+        result, http_code_response, elapsed_time = action_dispatcher.dispatch(
             action_type=payload["action"],
             payload=payload["input"],
         )
