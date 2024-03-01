@@ -4,7 +4,9 @@ from incoming import PayloadValidator, datatypes
 class HandshakeValidator(PayloadValidator):
     strict = True
 
-    version = datatypes.String(required=True) # TODO: add the payload here 
+    das_version = datatypes.String(required=True)
+    atomdb_version = datatypes.String(required=True)
+
 
 class GetAtomValidator(PayloadValidator):
     strict = True
