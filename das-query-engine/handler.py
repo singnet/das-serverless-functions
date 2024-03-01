@@ -4,7 +4,7 @@ import traceback
 
 from action_dispatcher import ActionDispatcher
 from action_mapper import ActionMapper
-from exceptions import PayloadMalformed, UnknownActionDispatcher, UnreachableConnection
+from exceptions import PayloadMalformed, UnknownActionDispatcher, UnreachableConnection, Conflict
 from hyperon_das.logger import logger
 from utils.dotenv import load_env
 from validators import validate
@@ -70,6 +70,11 @@ def handle(event: any, context=None):
         logger().error(f"{str(e)}\n{trace}")
         result = dict(error=str(e))
         http_code_response = 404
+    except Conflict as e:
+        trace = traceback.format_exc()
+        logger().error(f"{str(e)}\n{trace}")
+        result = dict(error=str(e))
+        http_code_response = 409
     except (Exception, UnreachableConnection) as e:
         trace = traceback.format_exc()
         logger().error(f"{str(e)}\n{trace}")

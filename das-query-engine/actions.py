@@ -2,7 +2,7 @@ import os
 from enum import Enum
 from typing import Any, Dict, List, Tuple
 
-from exceptions import UnreachableConnection
+from exceptions import UnreachableConnection, Conflict
 from hyperon_das import DistributedAtomSpace
 from utils.decorators import execution_time_tracker, remove_none_args
 
@@ -47,9 +47,22 @@ class Actions:
     def ping(self) -> dict:
         return dict(message="pong")
 
+
     @execution_time_tracker
-    def handshake(self) -> dict:
-        return 
+    def handshake(self, das_version: str, atomdb_version: str) -> dict:
+        remote_info = self.distributed_atom_space.about()
+
+        remote_das_version = remote_info["das"]["version"]
+        remote_atomdb_version = remote_info["atom_db"]["version"]
+
+        if remote_das_version != das_version:
+            raise Conflict()
+
+        if remote_atomdb_version != atomdb_version:
+            raise Conflict()
+
+        return dict(ok=True)
+
 
     @execution_time_tracker
     def count_atoms(self) -> Tuple[int, int]:

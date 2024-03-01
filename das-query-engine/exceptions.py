@@ -6,6 +6,9 @@ class BaseException(Exception):
         super().__init__(self.message, self.details)
 
 
+class Conflict(BaseException):
+    ...
+
 class UnknownActionDispatcher(BaseException):
     ...
 
