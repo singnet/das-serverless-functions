@@ -56,12 +56,12 @@ class Actions:
         remote_atomdb_version = remote_info["atom_db"]["version"]
 
         if remote_das_version != das_version:
-            raise Conflict()
+            raise Conflict(f"The version sent by the on-premises Hyperon-DAS is {das_version}, but the expected version on the remote server is {remote_das_version}.")
 
         if remote_atomdb_version != atomdb_version:
-            raise Conflict()
+            raise Conflict(f"The version sent by the on-premises Hyperon-DAS-AtomDB is {atomdb_version}, but the expected version on the remote server is {remote_atomdb_version}.")
 
-        return dict(ok=True)
+        return remote_info
 
 
     @execution_time_tracker

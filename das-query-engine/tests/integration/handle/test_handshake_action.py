@@ -28,7 +28,7 @@ class TestHandshakeAction(BaseTestHandlerAction):
 
     @pytest.fixture
     def expected_output(self):
-        return {"ok": True}
+        return DistributedAtomSpace.about()
 
     def test_handshake_action(
         self,
