@@ -20,8 +20,9 @@ def test_execution_time_tracker():
     @execution_time_tracker
     def example_function():
         time.sleep(1)
-        return "result"
+        return "result", 200
 
-    result, elapsed_time = example_function()
+    result, status_code, elapsed_time = example_function()
     assert result == "result"
+    assert status_code == 200
     assert elapsed_time >= 1 and elapsed_time < 2
