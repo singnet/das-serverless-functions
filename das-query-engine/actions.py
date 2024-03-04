@@ -2,10 +2,11 @@ import os
 from enum import Enum
 from typing import Any, Dict, List, Tuple
 
-from exceptions import UnreachableConnection, Conflict
+from exceptions import UnreachableConnection
 from hyperon_das import DistributedAtomSpace
 from utils.decorators import execution_time_tracker, remove_none_args
 from hyperon_das.logger import logger
+from utils.version import compare_minor_versions
 
 class HttpStatusCode(int, Enum):
     OK = 200
@@ -60,11 +61,13 @@ class Actions:
         remote_das_version = remote_info["das"]["version"]
         remote_atomdb_version = remote_info["atom_db"]["version"]
 
-        if remote_das_version != das_version:
+        comparison_das_version_result = compare_minor_versions(remote_das_version, das_version)
+        if comparison_das_version_result is None or comparison_das_version_result != 0:
             logger().error(f"The version sent by the on-premises Hyperon-DAS is {das_version}, but the expected version on the remote server is {remote_das_version}.")
             http_status_code = HttpStatusCode.CONFLICT
 
-        if remote_atomdb_version != atomdb_version:
+        comparison_atomdb_version_result = compare_minor_versions(remote_atomdb_version, atomdb_version)
+        if comparison_atomdb_version_result is None or comparison_atomdb_version_result != 0:
             logger().error(f"The version sent by the on-premises Hyperon-DAS-AtomDB is {atomdb_version}, but the expected version on the remote server is {remote_atomdb_version}.")
             http_status_code = HttpStatusCode.CONFLICT
 
