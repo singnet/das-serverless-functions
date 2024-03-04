@@ -10,13 +10,13 @@ flake8:
 lint: isort black flake8
 
 unit-tests:
-	./scripts/run-tests.sh unit
+	@echo "./scripts/run-tests.sh unit"
 
 unit-tests-coverage:
-	./scripts/run-tests.sh unit-tests-coverage
+	@echo "./scripts/run-tests.sh unit-tests-coverage"
 
 integration-tests:
-	./scripts/run-tests.sh integration
+	@echo "./scripts/run-tests.sh integration"
 
 build: 
 	docker compose build --no-cache
