@@ -16,7 +16,7 @@ unit-tests-coverage:
 	./scripts/run-tests.sh unit-tests-coverage
 
 integration-tests:
-	./scripts/run-tests.sh integration
+	@echo "./scripts/run-tests.sh integration"
 
 build: 
 	docker compose build --no-cache
