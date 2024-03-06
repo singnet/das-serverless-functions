@@ -89,11 +89,13 @@ class Actions:
         link_type: str,
         target_types: List[str] = None,
         link_targets: List[str] = None,
+        kwargs={},
     ) -> List[str] | List[Dict]:
         return self.distributed_atom_space.get_links(
             link_type,
             target_types,
             link_targets,
+            **kwargs,
         )
 
     @remove_none_args
