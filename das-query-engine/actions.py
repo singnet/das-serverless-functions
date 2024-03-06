@@ -114,7 +114,7 @@ class Actions:
     @remove_none_args
     def query(
         self,
-        query: Dict[str, Any],
+        query: List[Dict[str, Any]] | Dict[str, Any],
         parameters: Dict[str, Any] = {"no_iterator": True},
     ) -> List[Dict[str, Any]]:
         return self.distributed_atom_space.query(query, parameters)
