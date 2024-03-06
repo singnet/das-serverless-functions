@@ -46,7 +46,7 @@ class QueryValidator(PayloadValidator):
     strict = True
 
     query = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, dict),
+        lambda value, *args, **kwargs: isinstance(value, dict) or all(isinstance(item, dict) for item in value),
         required=True,
     )
 
