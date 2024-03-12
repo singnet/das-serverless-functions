@@ -4,7 +4,7 @@ import traceback
 
 from action_dispatcher import ActionDispatcher
 from action_mapper import ActionMapper
-from exceptions import PayloadMalformed, UnknownActionDispatcher, UnreachableConnection
+from exceptions import PayloadMalformed, UnknownActionDispatcher, UnreachableConnection, Conflict
 from hyperon_das.logger import logger
 from utils.dotenv import load_env
 from validators import validate
@@ -45,9 +45,10 @@ def _get_payload(event: any):
     return body  # vultr
 
 
+# TODO: refactor status code comes from actions now and the handler only returns it to the client
 def handle(event: any, context=None):
     result = None
-    http_code_response = 200
+    http_code_response = None
     elapsed_time = None
 
     try:
@@ -55,7 +56,7 @@ def handle(event: any, context=None):
 
         action_dispatcher = ActionDispatcher(action_mapper=ActionMapper())
 
-        result, elapsed_time = action_dispatcher.dispatch(
+        result, http_code_response, elapsed_time = action_dispatcher.dispatch(
             action_type=payload["action"],
             payload=payload["input"],
         )
@@ -70,6 +71,11 @@ def handle(event: any, context=None):
         logger().error(f"{str(e)}\n{trace}")
         result = dict(error=str(e))
         http_code_response = 404
+    except Conflict as e:
+        trace = traceback.format_exc()
+        logger().error(f"{str(e)}\n{trace}")
+        result = dict(error=str(e))
+        http_code_response = 409
     except (Exception, UnreachableConnection) as e:
         trace = traceback.format_exc()
         logger().error(f"{str(e)}\n{trace}")

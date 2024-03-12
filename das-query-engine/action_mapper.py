@@ -9,6 +9,7 @@ from validators.actions import (
     GetLinkValidator,
     GetNodeValidator,
     QueryValidator,
+    HandshakeValidator,
 )
 
 
@@ -23,6 +24,10 @@ class ActionMapper:
             ActionType.PING: {
                 "action": actions.ping,
                 "validator": None,
+            },
+            ActionType.HANDSHAKE: {
+                "action": actions.handshake,
+                "validator": HandshakeValidator,
             },
             ActionType.COUNT_ATOMS: {
                 "action": actions.count_atoms,

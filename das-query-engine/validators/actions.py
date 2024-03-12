@@ -1,6 +1,13 @@
 from incoming import PayloadValidator, datatypes
 
 
+class HandshakeValidator(PayloadValidator):
+    strict = True
+
+    das_version = datatypes.String(required=True)
+    atomdb_version = datatypes.String(required=True)
+
+
 class GetAtomValidator(PayloadValidator):
     strict = True
 

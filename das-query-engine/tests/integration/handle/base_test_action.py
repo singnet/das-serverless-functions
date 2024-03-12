@@ -48,7 +48,7 @@ class BaseTestHandlerAction(ABC):
     def assert_successful_execution(self, valid_event, expected_output):
         response = handle(valid_event, context={})
         body = json.loads(response["body"])
-        assert response["statusCode"] == 200
+        assert response["statusCode"] == 200, f"Assertion failed:\nReceived: {response['statusCode']}\nExpected: 200"
         assert BaseTestHandlerAction._compare_nested(
             body,
             expected_output,

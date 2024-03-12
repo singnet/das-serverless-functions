@@ -6,6 +6,17 @@ from action_mapper import ActionMapper
 from actions import ActionType
 from exceptions import UnknownActionDispatcher
 
+def test_build_dispatcher_handshake_action():
+    expected_actions = Mock()
+    action_mapper = ActionMapper()
+    action_mapper._get_actions = Mock(return_value=expected_actions)
+
+    dispatchers = action_mapper._build_dispatcher()
+
+    assert isinstance(dispatchers, dict)
+    assert dispatchers[ActionType.HANDSHAKE]["action"] == expected_actions.handshake
+    assert hasattr(dispatchers[ActionType.HANDSHAKE]["validator"], "validate")
+
 
 def test_build_dispatcher_ping_action():
     expected_actions = Mock()
