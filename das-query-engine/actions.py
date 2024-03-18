@@ -23,6 +23,7 @@ class ActionType(str, Enum):
     GET_INCOMING_LINKS = "get_incoming_links"
     QUERY = "query"
     COMMIT_CHANGES = "commit_changes"
+    CREATE_FIELD_INDEX = "create_field_index"
 
 
 class Actions:
@@ -151,3 +152,18 @@ class Actions:
     @remove_none_args
     def commit_changes(self) -> None:
         return self.distributed_atom_space.commit_changes(), HttpStatusCode.OK
+    
+    @execution_time_tracker
+    @remove_none_args
+    def create_field_index(
+        self,
+        atom_type: str,
+        field: str,
+        type: str = None,
+    ) -> str:
+        response = self.distributed_atom_space.create_field_index(
+            atom_type,
+            field,
+            type
+        )
+        return response, HttpStatusCode.OK

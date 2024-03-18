@@ -10,6 +10,7 @@ from validators.actions import (
     GetNodeValidator,
     QueryValidator,
     HandshakeValidator,
+    CreateFieldIndexValidator
 )
 
 
@@ -60,6 +61,10 @@ class ActionMapper:
             ActionType.GET_INCOMING_LINKS: {
                 "action": actions.get_incoming_links,
                 "validator": GetIncomingLinksValidator,
+            },
+            ActionType.CREATE_FIELD_INDEX: {
+                "action": actions.create_field_index,
+                "validator": CreateFieldIndexValidator,
             },
         }
 
