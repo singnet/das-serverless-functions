@@ -61,3 +61,11 @@ class QueryValidator(PayloadValidator):
         lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
         required=False,
     )
+
+
+class CreateFieldIndexValidator(PayloadValidator):
+    strict = True
+
+    atom_type = datatypes.String(required=True)
+    field = datatypes.String(required=True)
+    type = datatypes.String(required=False)
