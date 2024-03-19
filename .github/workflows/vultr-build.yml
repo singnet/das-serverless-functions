@@ -75,4 +75,6 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Push Image to Registry
-        run: docker image push trueagi/das:${{ env.FUNCTION_VERSION }}-${{ env.FUNCTION_NAME }}
+        run: |-
+          docker image push trueagi/das:${{ env.FUNCTION_VERSION }}-${{ env.FUNCTION_NAME }}
+          docker image push trueagi/das:${{ env.FUNCTION_VERSION }}-latest
