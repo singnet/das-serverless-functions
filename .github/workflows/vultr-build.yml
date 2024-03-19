@@ -77,4 +77,4 @@ jobs:
       - name: Push Image to Registry
         run: |-
           docker image push trueagi/das:${{ env.FUNCTION_VERSION }}-${{ env.FUNCTION_NAME }}
-          docker image push trueagi/das:${{ env.FUNCTION_VERSION }}-latest
+          docker image push trueagi/das:latest-${{ env.FUNCTION_NAME }}
