@@ -37,7 +37,7 @@ jobs:
       job-image-namespace: trueagi
       job-image-version-semver: semantic-versioning
       main-branch: master
-      version-tag-regex-pattern: /^v\d+\.\d+\.\d+$/
+      version-tag-regex-pattern: /^\d+\.\d+\.\d+$/
       version-require-confirmation: "true"
     secrets: inherit
 
@@ -56,7 +56,6 @@ jobs:
         run: |-
           FUNCTION_NAME=$(echo ${{ github.event.inputs.function }} | sed 's/^das-//;s/-//g')
           FUNCTION_VERSION=${{ github.event.inputs.version }}
-          FUNCTION_VERSION="v${FUNCTION_VERSION#v}"
 
           echo "FUNCTION_NAME=$FUNCTION_NAME" >> $GITHUB_ENV
           echo "FUNCTION_VERSION=$FUNCTION_VERSION" >> $GITHUB_ENV
