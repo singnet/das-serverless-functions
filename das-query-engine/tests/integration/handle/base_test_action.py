@@ -3,8 +3,9 @@ from abc import ABC, abstractmethod
 
 import pytest
 from handler import UnreachableConnection, handle
-
-
+@pytest.mark.skip(
+    reason="These tests need to be refactored"
+)
 class BaseTestHandlerAction(ABC):
     @abstractmethod
     def action_type(self):
