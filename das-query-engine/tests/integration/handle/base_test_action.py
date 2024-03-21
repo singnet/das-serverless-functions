@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 import pytest
 from handler import UnreachableConnection, handle
 @pytest.mark.skip(
-    reason="These tests need to be refactored"
+    reason="Disabled because of das-serverless-function#94"
 )
 class BaseTestHandlerAction(ABC):
     @abstractmethod
