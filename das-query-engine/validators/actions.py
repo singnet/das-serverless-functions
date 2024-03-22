@@ -68,4 +68,21 @@ class CreateFieldIndexValidator(PayloadValidator):
 
     atom_type = datatypes.String(required=True)
     field = datatypes.String(required=True)
-    type = datatypes.String(required=False)
+    type = datatypes.Function(
+        lambda value, *args, **kwargs: isinstance(value, str) if value is not None else True,
+        required=False
+    )
+    composite_type = datatypes.Function(
+        lambda value, *args, **kwargs: isinstance(value, list) if value is not None else True,
+        required=False
+    )
+
+
+class CustomQueryValidator(PayloadValidator):
+    strict = True
+
+    index_id = datatypes.String(required=True)
+    kwargs = datatypes.Function(
+        lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
+        required=False,
+    )

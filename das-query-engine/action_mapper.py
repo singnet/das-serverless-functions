@@ -10,7 +10,8 @@ from validators.actions import (
     GetNodeValidator,
     QueryValidator,
     HandshakeValidator,
-    CreateFieldIndexValidator
+    CreateFieldIndexValidator,
+    CustomQueryValidator
 )
 
 
@@ -65,6 +66,10 @@ class ActionMapper:
             ActionType.CREATE_FIELD_INDEX: {
                 "action": actions.create_field_index,
                 "validator": CreateFieldIndexValidator,
+            },
+            ActionType.CUSTOM_QUERY: {
+                "action": actions.custom_query,
+                "validator": CustomQueryValidator,
             },
         }
 

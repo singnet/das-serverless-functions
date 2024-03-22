@@ -24,6 +24,7 @@ class ActionType(str, Enum):
     QUERY = "query"
     COMMIT_CHANGES = "commit_changes"
     CREATE_FIELD_INDEX = "create_field_index"
+    CUSTOM_QUERY = "custom_query"
 
 
 class Actions:
@@ -154,16 +155,29 @@ class Actions:
         return self.distributed_atom_space.commit_changes(), HttpStatusCode.OK
     
     @execution_time_tracker
-    @remove_none_args
     def create_field_index(
         self,
         atom_type: str,
         field: str,
         type: str = None,
+        composite_type: List[Any] = None,
     ) -> str:
         response = self.distributed_atom_space.create_field_index(
-            atom_type,
-            field,
-            type
+            atom_type=atom_type,
+            field=field,
+            type=type,
+            composite_type=composite_type
+        )
+        return response, HttpStatusCode.OK
+    
+    @execution_time_tracker
+    def custom_query(
+        self,
+        index_id: str,
+        kwargs={}
+    ) -> str:
+        response = self.distributed_atom_space.custom_query(
+            index_id,
+            **kwargs
         )
         return response, HttpStatusCode.OK
