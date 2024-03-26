@@ -1,5 +1,1 @@
-[#57] Enable Running Integration Tests Locally with AtomDB Source Code and Local Query Engine
-[#62] Create integration tests for get_incoming_links
-[#64] Shutdown containers before run tests
-[#90] OpenFaas is not serializing/deserializing query answers
-[#97] Add custom_query() and update create_field_index()
+
