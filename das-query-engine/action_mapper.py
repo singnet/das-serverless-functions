@@ -11,7 +11,8 @@ from validators.actions import (
     QueryValidator,
     HandshakeValidator,
     CreateFieldIndexValidator,
-    CustomQueryValidator
+    CustomQueryValidator,
+    FetchValidator
 )
 
 
@@ -70,6 +71,10 @@ class ActionMapper:
             ActionType.CUSTOM_QUERY: {
                 "action": actions.custom_query,
                 "validator": CustomQueryValidator,
+            },
+            ActionType.FETCH: {
+                "action": actions.fetch,
+                "validator": FetchValidator,
             },
         }
 

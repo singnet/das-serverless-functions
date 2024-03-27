@@ -86,3 +86,24 @@ class CustomQueryValidator(PayloadValidator):
         lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
         required=False,
     )
+
+
+class FetchValidator(PayloadValidator):
+    strict = True
+
+    query = datatypes.Function(
+        lambda value, *args, **kwargs: isinstance(value, dict) or all(isinstance(item, dict) for item in value),
+        required=True,
+    )
+    host = datatypes.Function(
+        lambda value, *args, **kwargs: isinstance(value, str) if value is not None else True,
+        required=False,
+    )
+    port = datatypes.Function(
+        lambda value, *args, **kwargs: isinstance(value, int) if value is not None else True,
+        required=False,
+    )
+    kwargs = datatypes.Function(
+        lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
+        required=False,
+    )

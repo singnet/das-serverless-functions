@@ -25,6 +25,7 @@ class ActionType(str, Enum):
     COMMIT_CHANGES = "commit_changes"
     CREATE_FIELD_INDEX = "create_field_index"
     CUSTOM_QUERY = "custom_query"
+    FETCH = "fetch"
 
 
 class Actions:
@@ -178,6 +179,22 @@ class Actions:
     ) -> str:
         response = self.distributed_atom_space.custom_query(
             index_id,
+            **kwargs
+        )
+        return response, HttpStatusCode.OK
+    
+    @execution_time_tracker
+    def fetch(
+        self,
+        query: List[dict] | dict,
+        host: str = None,
+        port: int = None,
+        kwargs={}
+    ) -> bool:
+        response = self.distributed_atom_space.fetch(
+            query=query,
+            host=host,
+            port=port,
             **kwargs
         )
         return response, HttpStatusCode.OK
