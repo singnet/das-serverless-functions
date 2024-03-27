@@ -120,3 +120,14 @@ def test_unknown_action_dispatcher():
 
     expected_error_message = f"Exception at dispatch: action {unknown_action} unknown"
     assert re.search(re.escape(expected_error_message), str(exc_info.value)) is not None
+
+
+def test_build_dispatcher_fetch_action():
+    expected_actions = Mock()
+    action_mapper = ActionMapper()
+    action_mapper._get_actions = Mock(return_value=expected_actions)
+
+    dispatchers = action_mapper._build_dispatcher()
+
+    assert hasattr(dispatchers[ActionType.FETCH]["validator"], "validate")
+    assert dispatchers[ActionType.FETCH]["action"] == expected_actions.fetch

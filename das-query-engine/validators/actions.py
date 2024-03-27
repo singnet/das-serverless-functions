@@ -92,7 +92,8 @@ class FetchValidator(PayloadValidator):
     strict = True
 
     query = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, dict) or all(isinstance(item, dict) for item in value),
+        lambda value, *args, **kwargs: isinstance(value, dict)
+        or all(isinstance(item, dict) for item in value),
         required=True,
     )
     host = datatypes.Function(
