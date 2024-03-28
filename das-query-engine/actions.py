@@ -25,12 +25,14 @@ class ActionType(str, Enum):
     COMMIT_CHANGES = "commit_changes"
     CREATE_FIELD_INDEX = "create_field_index"
     CUSTOM_QUERY = "custom_query"
+    FETCH = "fetch"
 
 
 class Actions:
     def __init__(self) -> None:
         try:
             self.distributed_atom_space = DistributedAtomSpace(
+                system_parameters={'running_on_server': True},
                 atomdb="redis_mongo",
                 mongo_hostname=os.getenv("DAS_MONGODB_HOSTNAME"),
                 mongo_port=int(os.getenv("DAS_MONGODB_PORT")),
@@ -180,4 +182,11 @@ class Actions:
             index_id,
             **kwargs
         )
+        return response, HttpStatusCode.OK
+    
+    @execution_time_tracker
+    def fetch(
+        self, query: List[dict] | dict, host: str = None, port: int = None, kwargs={}
+    ) -> bool:
+        response = self.distributed_atom_space.fetch(query=query, host=host, port=port, **kwargs)
         return response, HttpStatusCode.OK
