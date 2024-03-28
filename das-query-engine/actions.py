@@ -32,8 +32,8 @@ class Actions:
     def __init__(self) -> None:
         try:
             self.distributed_atom_space = DistributedAtomSpace(
-                atomdb="redis_mongo",
                 system_parameters={'running_on_server': True},
+                atomdb="redis_mongo",
                 mongo_hostname=os.getenv("DAS_MONGODB_HOSTNAME"),
                 mongo_port=int(os.getenv("DAS_MONGODB_PORT")),
                 mongo_username=os.getenv("DAS_MONGODB_USERNAME"),
