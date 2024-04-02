@@ -2,6 +2,8 @@ FROM docker:24.0.7-dind-alpine3.19
 
 ENV FUNCTION_HOME /usr/local/function
 
+LABEL fn.version="latest"
+
 USER root
 
 WORKDIR /tmp
@@ -9,7 +11,7 @@ WORKDIR /tmp
 RUN apk update && apk add curl docker git && \
         addgroup -S function && \
         adduser -S function -G function && \
-	curl -sSL https://cli.openfaas.com | sh
+        curl -sSL https://cli.openfaas.com | sh
 
 WORKDIR $FUNCTION_HOME
 

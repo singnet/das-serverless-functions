@@ -65,7 +65,7 @@ jobs:
         run: faas-cli template pull https://github.com/singnet/das-openfaas-templates
 
       - name: Run shrinkwrap build
-        run: faas-cli build --image trueagi/das:${{ env.FUNCTION_VERSION }}-${{ env.FUNCTION_NAME }} --name ${{ env.FUNCTION_NAME }} --lang python3-http --handler ./${{ github.event.inputs.function }}
+        run: faas-cli build --image trueagi/das:${{ env.FUNCTION_VERSION }}-${{ env.FUNCTION_NAME }} --name ${{ env.FUNCTION_NAME }} --lang python3-http --handler ./${{ github.event.inputs.function }} --build-label fn.version=${{ env.FUNCTION_VERSION }}
 
       - name: Login to DockerHub
         if: success()
