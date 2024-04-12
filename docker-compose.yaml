@@ -35,14 +35,12 @@ services:
       retries: 5
       start_period: 40s
 
-  canonical-load:
-    image: levisingnet/canonical-load:latest # TODO: push this image to trueagie
-    container_name: das-canonical-load
-    command: python3 scripts/load_das.py --knowledge-base ${DAS_KNOWLEDGE_BASE}
+  metta-parser:
+    image: trueagi/das:${DAS_METTA_PARSER_VERSION}-metta-parser
+    container_name: das-metta-parser
+    command: db_loader ${DAS_KNOWLEDGE_BASE}
     volumes:
-      - /tmp:/tmp
-    environment:
-      - PYTHONPATH=/app
+      - ./examples/data:/tmp
     env_file:
       - .env
     depends_on:
