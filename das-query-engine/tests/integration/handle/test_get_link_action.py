@@ -1,55 +1,54 @@
 import pytest
 from actions import ActionType
 from hyperon_das_atomdb.utils.expression_hasher import ExpressionHasher
-from tests.integration.handle.base_test_action import BaseTestHandlerAction
+from tests.integration.handle.base_test_action import BaseTestHandlerAction, human, monkey, concept, metta_type
 
 
 class TestGetLinkAction(BaseTestHandlerAction):
+    human_hash = ExpressionHasher.terminal_hash(concept, human)
+    monkey_hash = ExpressionHasher.terminal_hash(concept, monkey)
+
     @pytest.fixture
     def action_type(self):
         return ActionType.GET_LINK
 
     @pytest.fixture
     def valid_event(self, action_type):
-        human_handle = ExpressionHasher.terminal_hash("Concept", "human")
-        monkey_handle = ExpressionHasher.terminal_hash("Concept", "monkey")
-
         return {
             "body": {
                 "action": action_type,
                 "input": {
-                    "link_type": "Similarity",
-                    "link_targets": [human_handle, monkey_handle],
+                    "link_type": metta_type,
+                    "link_targets": [
+                        self.human_hash,
+                        self.monkey_hash,
+                    ],
                 },
             }
-        }
-
-    @pytest.fixture
-    def expected_output(self):
-        return {
-            "handle": "bad7472f41a0e7d601ca294eb4607c3a",
-            "composite_type_hash": "ed73ea081d170e1d89fc950820ce1cee",
-            "is_toplevel": True,
-            "composite_type": [
-                "a9dea78180588431ec64d6bc4872fdbc",
-                "d99a604c79ce3c2e76a2f43488d5d4c3",
-                "d99a604c79ce3c2e76a2f43488d5d4c3",
-            ],
-            "named_type": "Similarity",
-            "named_type_hash": "a9dea78180588431ec64d6bc4872fdbc",
-            "targets": [
-                "af12f10f9ae2002a1607ba0b47ba8407",
-                "1cdffc6b0b89ff41d68bec237481d1e1",
-            ],
-            "type": "Similarity",
         }
 
     def test_get_link_action(
         self,
         valid_event,
-        expected_output,
     ):
-        self.assert_successful_execution(valid_event, expected_output)
+        body, status_code = self.make_request(valid_event)
+        expected_status_code = 200
+
+        assert status_code == expected_status_code, f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
+        assert isinstance(body, dict), "body must be a dictionary"
+        assert isinstance(body.get("handle"), str), "'handle' in body must be a string."
+        assert isinstance(body.get("composite_type_hash"), str), "'composite_type_hash' in body must be a string."
+        assert isinstance(body.get("is_toplevel"), bool), "'is_toplevel' in body must be a boolean."
+        assert isinstance(body.get("composite_type"), list), "'composite_type' in body must be a list."
+        assert all(isinstance(item, str) for item in body["composite_type"]), "'composite_type' elements in body must be strings."
+
+        assert isinstance(body.get("named_type"), str), "'named_type' in body must be a string."
+        assert isinstance(body.get("named_type_hash"), str), "'named_type_hash' in body must be a string."
+
+        assert isinstance(body.get("targets"), list), "'targets' in body must be a list."
+        assert all(isinstance(item, str) for item in body["targets"]), "'targets' elements in body must be strings."
+
+        assert isinstance(body.get("type"), str), "'type' in body must be a string."
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)

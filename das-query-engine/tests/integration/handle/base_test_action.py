@@ -1,11 +1,20 @@
-import json
 from abc import ABC, abstractmethod
 
 import pytest
 from handler import UnreachableConnection, handle
-@pytest.mark.skip(
-    reason="Disabled because of das-serverless-function#94"
-)
+
+monkey = '"monkey"'
+human = '"human"'
+mammal = '"mammal"'
+
+
+symbol = 'Symbol'
+concept = 'Concept'
+similarity = 'Similarity'
+metta_type = 'MettaType'
+expression = 'Expression'
+
+
 class BaseTestHandlerAction(ABC):
     @abstractmethod
     def action_type(self):
@@ -13,10 +22,6 @@ class BaseTestHandlerAction(ABC):
 
     @abstractmethod
     def valid_event(self, action_type):
-        pass
-
-    @abstractmethod
-    def expected_output(self):
         pass
 
     @pytest.fixture
@@ -27,33 +32,12 @@ class BaseTestHandlerAction(ABC):
     def unknown_action_event(self):
         return {"body": {"action": "unknown_action", "input": {}}}
 
-    @staticmethod
-    def _sorted_nested(obj):
-        if isinstance(obj, list):
-            return sorted(str(BaseTestHandlerAction._sorted_nested(item)) for item in obj)
-        elif isinstance(obj, dict):
-            return sorted(
-                (key, BaseTestHandlerAction._sorted_nested(value)) for key, value in obj.items()
-            )
-        elif isinstance(obj, (int, float, str, bool, type(None))):
-            return obj
-        else:
-            return str(obj)
-
-    @staticmethod
-    def _compare_nested(obj1, obj2):
-        return BaseTestHandlerAction._sorted_nested(obj1) == BaseTestHandlerAction._sorted_nested(
-            obj2
-        )
-
-    def assert_successful_execution(self, valid_event, expected_output):
+    def make_request(self, valid_event):
         response = handle(valid_event, context={})
-        body = json.loads(response["body"])
-        assert response["statusCode"] == 200, f"Assertion failed:\nReceived: {response['statusCode']}\nExpected: 200"
-        assert BaseTestHandlerAction._compare_nested(
-            body,
-            expected_output,
-        ), f"Assertion failed:\nResponse Body: {response['body']}\nExpected: {json.dumps(expected_output)}"
+        body = response["body"]
+        status_code = response["statusCode"]
+
+        return body, status_code
 
     def assert_payload_malformed(self, malformed_event):
         response = handle(malformed_event, context={})

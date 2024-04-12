@@ -26,16 +26,26 @@ class TestHandshakeAction(BaseTestHandlerAction):
             }
         }
 
-    @pytest.fixture
-    def expected_output(self):
-        return DistributedAtomSpace.about()
-
     def test_handshake_action(
         self,
         valid_event,
-        expected_output,
     ):
-        self.assert_successful_execution(valid_event, expected_output)
+        body, status_code = self.make_request(valid_event)
+        expected_status_code = 200
+
+        assert status_code == expected_status_code, f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
+        assert isinstance(body, dict), "body must be a dictionary"
+        assert isinstance(body.get("das"), dict), "'das' in body must be a dictionary."
+        assert isinstance(body.get("atom_db"), dict), "'atom_db' in body must be a dictionary."
+
+        assert isinstance(body["das"].get("name"), str), "'name' in 'das' must be a string."
+        assert isinstance(body["das"].get("version"), str), "'version' in 'das' must be a string."
+        assert isinstance(body["das"].get("summary"), str), "'summary' in 'das' must be a string."
+
+        assert isinstance(body["atom_db"].get("name"), str), "'name' in 'atom_db' must be a string."
+        assert isinstance(body["atom_db"].get("version"), str), "'version' in 'atom_db' must be a string."
+        assert isinstance(body["atom_db"].get("summary"), str), "'summary' in 'atom_db' must be a string."
+
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)

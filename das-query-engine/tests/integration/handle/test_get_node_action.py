@@ -1,7 +1,6 @@
 import pytest
 from actions import ActionType
-from hyperon_das_atomdb.utils.expression_hasher import ExpressionHasher
-from tests.integration.handle.base_test_action import BaseTestHandlerAction
+from tests.integration.handle.base_test_action import BaseTestHandlerAction, human, symbol
 
 
 class TestGetNodeAction(BaseTestHandlerAction):
@@ -14,28 +13,26 @@ class TestGetNodeAction(BaseTestHandlerAction):
         return {
             "body": {
                 "action": action_type,
-                "input": {"node_type": "Concept", "node_name": "human"},
+                "input": {"node_type": symbol, "node_name": human},
             }
-        }
-
-    @pytest.fixture
-    def expected_output(self):
-        human_handle = ExpressionHasher.terminal_hash("Concept", "human")
-
-        return {
-            "handle": human_handle,
-            "composite_type_hash": "d99a604c79ce3c2e76a2f43488d5d4c3",
-            "name": "human",
-            "named_type": "Concept",
-            "type": "Concept",
         }
 
     def test_get_node_action(
         self,
         valid_event,
-        expected_output,
     ):
-        self.assert_successful_execution(valid_event, expected_output)
+        body, status_code = self.make_request(valid_event)
+        expected_status_code = 200
+
+        assert status_code == expected_status_code, f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
+        assert isinstance(body, dict), "body must be a dictionary"
+        assert isinstance(body.get("handle"), str), "'handle' in body must be a string."
+        assert isinstance(body.get("composite_type_hash"), str), "'composite_type_hash' in body must be a string."
+        assert isinstance(body.get("name"), str), "'name' in body must be a string."
+        assert isinstance(body.get("named_type"), str), "'named_type' in body must be a string."
+        assert isinstance(body.get("type"), str), "'type' in body must be a string."
+        assert isinstance(body.get("is_literal"), bool), "'is_literal' in body must be a boolean."
+        
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)

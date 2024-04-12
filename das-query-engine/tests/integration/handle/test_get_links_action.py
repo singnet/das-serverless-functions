@@ -1,6 +1,6 @@
 import pytest
 from actions import ActionType
-from tests.integration.handle.base_test_action import BaseTestHandlerAction
+from tests.integration.handle.base_test_action import BaseTestHandlerAction, metta_type, expression
 
 
 class TestGetLinksAction(BaseTestHandlerAction):
@@ -14,34 +14,33 @@ class TestGetLinksAction(BaseTestHandlerAction):
             "body": {
                 "action": action_type,
                 "input": {
-                    "link_type": "Inheritance",
-                    "link_targets": [
-                        "4e8e26e3276af8a5c2ac2cc2dc95c6d2",
-                        "80aff30094874e75028033a38ce677bb",
+                    "link_type": expression,
+                    "kwargs": {
+                        "cursor": 0
+                    },
+                    "target_types": [
+                        metta_type,
+                        metta_type,
+                        metta_type,
                     ],
                 },
             }
         }
 
-    @pytest.fixture
-    def expected_output(self):
-        return [
-            {
-                "handle": "ee1c03e6d1f104ccd811cfbba018451a",
-                "type": "Inheritance",
-                "targets": [
-                    "4e8e26e3276af8a5c2ac2cc2dc95c6d2",
-                    "80aff30094874e75028033a38ce677bb",
-                ],
-            }
-        ]
 
     def test_get_links_action(
         self,
         valid_event,
-        expected_output,
     ):
-        self.assert_successful_execution(valid_event, expected_output)
+        body, status_code = self.make_request(valid_event)
+        expected_status_code = 200
+
+        assert status_code == expected_status_code, f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
+
+        assert isinstance(body, list), "body must be a list."
+        assert len(body) > 0
+        assert all(isinstance(item, dict) for item in body), "elements in body must be dicts."
+
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)

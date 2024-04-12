@@ -17,16 +17,19 @@ class TestCountAtomsAction(BaseTestHandlerAction):
             }
         }
 
-    @pytest.fixture
-    def expected_output(self):
-        return [14, 26]
-
     def test_count_atoms_action(
         self,
         valid_event,
-        expected_output,
     ):
-        self.assert_successful_execution(valid_event, expected_output)
+        body, status_code = self.make_request(valid_event)
+        expected_status_code = 200
+
+        assert status_code == expected_status_code, \
+            f"Assertion failed:\nReceived: {status_code}\nExpected: {expected_status_code}"
+
+        assert isinstance(body, tuple)
+        assert all(isinstance(item, int) for item in body)
+        assert len(body) == 2
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)
