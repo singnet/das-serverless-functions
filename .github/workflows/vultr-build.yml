@@ -13,7 +13,6 @@ on:
         description: "Select a function to build:"
         default: das-query-engine
         options:
-          - das-atomdb
           - das-query-engine
 
 jobs:

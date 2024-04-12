@@ -1,2 +1,0 @@
-hyperon-das-atomdb~=0.4.1
-incoming==0.3.1
