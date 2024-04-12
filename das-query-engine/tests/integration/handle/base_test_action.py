@@ -13,6 +13,7 @@ concept = 'Concept'
 similarity = 'Similarity'
 metta_type = 'MettaType'
 expression = 'Expression'
+inheritance = 'Inheritance'
 
 
 class BaseTestHandlerAction(ABC):

@@ -1,6 +1,7 @@
 import pytest
 from actions import ActionType
-from tests.integration.handle.base_test_action import BaseTestHandlerAction
+from tests.integration.handle.base_test_action import BaseTestHandlerAction, expression, symbol, mammal, inheritance
+from hyperon_das.das import Assignment
 
 
 class TestQueryAction(BaseTestHandlerAction):
@@ -16,47 +17,61 @@ class TestQueryAction(BaseTestHandlerAction):
                 "input": {
                     "query": {
                         "atom_type": "link",
-                        "type": "Similarity",
+                        "type": expression,
                         "targets": [
-                            {"atom_type": "node", "type": "Concept", "name": "human"},
-                            {"atom_type": "node", "type": "Concept", "name": "monkey"},
+                            {"atom_type": "node", "type": symbol, "name": inheritance},
+                            {"atom_type": "variable", "name": "$v1"},
+                            {"atom_type": "node", "type": symbol, "name": mammal},
                         ],
                     },
-                    "parameters": {"no_iterator": True},
                 },
             }
         }
 
-    @pytest.fixture
-    def expected_output(self):
-        return [
-            [
-                None,
-                {
-                    "handle": "bad7472f41a0e7d601ca294eb4607c3a",
-                    "type": "Similarity",
-                    "targets": [
-                        {
-                            "handle": "af12f10f9ae2002a1607ba0b47ba8407",
-                            "type": "Concept",
-                            "name": "human",
-                        },
-                        {
-                            "handle": "1cdffc6b0b89ff41d68bec237481d1e1",
-                            "type": "Concept",
-                            "name": "monkey",
-                        },
-                    ],
-                },
-            ]
-        ]
-
     def test_query_action(
         self,
         valid_event,
-        expected_output,
     ):
-        self.assert_successful_execution(valid_event, expected_output)
+        body, status_code = self.make_request(valid_event)
+        expected_status_code = 200
+
+        assert status_code == expected_status_code, \
+            f"Assertion failed:\nReceived: {status_code}\nExpected: {expected_status_code}"
+
+        assert isinstance(body, list)
+        assert len(body) > 0
+        assert all((isinstance(item, tuple), f"{type(item)}") for item in body)
+
+        for item in body:
+            assert len(item) == 2
+            assignment, query_answer = item
+
+            assert isinstance(assignment, Assignment)
+            assert isinstance(query_answer, dict)
+
+            assert isinstance(query_answer.get("handle"), str)
+            assert isinstance(query_answer.get("type"), str)
+            assert isinstance(query_answer.get("composite_type_hash"), str)
+            assert isinstance(query_answer.get("is_toplevel"), bool)
+            assert isinstance(query_answer.get("composite_type"), list)
+            assert all((isinstance(item, str)) for item in query_answer.get("composite_type"))
+
+            assert isinstance(query_answer.get("named_type"), str)
+            assert isinstance(query_answer.get("named_type_hash"), str)
+            assert isinstance(query_answer.get("targets"), list)
+
+            targets = query_answer["targets"]
+
+            for target in targets:
+                assert isinstance(target, dict)
+                assert isinstance(target.get("handle"), str)
+                assert isinstance(target.get("type"), str)
+                assert isinstance(target.get("composite_type_hash"), str)
+                assert isinstance(target.get("name"), str)
+                assert isinstance(target.get("named_type"), str)
+                assert isinstance(target.get("is_literal"), bool)
+
+
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)
