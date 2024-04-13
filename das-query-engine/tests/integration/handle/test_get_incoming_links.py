@@ -35,39 +35,38 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
         expected_status_code = 200
 
         assert status_code == expected_status_code, f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
-        assert isinstance(body, list)
-        assert len(body) > 0
+        assert isinstance(body, list), "body must be a list."
+        assert len(body) > 0, "body must contain at least one element."
+
         
         for item in body:
-            assert isinstance(item, tuple)
-            assert len(item) == 2
+            assert isinstance(item, tuple), "Each item in body must be a tuple."
+            assert len(item) == 2, "Each tuple in body must contain two elements."
 
             item_dict, item_tuple = item
+            assert isinstance(item_dict, dict), "First element of tuple must be a dictionary."
+            assert isinstance(item_tuple, list), "Second element of tuple must be a list."
 
-            assert isinstance(item_dict, dict)
+            assert isinstance(item_dict.get("handle"), str), "'handle' in item_dict must be a string."
+            assert isinstance(item_dict.get("type"), str), "'type' in item_dict must be a string."
+            assert isinstance(item_dict.get("composite_type_hash"), str), "'composite_type_hash' in item_dict must be a string."
+            assert isinstance(item_dict.get("is_toplevel"), bool), "'is_toplevel' in item_dict must be a boolean."
+            assert isinstance(item_dict.get("composite_type"), list), "'composite_type' in item_dict must be a list of strings."
+            assert all(isinstance(item, str) for item in item_dict.get("composite_type")), "'composite_type' elements in item_dict must be strings."
+            assert isinstance(item_dict.get("named_type"), str), "'named_type' in item_dict must be a string."
+            assert isinstance(item_dict.get("named_type_hash"), str), "'named_type_hash' in item_dict must be a string."
+            assert isinstance(item_dict.get("targets"), list), "'targets' in item_dict must be a list of strings."
+            assert all(isinstance(item, str) for item in item_dict.get("targets")), "'targets' elements in item_dict must be strings."
 
-            assert isinstance(item_dict.get("handle"), str)
-            assert isinstance(item_dict.get("type"), str)
-            assert isinstance(item_dict.get("composite_type_hash"), str)
-            assert isinstance(item_dict.get("is_toplevel"), bool)
-            assert isinstance(item_dict.get("composite_type"), list)
-            assert all((isinstance(item, str)) for item in item_dict.get("composite_type"))
-
-            assert isinstance(item_dict.get("named_type"), str)
-            assert isinstance(item_dict.get("named_type_hash"), str)
-            assert isinstance(item_dict.get("targets"), list)
-            assert all((isinstance(item, str)) for item in item_dict.get("targets"))
-
-            assert isinstance(item_tuple, list)
 
             for atom in item_tuple:
-                assert isinstance(atom, dict)
-                assert isinstance(atom.get("handle"), str)
-                assert isinstance(atom.get("type"), str)
-                assert isinstance(atom.get("composite_type_hash"), str)
-                assert isinstance(atom.get("name"), str)
-                assert isinstance(atom.get("named_type"), str)
-                assert isinstance(atom.get("is_literal"), bool)
+                assert isinstance(atom, dict), f"{type(atom)} is not a dictionary."
+                assert isinstance(atom.get("handle"), str), "'handle' in atom must be a string."
+                assert isinstance(atom.get("type"), str), "'type' in atom must be a string."
+                assert isinstance(atom.get("composite_type_hash"), str), "'composite_type_hash' in atom must be a string."
+                assert isinstance(atom.get("name"), str), "'name' in atom must be a string."
+                assert isinstance(atom.get("named_type"), str), "'named_type' in atom must be a string."
+                assert isinstance(atom.get("is_literal"), bool), "'is_literal' in atom must be a boolean."
 
 
 

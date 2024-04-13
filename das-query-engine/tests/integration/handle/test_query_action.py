@@ -38,38 +38,38 @@ class TestQueryAction(BaseTestHandlerAction):
         assert status_code == expected_status_code, \
             f"Assertion failed:\nReceived: {status_code}\nExpected: {expected_status_code}"
 
-        assert isinstance(body, list)
-        assert len(body) > 0
-        assert all((isinstance(item, tuple), f"{type(item)}") for item in body)
+        assert isinstance(body, list), "body must be a list."
+        assert len(body) > 0, "body must not be empty."
+        assert all(isinstance(item, tuple) for item in body), "All items in body must be tuples."
 
         for item in body:
-            assert len(item) == 2
+            assert len(item) == 2, "Each item in body must contain two elements."
             assignment, query_answer = item
 
-            assert isinstance(assignment, Assignment)
-            assert isinstance(query_answer, dict)
+            assert isinstance(assignment, Assignment), "Assignment must be an instance of Assignment."
+            assert isinstance(query_answer, dict), "query_answer must be a dictionary."
 
-            assert isinstance(query_answer.get("handle"), str)
-            assert isinstance(query_answer.get("type"), str)
-            assert isinstance(query_answer.get("composite_type_hash"), str)
-            assert isinstance(query_answer.get("is_toplevel"), bool)
-            assert isinstance(query_answer.get("composite_type"), list)
-            assert all((isinstance(item, str)) for item in query_answer.get("composite_type"))
-
-            assert isinstance(query_answer.get("named_type"), str)
-            assert isinstance(query_answer.get("named_type_hash"), str)
-            assert isinstance(query_answer.get("targets"), list)
+            assert isinstance(query_answer.get("handle"), str), "'handle' in query_answer must be a string."
+            assert isinstance(query_answer.get("type"), str), "'type' in query_answer must be a string."
+            assert isinstance(query_answer.get("composite_type_hash"), str), "'composite_type_hash' in query_answer must be a string."
+            assert isinstance(query_answer.get("is_toplevel"), bool), "'is_toplevel' in query_answer must be a boolean."
+            assert isinstance(query_answer.get("composite_type"), list), "'composite_type' in query_answer must be a list."
+            assert all(isinstance(item, str) for item in query_answer.get("composite_type")), "'composite_type' elements in query_answer must be strings."
+            assert isinstance(query_answer.get("named_type"), str), "'named_type' in query_answer must be a string."
+            assert isinstance(query_answer.get("named_type_hash"), str), "'named_type_hash' in query_answer must be a string."
+            assert isinstance(query_answer.get("targets"), list), "'targets' in query_answer must be a list."
 
             targets = query_answer["targets"]
 
             for target in targets:
-                assert isinstance(target, dict)
-                assert isinstance(target.get("handle"), str)
-                assert isinstance(target.get("type"), str)
-                assert isinstance(target.get("composite_type_hash"), str)
-                assert isinstance(target.get("name"), str)
-                assert isinstance(target.get("named_type"), str)
-                assert isinstance(target.get("is_literal"), bool)
+                assert isinstance(target, dict), "Each target must be a dictionary."
+                assert isinstance(target.get("handle"), str), "'handle' in target must be a string."
+                assert isinstance(target.get("type"), str), "'type' in target must be a string."
+                assert isinstance(target.get("composite_type_hash"), str), "'composite_type_hash' in target must be a string."
+                assert isinstance(target.get("name"), str), "'name' in target must be a string."
+                assert isinstance(target.get("named_type"), str), "'named_type' in target must be a string."
+                assert isinstance(target.get("is_literal"), bool), "'is_literal' in target must be a boolean."
+
 
 
 
