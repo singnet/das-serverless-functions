@@ -1,13 +1,8 @@
 import pytest
 from actions import ActionType
-from hyperon_das_atomdb.utils.expression_hasher import ExpressionHasher
-from tests.integration.handle.base_test_action import BaseTestHandlerAction, human, monkey, concept, metta_type
-
+from tests.integration.handle.base_test_action import BaseTestHandlerAction,  metta_type
 
 class TestGetLinkAction(BaseTestHandlerAction):
-    human_hash = ExpressionHasher.terminal_hash(concept, human)
-    monkey_hash = ExpressionHasher.terminal_hash(concept, monkey)
-
     @pytest.fixture
     def action_type(self):
         return ActionType.GET_LINK
@@ -20,8 +15,8 @@ class TestGetLinkAction(BaseTestHandlerAction):
                 "input": {
                     "link_type": metta_type,
                     "link_targets": [
-                        self.human_hash,
-                        self.monkey_hash,
+                        "a408f6dd446cdd4fa56f82e77fe6c870",
+                        "5e50ef7542bb0fde52aed0d841335790"
                     ],
                 },
             }
