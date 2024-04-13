@@ -44,8 +44,11 @@ services:
     env_file:
       - .env
     depends_on:
-      - redis
-      - mongodb
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
 
   openfaas:
     container_name: openfaas
