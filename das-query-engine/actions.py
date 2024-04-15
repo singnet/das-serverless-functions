@@ -186,7 +186,7 @@ class Actions:
     
     @execution_time_tracker
     def fetch(
-        self, query: List[dict] | dict, host: str = None, port: int = None, kwargs={}
+        self, query: List[dict] | dict = None, host: str = None, port: int = None, kwargs={}
     ) -> bool:
         response = self.distributed_atom_space.fetch(query=query, host=host, port=port, **kwargs)
         return response, HttpStatusCode.OK
