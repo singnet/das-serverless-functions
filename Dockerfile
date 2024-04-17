@@ -8,7 +8,7 @@ USER root
 
 WORKDIR /tmp
 
-RUN apk update && apk add curl docker git libpq python-dev python3-dev && \
+RUN apk update && apk add curl docker git libpq python3-dev && \
         addgroup -S function && \
         adduser -S function -G function && \
         curl -sSL https://cli.openfaas.com | sh
