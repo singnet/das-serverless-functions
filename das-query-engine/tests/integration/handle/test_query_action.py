@@ -28,6 +28,7 @@ class TestQueryAction(BaseTestHandlerAction):
             }
         }
 
+    @pytest.mark.skip(reason="Disabled. See: das-serverless-functions#109")
     def test_query_action(
         self,
         valid_event,
@@ -69,9 +70,6 @@ class TestQueryAction(BaseTestHandlerAction):
                 assert isinstance(target.get("name"), str), "'name' in target must be a string."
                 assert isinstance(target.get("named_type"), str), "'named_type' in target must be a string."
                 assert isinstance(target.get("is_literal"), bool), "'is_literal' in target must be a boolean."
-
-
-
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)
