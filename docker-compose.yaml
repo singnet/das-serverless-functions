@@ -36,7 +36,7 @@ services:
       start_period: 40s
 
   metta-parser:
-    image: trueagi/das:${DAS_METTA_PARSER_VERSION}-metta-parser
+    image: trueagi/das:${DAS_METTA_PARSER_VERSION:-latest}-metta-parser
     container_name: das-metta-parser
     command: db_loader ${DAS_KNOWLEDGE_BASE}
     volumes:
