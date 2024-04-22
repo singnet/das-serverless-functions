@@ -26,6 +26,7 @@ class ActionType(str, Enum):
     CREATE_FIELD_INDEX = "create_field_index"
     CUSTOM_QUERY = "custom_query"
     FETCH = "fetch"
+    CREATE_CONTEXT = "create_context"
 
 
 class Actions:
@@ -189,4 +190,11 @@ class Actions:
         self, query: List[dict] | dict = None, host: str = None, port: int = None, kwargs={}
     ) -> bool:
         response = self.distributed_atom_space.fetch(query=query, host=host, port=port, **kwargs)
+        return response, HttpStatusCode.OK
+
+    @execution_time_tracker
+    def create_context(
+        self, name: str, query: List[dict] | dict = {}
+    ) -> bool:
+        response = self.distributed_atom_space.create_context(name=name, query=query)
         return response, HttpStatusCode.OK
