@@ -12,7 +12,8 @@ from validators.actions import (
     HandshakeValidator,
     CreateFieldIndexValidator,
     CustomQueryValidator,
-    FetchValidator
+    FetchValidator,
+    CreateContextValidator
 )
 
 
@@ -75,6 +76,10 @@ class ActionMapper:
             ActionType.FETCH: {
                 "action": actions.fetch,
                 "validator": FetchValidator,
+            },
+            ActionType.CREATE_CONTEXT: {
+                "action": actions.create_context,
+                "validator": CreateContextValidator,
             },
         }
 

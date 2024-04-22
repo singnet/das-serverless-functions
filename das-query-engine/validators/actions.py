@@ -107,3 +107,12 @@ class FetchValidator(PayloadValidator):
         lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
         required=False,
     )
+
+class CreateContextValidator(PayloadValidator):
+    strict = True
+
+    name = datatypes.String(required=True)
+    query = datatypes.Function(
+        lambda value, *args, **kwargs: (isinstance(value, dict) or all(isinstance(item, dict) for item in value)) if value is not None else True,
+        required=True,
+    )
