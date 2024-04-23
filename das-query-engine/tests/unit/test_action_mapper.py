@@ -106,7 +106,7 @@ def test_build_dispatcher_commit_changes_action():
     dispatchers = action_mapper._build_dispatcher()
 
     assert dispatchers[ActionType.COMMIT_CHANGES]["action"] == expected_actions.commit_changes
-    assert dispatchers[ActionType.COMMIT_CHANGES]["validator"] is None
+    assert hasattr(dispatchers[ActionType.COMMIT_CHANGES]["validator"], "validate")
 
 
 def test_unknown_action_dispatcher():
