@@ -13,7 +13,8 @@ from validators.actions import (
     CreateFieldIndexValidator,
     CustomQueryValidator,
     FetchValidator,
-    CreateContextValidator
+    CreateContextValidator,
+    CommitChangesValidator
 )
 
 
@@ -59,7 +60,7 @@ class ActionMapper:
             },
             ActionType.COMMIT_CHANGES: {
                 "action": actions.commit_changes,
-                "validator": None,
+                "validator": CommitChangesValidator,
             },
             ActionType.GET_INCOMING_LINKS: {
                 "action": actions.get_incoming_links,

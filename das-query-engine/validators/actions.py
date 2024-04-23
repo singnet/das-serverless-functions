@@ -116,3 +116,11 @@ class CreateContextValidator(PayloadValidator):
         lambda value, *args, **kwargs: (isinstance(value, dict) or all(isinstance(item, dict) for item in value)) if value is not None else True,
         required=True,
     )
+
+class CommitChangesValidator(PayloadValidator):
+    strict = True
+
+    kwargs = datatypes.Function(
+        lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
+        required=False,
+    )
