@@ -153,9 +153,8 @@ class Actions:
         return self.distributed_atom_space.query(query, parameters), HttpStatusCode.OK
 
     @execution_time_tracker
-    @remove_none_args
-    def commit_changes(self) -> None:
-        return self.distributed_atom_space.commit_changes(), HttpStatusCode.OK
+    def commit_changes(self, kwargs={}) -> None:
+        return self.distributed_atom_space.commit_changes(**kwargs), HttpStatusCode.OK
     
     @execution_time_tracker
     def create_field_index(
