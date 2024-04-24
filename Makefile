@@ -13,7 +13,7 @@ unit-tests:
 	./scripts/run-tests.sh unit
 
 unit-tests-coverage:
-	./scripts/run-tests.sh unit-tests-coverage
+	./scripts/run-tests.sh unit-coverage
 
 integration-tests:
 	./scripts/run-tests.sh integration

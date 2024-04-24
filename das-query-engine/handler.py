@@ -10,13 +10,12 @@ from validators.event import EventValidator
 from typing import Any
 
 
-load_env()
 
 def _response(
     http_code_response: int,
     result: Any,
     headers: dict = {},
-):
+):    
     logger().info(f"Function status code response - {http_code_response}")
 
     return {
@@ -28,6 +27,8 @@ def _response(
 
 # TODO: refactor status code comes from actions now and the handler only returns it to the client
 def handle(event: Any, context=None):
+    load_env()
+
     result = None
     http_code_response = None
     elapsed_time = None
