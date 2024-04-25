@@ -55,7 +55,7 @@ class GetIncomingLinksValidator(PayloadValidator):
     )
 
 
-class QueryInputValidator(PayloadValidator):
+class QueryValidator(PayloadValidator):
     strict = True
 
     @staticmethod
