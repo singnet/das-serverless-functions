@@ -193,7 +193,7 @@ class Actions:
 
     @execution_time_tracker
     def create_context(
-        self, name: str, query: List[dict] | dict = {}
+        self, name: str, queries: List[list[dict] | dict] = {}
     ) -> bool:
-        response = self.distributed_atom_space.create_context(name=name, query=query)
+        response = self.distributed_atom_space.create_context(name=name, queries=queries)
         return response, HttpStatusCode.OK
