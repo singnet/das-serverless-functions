@@ -1,4 +1,5 @@
 from incoming import PayloadValidator, datatypes
+from hyperon_das.das import logger
 
 
 class HandshakeValidator(PayloadValidator):
@@ -55,16 +56,33 @@ class GetIncomingLinksValidator(PayloadValidator):
 
 
 class QueryInputValidator(PayloadValidator):
-    class QueryValidator(PayloadValidator):
-        strict = True
-
-        atom_type = datatypes.String(required=True)
-        type = datatypes.String(required=True)
-        targets = datatypes.Array(required=True)
-
     strict = True
 
-    query = datatypes.JSON(QueryValidator)
+    @staticmethod
+    def validate_query(query, *args, **kwargs) -> bool:
+        if not isinstance(query, dict):
+            return False
+
+        atom_type = query.get("atom_type")
+        query_type = query.get("type")
+        name = query.get("name")
+        targets = query.get("targets")
+
+        if atom_type not in ["node", "link"]:
+            return False
+
+        if not isinstance(query_type, str):
+            return False
+
+        if atom_type == "node" and not isinstance(name, str):
+            return False
+
+        if atom_type == "link" and not isinstance(targets, list):
+            return False
+
+        return True
+
+    query = datatypes.Function(validate_query, required=True)
 
     parameters = datatypes.Function(
         lambda value, *args, **kwargs: (
