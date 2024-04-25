@@ -8,7 +8,7 @@ from validators.actions import (
     GetLinksValidator,
     GetLinkValidator,
     GetNodeValidator,
-    QueryValidator,
+    QueryInputValidator,
     HandshakeValidator,
     CreateFieldIndexValidator,
     CustomQueryValidator,
@@ -56,7 +56,7 @@ class ActionMapper:
             },
             ActionType.QUERY: {
                 "action": actions.query,
-                "validator": QueryValidator,
+                "validator": QueryInputValidator,
             },
             ActionType.COMMIT_CHANGES: {
                 "action": actions.commit_changes,

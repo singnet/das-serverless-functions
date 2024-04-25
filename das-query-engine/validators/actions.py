@@ -35,30 +35,41 @@ class GetLinksValidator(PayloadValidator):
     target_types = datatypes.Array(required=False)
     link_targets = datatypes.Array(required=False)
     kwargs = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
+        lambda value, *args, **kwargs: (
+            isinstance(value, dict) if value is not None else True
+        ),
         required=False,
     )
+
 
 class GetIncomingLinksValidator(PayloadValidator):
     strict = True
 
     atom_handle = datatypes.String(required=True)
     kwargs = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
+        lambda value, *args, **kwargs: (
+            isinstance(value, dict) if value is not None else True
+        ),
         required=False,
     )
 
 
-class QueryValidator(PayloadValidator):
+class QueryInputValidator(PayloadValidator):
+    class QueryValidator(PayloadValidator):
+        strict = True
+
+        atom_type = datatypes.String(required=True)
+        type = datatypes.String(required=True)
+        targets = datatypes.Array(required=True)
+
     strict = True
 
-    query = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, dict) or all(isinstance(item, dict) for item in value),
-        required=True,
-    )
+    query = datatypes.JSON(QueryValidator)
 
     parameters = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
+        lambda value, *args, **kwargs: (
+            isinstance(value, dict) if value is not None else True
+        ),
         required=False,
     )
 
@@ -69,12 +80,16 @@ class CreateFieldIndexValidator(PayloadValidator):
     atom_type = datatypes.String(required=True)
     field = datatypes.String(required=True)
     type = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, str) if value is not None else True,
-        required=False
+        lambda value, *args, **kwargs: (
+            isinstance(value, str) if value is not None else True
+        ),
+        required=False,
     )
     composite_type = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, list) if value is not None else True,
-        required=False
+        lambda value, *args, **kwargs: (
+            isinstance(value, list) if value is not None else True
+        ),
+        required=False,
     )
 
 
@@ -83,7 +98,9 @@ class CustomQueryValidator(PayloadValidator):
 
     index_id = datatypes.String(required=True)
     kwargs = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
+        lambda value, *args, **kwargs: (
+            isinstance(value, dict) if value is not None else True
+        ),
         required=False,
     )
 
@@ -92,35 +109,53 @@ class FetchValidator(PayloadValidator):
     strict = True
 
     query = datatypes.Function(
-        lambda value, *args, **kwargs: (isinstance(value, dict) or all(isinstance(item, dict) for item in value)) if value is not None else True,
+        lambda value, *args, **kwargs: (
+            (isinstance(value, dict) or all(isinstance(item, dict) for item in value))
+            if value is not None
+            else True
+        ),
         required=False,
     )
     host = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, str) if value is not None else True,
+        lambda value, *args, **kwargs: (
+            isinstance(value, str) if value is not None else True
+        ),
         required=False,
     )
     port = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, int) if value is not None else True,
+        lambda value, *args, **kwargs: (
+            isinstance(value, int) if value is not None else True
+        ),
         required=False,
     )
     kwargs = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
+        lambda value, *args, **kwargs: (
+            isinstance(value, dict) if value is not None else True
+        ),
         required=False,
     )
+
 
 class CreateContextValidator(PayloadValidator):
     strict = True
 
     name = datatypes.String(required=True)
     query = datatypes.Function(
-        lambda value, *args, **kwargs: (isinstance(value, dict) or all(isinstance(item, dict) for item in value)) if value is not None else True,
+        lambda value, *args, **kwargs: (
+            (isinstance(value, dict) or all(isinstance(item, dict) for item in value))
+            if value is not None
+            else True
+        ),
         required=True,
     )
+
 
 class CommitChangesValidator(PayloadValidator):
     strict = True
 
     kwargs = datatypes.Function(
-        lambda value, *args, **kwargs: isinstance(value, dict) if value is not None else True,
+        lambda value, *args, **kwargs: (
+            isinstance(value, dict) if value is not None else True
+        ),
         required=False,
     )
