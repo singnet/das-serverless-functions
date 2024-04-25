@@ -15,7 +15,7 @@ def _response(
     http_code_response: int,
     result: Any,
     headers: dict = {},
-):    
+):
     logger().info(f"Function status code response - {http_code_response}")
 
     return {
