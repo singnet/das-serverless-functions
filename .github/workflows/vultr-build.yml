@@ -22,11 +22,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install requirements
+        run: pip3 install -r das-query-engine/requirements.txt
+
+      - name: Run Unit Tests
+        run: make unit-tests-coverage
+
       - name: Set dotenv
         run: cp .env.example .env
 
-      - name: Run Unit & Integration Tests
-        run: make unit-tests unit-tests-coverage integration-tests
+      - name: Run Integration Tests
+        run: make integration-tests
 
   tag:
     needs: testing
