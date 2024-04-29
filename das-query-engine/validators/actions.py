@@ -160,7 +160,7 @@ class CreateContextValidator(PayloadValidator):
     name = datatypes.String(required=True)
     queries = datatypes.Function(
         lambda value, *args, **kwargs: (all(isinstance(item, dict) or isinstance(item, list) for item in value)) if value is not None else True,
-        required=True,
+        required=False,
     )
 
 

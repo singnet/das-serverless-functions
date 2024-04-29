@@ -24,7 +24,7 @@ build:
 pre-commit: unit-tests-coverage lint
 
 serve:
-	@docker compose up --build --force-recreate -d
+	@docker compose up --build --force-recreate
 
 stop:
 	@docker compose down
