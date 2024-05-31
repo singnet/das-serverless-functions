@@ -1,16 +1,15 @@
 import os
 from enum import Enum
 from typing import Any, Dict, List, Tuple
-
+from http import HTTPStatus
 from exceptions import UnreachableConnection
 from hyperon_das import DistributedAtomSpace
+from hyperon_das import exceptions as das_exceptions
+from hyperon_das_atomdb import exceptions as atom_db_exceptions
 from utils.decorators import execution_time_tracker, remove_none_args
 from hyperon_das.logger import logger
 from utils.version import compare_minor_versions
 
-class HttpStatusCode(int, Enum):
-    OK = 200
-    CONFLICT = 409
 
 class ActionType(str, Enum):
     PING = "ping"
@@ -32,7 +31,7 @@ class ActionType(str, Enum):
 class Actions:
     def __init__(self) -> None:
         try:
-            self.distributed_atom_space = DistributedAtomSpace(
+            self.das = DistributedAtomSpace(
                 system_parameters={'running_on_server': True},
                 atomdb="redis_mongo",
                 mongo_hostname=os.getenv("DAS_MONGODB_HOSTNAME"),
@@ -54,14 +53,13 @@ class Actions:
             )
 
     @execution_time_tracker
-    def ping(self) -> dict:
-        return dict(message="pong"), HttpStatusCode.OK
-
+    def ping(self) -> Tuple[dict, int]:
+        return dict(message="pong"), HTTPStatus.OK
 
     @execution_time_tracker
-    def handshake(self, das_version: str, atomdb_version: str) -> dict:
-        remote_info = self.distributed_atom_space.about()
-        http_status_code = HttpStatusCode.OK
+    def handshake(self, das_version: str, atomdb_version: str) -> Tuple[dict, int]:
+        remote_info = self.das.about()
+        http_status_code = HTTPStatus.OK
 
         remote_das_version = remote_info["das"]["version"]
         remote_atomdb_version = remote_info["atom_db"]["version"]
@@ -69,27 +67,31 @@ class Actions:
         comparison_das_version_result = compare_minor_versions(remote_das_version, das_version)
         if comparison_das_version_result is None or comparison_das_version_result != 0:
             logger().error(f"The version sent by the on-premises Hyperon-DAS is {das_version}, but the expected version on the remote server is {remote_das_version}.")
-            http_status_code = HttpStatusCode.CONFLICT
+            http_status_code = HTTPStatus.CONFLICT
 
         comparison_atomdb_version_result = compare_minor_versions(remote_atomdb_version, atomdb_version)
         if comparison_atomdb_version_result is None or comparison_atomdb_version_result != 0:
             logger().error(f"The version sent by the on-premises Hyperon-DAS-AtomDB is {atomdb_version}, but the expected version on the remote server is {remote_atomdb_version}.")
-            http_status_code = HttpStatusCode.CONFLICT
+            http_status_code = HTTPStatus.CONFLICT
 
         return remote_info, http_status_code
 
-
     @execution_time_tracker
-    def count_atoms(self) -> Tuple[int, int]:
-        return self.distributed_atom_space.count_atoms(), HttpStatusCode.OK
+    def count_atoms(self) -> Tuple[Tuple[int, int], int]:
+        return self.das.count_atoms(), HTTPStatus.OK
 
     @remove_none_args
     @execution_time_tracker
     def get_atom(
         self,
         handle: str,
-    ) -> str | dict:
-        return self.distributed_atom_space.get_atom(handle), HttpStatusCode.OK
+    ) -> Tuple[str | dict, int]:
+        try:
+            return self.das.get_atom(handle), HTTPStatus.OK
+        except atom_db_exceptions.AtomDoesNotExist as e:
+            return str(e), HTTPStatus.NOT_FOUND
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @remove_none_args
     @execution_time_tracker
@@ -97,11 +99,13 @@ class Actions:
         self,
         node_type: str,
         node_name: str,
-    ) -> str | dict:
-        return self.distributed_atom_space.get_node(
-            node_type,
-            node_name,
-        ), HttpStatusCode.OK
+    ) -> Tuple[str | dict, int]:
+        try:
+            return self.das.get_node(node_type, node_name), HTTPStatus.OK
+        except atom_db_exceptions.NodeDoesNotExist as e:
+            return str(e), HTTPStatus.NOT_FOUND
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @remove_none_args
     @execution_time_tracker
@@ -109,11 +113,13 @@ class Actions:
         self,
         link_type: str,
         link_targets: List[str],
-    ) -> str | Dict:
-        return self.distributed_atom_space.get_link(
-            link_type,
-            link_targets,
-        ), HttpStatusCode.OK
+    ) -> Tuple[str | Dict, int]:
+        try:
+            return self.das.get_link(link_type, link_targets), HTTPStatus.OK
+        except atom_db_exceptions.LinkDoesNotExist as e:
+            return str(e), HTTPStatus.NOT_FOUND
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @remove_none_args
     @execution_time_tracker
@@ -123,13 +129,15 @@ class Actions:
         target_types: List[str] = None,
         link_targets: List[str] = None,
         kwargs={},
-    ) -> List[str] | List[Dict]:
-        return self.distributed_atom_space.get_links(
-            link_type,
-            target_types,
-            link_targets,
-            **kwargs,
-        ), HttpStatusCode.OK
+    ) -> Tuple[List[str | dict], int]:
+        try:
+            return self.das.get_links(link_type, target_types, link_targets, **kwargs), HTTPStatus.OK
+        except (atom_db_exceptions.LinkDoesNotExist, atom_db_exceptions.AtomDoesNotExist) as e:
+            return str(e), HTTPStatus.NOT_FOUND
+        except ValueError as e:
+            return str(e), HTTPStatus.BAD_REQUEST
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @remove_none_args
     @execution_time_tracker
@@ -137,11 +145,13 @@ class Actions:
         self,
         atom_handle: str,
         kwargs,
-    ) -> List[Tuple[dict, List[dict]] | dict]:
-        return self.distributed_atom_space.get_incoming_links(
-            atom_handle,
-            **kwargs,
-        ), HttpStatusCode.OK
+    ) -> Tuple[List[Tuple[dict, List[dict]] | dict], int]:
+        try:
+            return self.das.get_incoming_links(atom_handle, **kwargs), HTTPStatus.OK
+        except (atom_db_exceptions.AtomDoesNotExist) as e:
+            return str(e), HTTPStatus.NOT_FOUND
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @execution_time_tracker
     @remove_none_args
@@ -149,12 +159,24 @@ class Actions:
         self,
         query: List[Dict[str, Any]] | Dict[str, Any],
         parameters: Dict[str, Any] = {"no_iterator": True},
-    ) -> List[Dict[str, Any]]:
-        return self.distributed_atom_space.query(query, parameters), HttpStatusCode.OK
+    ) -> Tuple[List[Dict[str, Any]], int]:
+        try:
+            return self.das.query(query, parameters), HTTPStatus.OK
+        except (atom_db_exceptions.LinkDoesNotExist, atom_db_exceptions.AtomDoesNotExist) as e:
+            return str(e), HTTPStatus.NOT_FOUND
+        except (das_exceptions.UnexpectedQueryFormat, ValueError) as e:
+            return str(e), HTTPStatus.BAD_REQUEST
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @execution_time_tracker
-    def commit_changes(self, kwargs={}) -> None:
-        return self.distributed_atom_space.commit_changes(**kwargs), HttpStatusCode.OK
+    def commit_changes(self, kwargs={}) -> Tuple[None, int]:
+        try:
+            return self.das.commit_changes(**kwargs), HTTPStatus.OK
+        except atom_db_exceptions.InvalidOperationException as e:
+            return str(e), HTTPStatus.FORBIDDEN
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
     
     @execution_time_tracker
     def create_field_index(
@@ -163,37 +185,50 @@ class Actions:
         field: str,
         type: str = None,
         composite_type: List[Any] = None,
-    ) -> str:
-        response = self.distributed_atom_space.create_field_index(
-            atom_type=atom_type,
-            field=field,
-            type=type,
-            composite_type=composite_type
-        )
-        return response, HttpStatusCode.OK
-    
+    ) -> Tuple[str, int]:
+        try:
+            response = self.das.create_field_index(atom_type=atom_type, field=field, type=type, composite_type=composite_type)
+            return response, HTTPStatus.OK
+        except ValueError as e:
+            return str(e), HTTPStatus.BAD_REQUEST
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
+
     @execution_time_tracker
     def custom_query(
         self,
         index_id: str,
         kwargs={}
-    ) -> str:
-        response = self.distributed_atom_space.custom_query(
-            index_id,
-            **kwargs
-        )
-        return response, HttpStatusCode.OK
+    ) -> Tuple[str, int]:
+        try:
+            response = self.das.custom_query(
+                index_id,
+                **kwargs
+            )
+            return response, HTTPStatus.OK
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
     
     @execution_time_tracker
     def fetch(
         self, query: List[dict] | dict = None, host: str = None, port: int = None, kwargs={}
-    ) -> bool:
-        response = self.distributed_atom_space.fetch(query=query, host=host, port=port, **kwargs)
-        return response, HttpStatusCode.OK
+    ) -> Tuple[bool, int]:
+        try:
+            response = self.das.fetch(query=query, host=host, port=port, **kwargs)
+            return response, HTTPStatus.OK
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @execution_time_tracker
     def create_context(
         self, name: str, queries: List[list[dict] | dict] = []
-    ) -> bool:
-        response = self.distributed_atom_space.create_context(name=name, queries=queries)
-        return response, HttpStatusCode.OK
+    ) -> Tuple[bool, int]:
+        try:
+            response = self.das.create_context(name=name, queries=queries)
+            return response, HTTPStatus.OK
+        except (atom_db_exceptions.LinkDoesNotExist, atom_db_exceptions.AtomDoesNotExist) as e:
+            return str(e), HTTPStatus.NOT_FOUND
+        except (atom_db_exceptions.AddNodeException, das_exceptions.UnexpectedQueryFormat, ValueError) as e:
+            return str(e), HTTPStatus.BAD_REQUEST
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR

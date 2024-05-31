@@ -9,6 +9,7 @@ class BaseException(Exception):
 class Conflict(BaseException):
     ...
 
+
 class UnknownActionDispatcher(BaseException):
     ...
 
