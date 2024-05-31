@@ -1,7 +1,13 @@
 import pytest
 from actions import ActionType
-from tests.integration.handle.base_test_action import BaseTestHandlerAction, expression, symbol, mammal, inheritance
 from hyperon_das.utils import QueryAnswer
+from tests.integration.handle.base_test_action import (
+    BaseTestHandlerAction,
+    expression,
+    inheritance,
+    mammal,
+    symbol,
+)
 
 
 class TestQueryAction(BaseTestHandlerAction):
@@ -35,12 +41,15 @@ class TestQueryAction(BaseTestHandlerAction):
         body, status_code = self.make_request(valid_event)
         expected_status_code = 200
 
-        assert status_code == expected_status_code, \
-            f"Assertion failed:\nReceived: {status_code}\nExpected: {expected_status_code}"
+        assert (
+            status_code == expected_status_code
+        ), f"Assertion failed:\nReceived: {status_code}\nExpected: {expected_status_code}"
 
         assert isinstance(body, list), "body must be a list."
         assert len(body) > 0, "body must not be empty."
-        assert all(isinstance(item, QueryAnswer) for item in body), "All items in body must be a QueryAnswer instance."
+        assert all(
+            isinstance(item, QueryAnswer) for item in body
+        ), "All items in body must be a QueryAnswer instance."
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)

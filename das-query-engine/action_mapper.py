@@ -3,18 +3,18 @@ from typing import Any, Dict
 from actions import Actions, ActionType
 from exceptions import UnknownActionDispatcher
 from validators.actions import (
+    CommitChangesValidator,
+    CreateContextValidator,
+    CreateFieldIndexValidator,
+    CustomQueryValidator,
+    FetchValidator,
     GetAtomValidator,
     GetIncomingLinksValidator,
     GetLinksValidator,
     GetLinkValidator,
     GetNodeValidator,
-    QueryValidator,
     HandshakeValidator,
-    CreateFieldIndexValidator,
-    CustomQueryValidator,
-    FetchValidator,
-    CreateContextValidator,
-    CommitChangesValidator
+    QueryValidator,
 )
 
 

@@ -1,13 +1,14 @@
 import os
 from enum import Enum
-from typing import Any, Dict, List, Tuple
 from http import HTTPStatus
+from typing import Any, Dict, List, Tuple
+
 from exceptions import UnreachableConnection
 from hyperon_das import DistributedAtomSpace
 from hyperon_das import exceptions as das_exceptions
+from hyperon_das.logger import logger
 from hyperon_das_atomdb import exceptions as atom_db_exceptions
 from utils.decorators import execution_time_tracker, remove_none_args
-from hyperon_das.logger import logger
 from utils.version import compare_minor_versions
 
 
@@ -66,12 +67,18 @@ class Actions:
 
         comparison_das_version_result = compare_minor_versions(remote_das_version, das_version)
         if comparison_das_version_result is None or comparison_das_version_result != 0:
-            logger().error(f"The version sent by the on-premises Hyperon-DAS is {das_version}, but the expected version on the remote server is {remote_das_version}.")
+            logger().error(
+                f"The version sent by the on-premises Hyperon-DAS is {das_version}, but the expected version on the remote server is {remote_das_version}."
+            )
             http_status_code = HTTPStatus.CONFLICT
 
-        comparison_atomdb_version_result = compare_minor_versions(remote_atomdb_version, atomdb_version)
+        comparison_atomdb_version_result = compare_minor_versions(
+            remote_atomdb_version, atomdb_version
+        )
         if comparison_atomdb_version_result is None or comparison_atomdb_version_result != 0:
-            logger().error(f"The version sent by the on-premises Hyperon-DAS-AtomDB is {atomdb_version}, but the expected version on the remote server is {remote_atomdb_version}.")
+            logger().error(
+                f"The version sent by the on-premises Hyperon-DAS-AtomDB is {atomdb_version}, but the expected version on the remote server is {remote_atomdb_version}."
+            )
             http_status_code = HTTPStatus.CONFLICT
 
         return remote_info, http_status_code
@@ -131,7 +138,10 @@ class Actions:
         kwargs={},
     ) -> Tuple[List[str | dict], int]:
         try:
-            return self.das.get_links(link_type, target_types, link_targets, **kwargs), HTTPStatus.OK
+            return (
+                self.das.get_links(link_type, target_types, link_targets, **kwargs),
+                HTTPStatus.OK,
+            )
         except (atom_db_exceptions.LinkDoesNotExist, atom_db_exceptions.AtomDoesNotExist) as e:
             return str(e), HTTPStatus.NOT_FOUND
         except ValueError as e:
@@ -148,7 +158,7 @@ class Actions:
     ) -> Tuple[List[Tuple[dict, List[dict]] | dict], int]:
         try:
             return self.das.get_incoming_links(atom_handle, **kwargs), HTTPStatus.OK
-        except (atom_db_exceptions.AtomDoesNotExist) as e:
+        except atom_db_exceptions.AtomDoesNotExist as e:
             return str(e), HTTPStatus.NOT_FOUND
         except Exception as e:
             return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
@@ -177,7 +187,7 @@ class Actions:
             return str(e), HTTPStatus.FORBIDDEN
         except Exception as e:
             return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
-    
+
     @execution_time_tracker
     def create_field_index(
         self,
@@ -187,7 +197,9 @@ class Actions:
         composite_type: List[Any] = None,
     ) -> Tuple[str, int]:
         try:
-            response = self.das.create_field_index(atom_type=atom_type, field=field, type=type, composite_type=composite_type)
+            response = self.das.create_field_index(
+                atom_type=atom_type, field=field, type=type, composite_type=composite_type
+            )
             return response, HTTPStatus.OK
         except ValueError as e:
             return str(e), HTTPStatus.BAD_REQUEST
@@ -195,20 +207,13 @@ class Actions:
             return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @execution_time_tracker
-    def custom_query(
-        self,
-        index_id: str,
-        kwargs={}
-    ) -> Tuple[str, int]:
+    def custom_query(self, index_id: str, kwargs={}) -> Tuple[str, int]:
         try:
-            response = self.das.custom_query(
-                index_id,
-                **kwargs
-            )
+            response = self.das.custom_query(index_id, **kwargs)
             return response, HTTPStatus.OK
         except Exception as e:
             return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
-    
+
     @execution_time_tracker
     def fetch(
         self, query: List[dict] | dict = None, host: str = None, port: int = None, kwargs={}
@@ -220,15 +225,17 @@ class Actions:
             return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @execution_time_tracker
-    def create_context(
-        self, name: str, queries: List[list[dict] | dict] = []
-    ) -> Tuple[bool, int]:
+    def create_context(self, name: str, queries: List[list[dict] | dict] = []) -> Tuple[bool, int]:
         try:
             response = self.das.create_context(name=name, queries=queries)
             return response, HTTPStatus.OK
         except (atom_db_exceptions.LinkDoesNotExist, atom_db_exceptions.AtomDoesNotExist) as e:
             return str(e), HTTPStatus.NOT_FOUND
-        except (atom_db_exceptions.AddNodeException, das_exceptions.UnexpectedQueryFormat, ValueError) as e:
+        except (
+            atom_db_exceptions.AddNodeException,
+            das_exceptions.UnexpectedQueryFormat,
+            ValueError,
+        ) as e:
             return str(e), HTTPStatus.BAD_REQUEST
         except Exception as e:
             return str(e), HTTPStatus.INTERNAL_SERVER_ERROR

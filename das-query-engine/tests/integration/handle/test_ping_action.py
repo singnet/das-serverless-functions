@@ -24,11 +24,12 @@ class TestPingAction(BaseTestHandlerAction):
         body, status_code = self.make_request(valid_event)
         expected_status_code = 200
 
-        assert status_code == expected_status_code, f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
+        assert (
+            status_code == expected_status_code
+        ), f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
         assert isinstance(body, dict), "body must be a dictionary"
         assert "message" in body, "The dictionary body must contain the key 'message'"
         assert body["message"] == "pong", "The value of the key 'message' in body must be 'pong'"
-
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)

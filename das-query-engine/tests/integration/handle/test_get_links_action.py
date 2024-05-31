@@ -1,6 +1,6 @@
 import pytest
 from actions import ActionType
-from tests.integration.handle.base_test_action import BaseTestHandlerAction, symbol, expression
+from tests.integration.handle.base_test_action import BaseTestHandlerAction, expression, symbol
 
 
 class TestGetLinksAction(BaseTestHandlerAction):
@@ -24,7 +24,6 @@ class TestGetLinksAction(BaseTestHandlerAction):
             }
         }
 
-
     def test_get_links_action(
         self,
         valid_event,
@@ -32,25 +31,36 @@ class TestGetLinksAction(BaseTestHandlerAction):
         body, status_code = self.make_request(valid_event)
         expected_status_code = 200
 
-        assert status_code == expected_status_code, f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
+        assert (
+            status_code == expected_status_code
+        ), f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
 
         assert isinstance(body, list)
         assert len(body) > 0
         assert all(isinstance(item, dict) for item in body), "elements in body must be dicts."
-        
+
         link = body[0]
 
         assert isinstance(link.get("handle"), str), "'handle' in link must be a string."
         assert isinstance(link.get("type"), str), "'type' in link must be a string."
-        assert isinstance(link.get("composite_type_hash"), str), "'composite_type_hash' in link must be a string."
+        assert isinstance(
+            link.get("composite_type_hash"), str
+        ), "'composite_type_hash' in link must be a string."
         assert isinstance(link.get("is_toplevel"), bool), "'is_toplevel' in link must be a boolean."
-        assert isinstance(link.get("composite_type"), list), "'composite_type' in link must be a list."
-        assert all(isinstance(item, str) for item in link.get("composite_type")), "'composite_type' elements in link must be strings."
+        assert isinstance(
+            link.get("composite_type"), list
+        ), "'composite_type' in link must be a list."
+        assert all(
+            isinstance(item, str) for item in link.get("composite_type")
+        ), "'composite_type' elements in link must be strings."
         assert isinstance(link.get("named_type"), str), "'named_type' in link must be a string."
-        assert isinstance(link.get("named_type_hash"), str), "'named_type_hash' in link must be a string."
+        assert isinstance(
+            link.get("named_type_hash"), str
+        ), "'named_type_hash' in link must be a string."
         assert isinstance(link.get("targets"), list), "'targets' in link must be a list."
-        assert all(isinstance(item, str) for item in link.get("targets")), "'targets' elements in link must be strings."
-
+        assert all(
+            isinstance(item, str) for item in link.get("targets")
+        ), "'targets' elements in link must be strings."
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)

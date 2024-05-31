@@ -24,15 +24,18 @@ class TestGetNodeAction(BaseTestHandlerAction):
         body, status_code = self.make_request(valid_event)
         expected_status_code = 200
 
-        assert status_code == expected_status_code, f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
+        assert (
+            status_code == expected_status_code
+        ), f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
         assert isinstance(body, dict), "body must be a dictionary"
         assert isinstance(body.get("handle"), str), "'handle' in body must be a string."
-        assert isinstance(body.get("composite_type_hash"), str), "'composite_type_hash' in body must be a string."
+        assert isinstance(
+            body.get("composite_type_hash"), str
+        ), "'composite_type_hash' in body must be a string."
         assert isinstance(body.get("name"), str), "'name' in body must be a string."
         assert isinstance(body.get("named_type"), str), "'named_type' in body must be a string."
         assert isinstance(body.get("type"), str), "'type' in body must be a string."
         assert isinstance(body.get("is_literal"), bool), "'is_literal' in body must be a boolean."
-        
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)
