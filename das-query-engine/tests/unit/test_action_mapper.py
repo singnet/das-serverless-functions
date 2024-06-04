@@ -6,6 +6,7 @@ from action_mapper import ActionMapper
 from actions import ActionType
 from exceptions import UnknownActionDispatcher
 
+
 def test_build_dispatcher_handshake_action():
     expected_actions = Mock()
     action_mapper = ActionMapper()

@@ -1,7 +1,6 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
+
 import pytest
-from exceptions import PayloadMalformed
-from unittest.mock import MagicMock
 from exceptions import PayloadMalformed, UnknownActionDispatcher
 
 patch('utils.dotenv.load_env').start()
@@ -9,14 +8,17 @@ logger_mock = patch('hyperon_das.logger.logger').start()
 validate_payload_mock = patch('validators.validate').start()
 action_dispatcher_mock = patch('action_dispatcher.ActionDispatcher').start()
 
-from handler import handle, _response
+from handler import _response, handle
 
 
-@pytest.mark.parametrize("http_code_response, headers, result", [
-    (200, {"Content-Type": "application/json"}, {}),
-    (500, {"Content-Type": "application/json"}, {}),
-    (404, {"Content-Type": "text/plain"}, ""),
-])
+@pytest.mark.parametrize(
+    "http_code_response, headers, result",
+    [
+        (200, {"Content-Type": "application/json"}, {}),
+        (500, {"Content-Type": "application/json"}, {}),
+        (404, {"Content-Type": "text/plain"}, ""),
+    ],
+)
 def test_response(http_code_response, headers, result):
     r = _response(http_code_response, result, headers)
 
@@ -30,7 +32,9 @@ def test_response(http_code_response, headers, result):
 def test_handle_malformed_payload_action():
     payload = {}
 
-    validate_payload_mock.side_effect = PayloadMalformed(message="Exception at validate: payload malformed")
+    validate_payload_mock.side_effect = PayloadMalformed(
+        message="Exception at validate: payload malformed"
+    )
 
     result = handle(payload)
 
@@ -41,10 +45,7 @@ def test_handle_malformed_payload_action():
 
 
 def test_handle_invalid_action():
-    payload = {
-        "action": "not_exists",
-        "input": {}
-    }
+    payload = {"action": "not_exists", "input": {}}
 
     validate_payload_mock.side_effect = lambda _, body: body
     action_dispatcher_mock.side_effect = UnknownActionDispatcher("unknown action")

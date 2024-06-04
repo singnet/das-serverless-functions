@@ -1,6 +1,7 @@
 import pytest
 from actions import ActionType
-from tests.integration.handle.base_test_action import BaseTestHandlerAction,  metta_type
+from tests.integration.handle.base_test_action import BaseTestHandlerAction, metta_type
+
 
 class TestGetLinkAction(BaseTestHandlerAction):
     @pytest.fixture
@@ -16,7 +17,7 @@ class TestGetLinkAction(BaseTestHandlerAction):
                     "link_type": metta_type,
                     "link_targets": [
                         "a408f6dd446cdd4fa56f82e77fe6c870",
-                        "5e50ef7542bb0fde52aed0d841335790"
+                        "5e50ef7542bb0fde52aed0d841335790",
                     ],
                 },
             }
@@ -29,19 +30,31 @@ class TestGetLinkAction(BaseTestHandlerAction):
         body, status_code = self.make_request(valid_event)
         expected_status_code = 200
 
-        assert status_code == expected_status_code, f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
+        assert (
+            status_code == expected_status_code
+        ), f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
         assert isinstance(body, dict), "body must be a dictionary"
         assert isinstance(body.get("handle"), str), "'handle' in body must be a string."
-        assert isinstance(body.get("composite_type_hash"), str), "'composite_type_hash' in body must be a string."
+        assert isinstance(
+            body.get("composite_type_hash"), str
+        ), "'composite_type_hash' in body must be a string."
         assert isinstance(body.get("is_toplevel"), bool), "'is_toplevel' in body must be a boolean."
-        assert isinstance(body.get("composite_type"), list), "'composite_type' in body must be a list."
-        assert all(isinstance(item, str) for item in body["composite_type"]), "'composite_type' elements in body must be strings."
+        assert isinstance(
+            body.get("composite_type"), list
+        ), "'composite_type' in body must be a list."
+        assert all(
+            isinstance(item, str) for item in body["composite_type"]
+        ), "'composite_type' elements in body must be strings."
 
         assert isinstance(body.get("named_type"), str), "'named_type' in body must be a string."
-        assert isinstance(body.get("named_type_hash"), str), "'named_type_hash' in body must be a string."
+        assert isinstance(
+            body.get("named_type_hash"), str
+        ), "'named_type_hash' in body must be a string."
 
         assert isinstance(body.get("targets"), list), "'targets' in body must be a list."
-        assert all(isinstance(item, str) for item in body["targets"]), "'targets' elements in body must be strings."
+        assert all(
+            isinstance(item, str) for item in body["targets"]
+        ), "'targets' elements in body must be strings."
 
         assert isinstance(body.get("type"), str), "'type' in body must be a string."
 

@@ -24,9 +24,10 @@ class TestCountAtomsAction(BaseTestHandlerAction):
         body, status_code = self.make_request(valid_event)
         expected_status_code = 200
 
-        assert status_code == expected_status_code, \
-            f"Assertion failed:\nReceived: {status_code}\nExpected: {expected_status_code}"
-        
+        assert (
+            status_code == expected_status_code
+        ), f"Assertion failed:\nReceived: {status_code}\nExpected: {expected_status_code}"
+
         assert isinstance(body, tuple), "body must be a tuple."
         assert all(isinstance(item, int) for item in body), "All items in body must be integers."
         assert len(body) == 2, "body must contain exactly two elements."

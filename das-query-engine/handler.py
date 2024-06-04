@@ -1,14 +1,13 @@
 import traceback
+from typing import Any
 
 from action_dispatcher import ActionDispatcher
 from action_mapper import ActionMapper
-from exceptions import PayloadMalformed, UnknownActionDispatcher, UnreachableConnection, Conflict
+from exceptions import Conflict, PayloadMalformed, UnknownActionDispatcher, UnreachableConnection
 from hyperon_das.logger import logger
 from utils.dotenv import load_env
 from validators import validate
 from validators.event import EventValidator
-from typing import Any
-
 
 
 def _response(

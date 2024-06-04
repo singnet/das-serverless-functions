@@ -1,14 +1,13 @@
 import pytest
 from actions import ActionType
-from tests.integration.handle.base_test_action import BaseTestHandlerAction
 from hyperon_das import DistributedAtomSpace
+from tests.integration.handle.base_test_action import BaseTestHandlerAction
 
 
 class TestHandshakeAction(BaseTestHandlerAction):
     @pytest.fixture
     def action_type(self):
         return ActionType.HANDSHAKE
-
 
     @pytest.fixture
     def valid_event(self, action_type):
@@ -33,7 +32,9 @@ class TestHandshakeAction(BaseTestHandlerAction):
         body, status_code = self.make_request(valid_event)
         expected_status_code = 200
 
-        assert status_code == expected_status_code, f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
+        assert (
+            status_code == expected_status_code
+        ), f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
         assert isinstance(body, dict), "body must be a dictionary"
         assert isinstance(body.get("das"), dict), "'das' in body must be a dictionary."
         assert isinstance(body.get("atom_db"), dict), "'atom_db' in body must be a dictionary."
@@ -43,9 +44,12 @@ class TestHandshakeAction(BaseTestHandlerAction):
         assert isinstance(body["das"].get("summary"), str), "'summary' in 'das' must be a string."
 
         assert isinstance(body["atom_db"].get("name"), str), "'name' in 'atom_db' must be a string."
-        assert isinstance(body["atom_db"].get("version"), str), "'version' in 'atom_db' must be a string."
-        assert isinstance(body["atom_db"].get("summary"), str), "'summary' in 'atom_db' must be a string."
-
+        assert isinstance(
+            body["atom_db"].get("version"), str
+        ), "'version' in 'atom_db' must be a string."
+        assert isinstance(
+            body["atom_db"].get("summary"), str
+        ), "'summary' in 'atom_db' must be a string."
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)
