@@ -1,4 +1,3 @@
-from hyperon_das.das import logger
 from incoming import PayloadValidator, datatypes
 
 
