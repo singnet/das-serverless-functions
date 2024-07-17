@@ -21,7 +21,7 @@ integration-tests:
 build: 
 	docker compose build --no-cache
 
-pre-commit: unit-tests-coverage lint
+pre-commit: lint unit-tests-coverage unit-tests integration-tests
 
 serve:
 	@docker compose up --build --force-recreate

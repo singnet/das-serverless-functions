@@ -1,5 +1,5 @@
 ---
-name: Testing
+name: Run Tests & Lint
 
 on:
   pull_request:
@@ -8,19 +8,7 @@ on:
       - master
 
 jobs:
-  unit:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install requirements
-        run: pip3 install -r das-query-engine/requirements.txt
-
-      - name: Run Unit Tests
-        run: make unit-tests unit-tests-coverage
-
-  integration:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,5 +17,10 @@ jobs:
       - name: Set dotenv
         run: cp .env.example .env
 
-      - name: Run Unit Tests
-        run: make integration-tests
+      - name: Install dependencies
+        run: |-
+          pip3 install -r requirements.txt
+          pip3 install -r das-query-engine/requirements.txt
+
+      - name: Run Lint & Tests
+        run: make pre-commit

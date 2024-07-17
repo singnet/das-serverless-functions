@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 from exceptions import PayloadMalformed, UnknownActionDispatcher
@@ -8,7 +8,7 @@ logger_mock = patch('hyperon_das.logger.logger').start()
 validate_payload_mock = patch('validators.validate').start()
 action_dispatcher_mock = patch('action_dispatcher.ActionDispatcher').start()
 
-from handler import _response, handle
+from handler import _response, handle  # noqa: E402
 
 
 @pytest.mark.parametrize(
