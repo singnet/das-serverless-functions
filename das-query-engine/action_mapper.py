@@ -8,10 +8,13 @@ from validators.actions import (
     CreateFieldIndexValidator,
     CustomQueryValidator,
     FetchValidator,
+    GetAtomsByField,
+    GetAtomsByTextField,
     GetAtomValidator,
     GetIncomingLinksValidator,
     GetLinksValidator,
     GetLinkValidator,
+    GetNodeByNameStartingWith,
     GetNodeValidator,
     HandshakeValidator,
     QueryValidator,
@@ -81,6 +84,18 @@ class ActionMapper:
             ActionType.CREATE_CONTEXT: {
                 "action": actions.create_context,
                 "validator": CreateContextValidator,
+            },
+            ActionType.GET_ATOMS_BY_FIELD: {
+                "action": actions.get_atoms_by_field,
+                "validator": GetAtomsByField,
+            },
+            ActionType.GET_ATOMS_BY_TEXT_FIELD: {
+                "action": actions.get_atoms_by_text_field,
+                "validator": GetAtomsByTextField,
+            },
+            ActionType.GET_NODE_BY_NAME_STARTING_WITH: {
+                "action": actions.get_node_by_name_starting_with,
+                "validator": GetNodeByNameStartingWith,
             },
         }
 
