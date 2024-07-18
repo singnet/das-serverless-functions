@@ -232,7 +232,7 @@ class Actions:
     ) -> Tuple[str, int]:
         try:
             response = self.das.create_field_index(
-                atom_type=atom_type, field=field, type=named_type, composite_type=composite_type
+                atom_type=atom_type, field=field, named_type=named_type, composite_type=composite_type
             )
             return response, HTTPStatus.OK
         except ValueError as e:
