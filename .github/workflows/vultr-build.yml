@@ -72,7 +72,7 @@ jobs:
         run: faas-cli template pull https://github.com/singnet/das-openfaas-templates
 
       - name: Run shrinkwrap build
-        run: faas-cli build --image trueagi/openfaas:${{ env.FUNCTION_VERSION }}-${{ env.FUNCTION_NAME }} --name ${{ env.FUNCTION_NAME }} --lang python3-http --handler ./${{ github.event.inputs.function }} --build-label fn.version=${{ env.FUNCTION_VERSION }}
+        run: faas-cli build --image trueagi/openfaas:${{ env.FUNCTION_NAME }}-${{ env.FUNCTION_VERSION }} --name ${{ env.FUNCTION_NAME }} --lang python3-http --handler ./${{ github.event.inputs.function }} --build-label fn.version=${{ env.FUNCTION_VERSION }}
 
       - name: Login to DockerHub
         if: success()
@@ -83,6 +83,6 @@ jobs:
 
       - name: Push Image to Registry
         run: |-
-          docker image push trueagi/openfaas:${{ env.FUNCTION_VERSION }}-${{ env.FUNCTION_NAME }}
-          docker image tag trueagi/openfaas:${{ env.FUNCTION_VERSION }}-${{ env.FUNCTION_NAME }} trueagi/openfaas:latest-${{ env.FUNCTION_NAME }}
+          docker image push trueagi/openfaas:${{ env.FUNCTION_NAME }}-${{ env.FUNCTION_VERSION }}
+          docker image tag trueagi/openfaas:${{ env.FUNCTION_NAME }}-${{ env.FUNCTION_VERSION }} trueagi/openfaas:latest-${{ env.FUNCTION_NAME }}
           docker image push trueagi/openfaas:latest-${{ env.FUNCTION_NAME }}
