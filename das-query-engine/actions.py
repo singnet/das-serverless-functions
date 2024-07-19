@@ -27,6 +27,9 @@ class ActionType(str, Enum):
     CUSTOM_QUERY = "custom_query"
     FETCH = "fetch"
     CREATE_CONTEXT = "create_context"
+    GET_ATOMS_BY_FIELD = "get_atoms_by_field"
+    GET_ATOMS_BY_TEXT_FIELD = "get_atoms_by_text_field"
+    GET_NODE_BY_NAME_STARTING_WITH = "get_node_by_name_starting_with"
 
 
 class Actions:
@@ -136,7 +139,7 @@ class Actions:
         target_types: List[str] = None,
         link_targets: List[str] = None,
         kwargs={},
-    ) -> Tuple[List[str | dict], int]:
+    ) -> Tuple[List[str | dict], int] | Tuple[str, int]:
         try:
             return (
                 self.das.get_links(link_type, target_types, link_targets, **kwargs),
@@ -155,7 +158,7 @@ class Actions:
         self,
         atom_handle: str,
         kwargs,
-    ) -> Tuple[List[Tuple[dict, List[dict]] | dict], int]:
+    ) -> Tuple[List[Tuple[dict, List[dict]] | dict], int] | Tuple[str, int]:
         try:
             return self.das.get_incoming_links(atom_handle, **kwargs), HTTPStatus.OK
         except atom_db_exceptions.AtomDoesNotExist as e:
@@ -169,7 +172,7 @@ class Actions:
         self,
         query: List[Dict[str, Any]] | Dict[str, Any],
         parameters: Dict[str, Any] = {"no_iterator": True},
-    ) -> Tuple[List[Dict[str, Any]], int]:
+    ) -> Tuple[List[Dict[str, Any]], int] | Tuple[str, int]:
         try:
             return self.das.query(query, parameters), HTTPStatus.OK
         except (atom_db_exceptions.LinkDoesNotExist, atom_db_exceptions.AtomDoesNotExist) as e:
@@ -180,7 +183,38 @@ class Actions:
             return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @execution_time_tracker
-    def commit_changes(self, kwargs={}) -> Tuple[None, int]:
+    @remove_none_args
+    def get_atoms_by_field(
+        self,
+        query: Dict[str, Any],
+    ) -> Tuple[List[str], int] | Tuple[str, int]:
+        try:
+            return self.das.get_atoms_by_field(query), HTTPStatus.OK
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
+
+    @execution_time_tracker
+    @remove_none_args
+    def get_atoms_by_text_field(
+        self, text_value: str, field: str, text_index_id: str
+    ) -> Tuple[List[str], int] | Tuple[str, int]:
+        try:
+            return self.das.get_atoms_by_text_field(text_value, field, text_index_id), HTTPStatus.OK
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
+
+    @execution_time_tracker
+    @remove_none_args
+    def get_node_by_name_starting_with(
+        self, node_type: str, startswith: str
+    ) -> Tuple[List[str], int] | Tuple[str, int]:
+        try:
+            return self.das.get_node_by_name_starting_with(node_type, startswith), HTTPStatus.OK
+        except Exception as e:
+            return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
+
+    @execution_time_tracker
+    def commit_changes(self, kwargs={}) -> Tuple[None, int] | Tuple[str, int]:
         try:
             return self.das.commit_changes(**kwargs), HTTPStatus.OK
         except atom_db_exceptions.InvalidOperationException as e:
@@ -193,12 +227,12 @@ class Actions:
         self,
         atom_type: str,
         field: str,
-        type: str = None,
+        named_type: str = None,
         composite_type: List[Any] = None,
     ) -> Tuple[str, int]:
         try:
             response = self.das.create_field_index(
-                atom_type=atom_type, field=field, type=type, composite_type=composite_type
+                atom_type=atom_type, field=field, named_type=named_type, composite_type=composite_type
             )
             return response, HTTPStatus.OK
         except ValueError as e:
@@ -207,9 +241,9 @@ class Actions:
             return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @execution_time_tracker
-    def custom_query(self, index_id: str, kwargs={}) -> Tuple[str, int]:
+    def custom_query(self, index_id: str, query: Dict[str, Any], kwargs={}) -> Tuple[str, int]:
         try:
-            response = self.das.custom_query(index_id, **kwargs)
+            response = self.das.custom_query(index_id, query, **kwargs)
             return response, HTTPStatus.OK
         except Exception as e:
             return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
@@ -217,7 +251,7 @@ class Actions:
     @execution_time_tracker
     def fetch(
         self, query: List[dict] | dict = None, host: str = None, port: int = None, kwargs={}
-    ) -> Tuple[bool, int]:
+    ) -> Tuple[bool, int] | Tuple[str, int]:
         try:
             response = self.das.fetch(query=query, host=host, port=port, **kwargs)
             return response, HTTPStatus.OK
@@ -225,7 +259,9 @@ class Actions:
             return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
 
     @execution_time_tracker
-    def create_context(self, name: str, queries: List[list[dict] | dict] = []) -> Tuple[bool, int]:
+    def create_context(
+        self, name: str, queries: List[list[dict] | dict] = []
+    ) -> Tuple[bool, int] | Tuple[str, int]:
         try:
             response = self.das.create_context(name=name, queries=queries)
             return response, HTTPStatus.OK

@@ -7,16 +7,20 @@ class BaseException(Exception):
 
 
 class Conflict(BaseException):
+    # pragma: no cover
     ...
 
 
 class UnknownActionDispatcher(BaseException):
+    # pragma: no cover
     ...
 
 
 class UnreachableConnection(BaseException):
+    # pragma: no cover
     ...
 
 
 class PayloadMalformed(BaseException):
+    # pragma: no cover
     ...

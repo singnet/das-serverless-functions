@@ -132,3 +132,55 @@ def test_build_dispatcher_fetch_action():
 
     assert hasattr(dispatchers[ActionType.FETCH]["validator"], "validate")
     assert dispatchers[ActionType.FETCH]["action"] == expected_actions.fetch
+
+
+def test_build_dispatcher_custom_query_action():
+    expected_actions = Mock()
+    action_mapper = ActionMapper()
+    action_mapper._get_actions = Mock(return_value=expected_actions)
+
+    dispatchers = action_mapper._build_dispatcher()
+
+    assert hasattr(dispatchers[ActionType.CUSTOM_QUERY]["validator"], "validate")
+    assert dispatchers[ActionType.CUSTOM_QUERY]["action"] == expected_actions.custom_query
+
+
+def test_build_dispatcher_get_atoms_by_field_action():
+    expected_actions = Mock()
+    action_mapper = ActionMapper()
+    action_mapper._get_actions = Mock(return_value=expected_actions)
+
+    dispatchers = action_mapper._build_dispatcher()
+
+    assert hasattr(dispatchers[ActionType.GET_ATOMS_BY_FIELD]["validator"], "validate")
+    assert (
+        dispatchers[ActionType.GET_ATOMS_BY_FIELD]["action"] == expected_actions.get_atoms_by_field
+    )
+
+
+def test_build_dispatcher_get_atoms_by_text_field_action():
+    expected_actions = Mock()
+    action_mapper = ActionMapper()
+    action_mapper._get_actions = Mock(return_value=expected_actions)
+
+    dispatchers = action_mapper._build_dispatcher()
+
+    assert hasattr(dispatchers[ActionType.GET_ATOMS_BY_TEXT_FIELD]["validator"], "validate")
+    assert (
+        dispatchers[ActionType.GET_ATOMS_BY_TEXT_FIELD]["action"]
+        == expected_actions.get_atoms_by_text_field
+    )
+
+
+def test_build_dispatcher_get_node_by_name_starting_with_action():
+    expected_actions = Mock()
+    action_mapper = ActionMapper()
+    action_mapper._get_actions = Mock(return_value=expected_actions)
+
+    dispatchers = action_mapper._build_dispatcher()
+
+    assert hasattr(dispatchers[ActionType.GET_NODE_BY_NAME_STARTING_WITH]["validator"], "validate")
+    assert (
+        dispatchers[ActionType.GET_NODE_BY_NAME_STARTING_WITH]["action"]
+        == expected_actions.get_node_by_name_starting_with
+    )

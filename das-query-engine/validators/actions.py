@@ -90,7 +90,7 @@ class CreateFieldIndexValidator(PayloadValidator):
 
     atom_type = datatypes.String(required=True)
     field = datatypes.String(required=True)
-    type = datatypes.Function(
+    named_type = datatypes.Function(
         lambda value, *args, **kwargs: (isinstance(value, str) if value is not None else True),
         required=False,
     )
@@ -104,10 +104,35 @@ class CustomQueryValidator(PayloadValidator):
     strict = True
 
     index_id = datatypes.String(required=True)
+    query = datatypes.Function(
+        lambda value, *args, **kwargs: (isinstance(value, dict)), required=True
+    )
     kwargs = datatypes.Function(
         lambda value, *args, **kwargs: (isinstance(value, dict) if value is not None else True),
         required=False,
     )
+
+
+class GetAtomsByField(PayloadValidator):
+    strict = True
+
+    query = datatypes.Function(
+        lambda value, *args, **kwargs: (isinstance(value, dict)), required=True
+    )
+
+
+class GetAtomsByTextField(PayloadValidator):
+    strict = True
+
+    text_value = datatypes.String(required=True)
+    field = datatypes.String(required=False)
+    text_index_id = datatypes.String(required=False)
+
+
+class GetNodeByNameStartingWith(PayloadValidator):
+    strict = True
+    node_type = datatypes.String(required=True)
+    startswith = datatypes.String(required=False)
 
 
 class FetchValidator(PayloadValidator):
