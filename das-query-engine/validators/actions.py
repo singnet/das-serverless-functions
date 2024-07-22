@@ -89,7 +89,10 @@ class CreateFieldIndexValidator(PayloadValidator):
     strict = True
 
     atom_type = datatypes.String(required=True)
-    field = datatypes.String(required=True)
+    fields = datatypes.Function(
+        lambda value, *args, **kwargs: (isinstance(value, list)),
+        required=True,
+    )
     named_type = datatypes.Function(
         lambda value, *args, **kwargs: (isinstance(value, str) if value is not None else True),
         required=False,
@@ -98,6 +101,7 @@ class CreateFieldIndexValidator(PayloadValidator):
         lambda value, *args, **kwargs: (isinstance(value, list) if value is not None else True),
         required=False,
     )
+    index_type = datatypes.String(required=False)
 
 
 class CustomQueryValidator(PayloadValidator):

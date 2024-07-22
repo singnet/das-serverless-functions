@@ -196,7 +196,7 @@ class Actions:
     @execution_time_tracker
     @remove_none_args
     def get_atoms_by_text_field(
-        self, text_value: str, field: str, text_index_id: str
+        self, text_value: str, field: str = None, text_index_id: str = None
     ) -> Tuple[List[str], int] | Tuple[str, int]:
         try:
             return self.das.get_atoms_by_text_field(text_value, field, text_index_id), HTTPStatus.OK
@@ -226,13 +226,15 @@ class Actions:
     def create_field_index(
         self,
         atom_type: str,
-        field: str,
+        fields: List[str],
         named_type: str = None,
         composite_type: List[Any] = None,
+        index_type: str = None
     ) -> Tuple[str, int]:
         try:
             response = self.das.create_field_index(
-                atom_type=atom_type, field=field, named_type=named_type, composite_type=composite_type
+                atom_type=atom_type, field=fields, named_type=named_type,
+                composite_type=composite_type, index_type=index_type
             )
             return response, HTTPStatus.OK
         except ValueError as e:
