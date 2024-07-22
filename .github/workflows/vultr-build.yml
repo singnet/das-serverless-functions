@@ -62,7 +62,7 @@ jobs:
 
       - name: Set function variables
         run: |-
-          FUNCTION_NAME=$(echo ${{ github.event.inputs.function }} | sed 's/^das-//;s/-//g')
+          FUNCTION_NAME=$(echo ${{ github.event.inputs.function }} | sed 's/^das-//')
           FUNCTION_VERSION=${{ github.event.inputs.version }}
 
           echo "FUNCTION_NAME=$FUNCTION_NAME" >> $GITHUB_ENV
