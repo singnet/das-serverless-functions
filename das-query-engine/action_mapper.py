@@ -18,6 +18,7 @@ from validators.actions import (
     GetNodeValidator,
     HandshakeValidator,
     QueryValidator,
+    CountAtomsValidator
 )
 
 
@@ -39,7 +40,7 @@ class ActionMapper:
             },
             ActionType.COUNT_ATOMS: {
                 "action": actions.count_atoms,
-                "validator": None,
+                "validator": CountAtomsValidator,
             },
             ActionType.GET_ATOM: {
                 "action": actions.get_atom,

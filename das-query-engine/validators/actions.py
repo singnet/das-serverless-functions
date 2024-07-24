@@ -14,6 +14,15 @@ class GetAtomValidator(PayloadValidator):
     handle = datatypes.String(required=True)
 
 
+class CountAtomsValidator(PayloadValidator):
+    strict = True
+
+    parameters = datatypes.Function(
+        lambda value, *args, **kwargs: (isinstance(value, dict) if value is not None else True),
+        required=False,
+    )
+
+
 class GetNodeValidator(PayloadValidator):
     strict = True
 
