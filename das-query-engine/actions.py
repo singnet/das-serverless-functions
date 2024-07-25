@@ -87,7 +87,7 @@ class Actions:
         return remote_info, http_status_code
 
     @execution_time_tracker
-    def count_atoms(self, parameters: Dict[str, Any] = None) -> Tuple[Tuple[int, int], int]:
+    def count_atoms(self, parameters: Dict[str, Any] = None) -> Tuple[Dict[str, int], int]:
         return self.das.count_atoms(parameters), HTTPStatus.OK
 
     @remove_none_args
