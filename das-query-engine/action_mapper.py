@@ -4,6 +4,7 @@ from actions import Actions, ActionType
 from exceptions import UnknownActionDispatcher
 from validators.actions import (
     CommitChangesValidator,
+    CountAtomsValidator,
     CreateContextValidator,
     CreateFieldIndexValidator,
     CustomQueryValidator,
@@ -18,7 +19,6 @@ from validators.actions import (
     GetNodeValidator,
     HandshakeValidator,
     QueryValidator,
-    CountAtomsValidator
 )
 
 

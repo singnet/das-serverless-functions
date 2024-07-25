@@ -40,7 +40,7 @@ def test_build_dispatcher_count_atoms_action():
 
     assert isinstance(dispatchers, dict)
     assert dispatchers[ActionType.COUNT_ATOMS]["action"] == expected_actions.count_atoms
-    assert dispatchers[ActionType.COUNT_ATOMS]["validator"] is None
+    assert hasattr(dispatchers[ActionType.COUNT_ATOMS]["validator"], "validate")
 
 
 def test_build_dispatcher_get_atom_action():
