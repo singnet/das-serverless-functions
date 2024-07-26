@@ -4,6 +4,7 @@ from actions import Actions, ActionType
 from exceptions import UnknownActionDispatcher
 from validators.actions import (
     CommitChangesValidator,
+    CountAtomsValidator,
     CreateContextValidator,
     CreateFieldIndexValidator,
     CustomQueryValidator,
@@ -39,7 +40,7 @@ class ActionMapper:
             },
             ActionType.COUNT_ATOMS: {
                 "action": actions.count_atoms,
-                "validator": None,
+                "validator": CountAtomsValidator,
             },
             ActionType.GET_ATOM: {
                 "action": actions.get_atom,

@@ -87,8 +87,8 @@ class Actions:
         return remote_info, http_status_code
 
     @execution_time_tracker
-    def count_atoms(self) -> Tuple[Tuple[int, int], int]:
-        return self.das.count_atoms(), HTTPStatus.OK
+    def count_atoms(self, parameters: Dict[str, Any] = None) -> Tuple[Dict[str, int], int]:
+        return self.das.count_atoms(parameters), HTTPStatus.OK
 
     @remove_none_args
     @execution_time_tracker
@@ -229,12 +229,15 @@ class Actions:
         fields: List[str],
         named_type: str = None,
         composite_type: List[Any] = None,
-        index_type: str = None
+        index_type: str = None,
     ) -> Tuple[str, int]:
         try:
             response = self.das.create_field_index(
-                atom_type=atom_type, field=fields, named_type=named_type,
-                composite_type=composite_type, index_type=index_type
+                atom_type=atom_type,
+                fields=fields,
+                named_type=named_type,
+                composite_type=composite_type,
+                index_type=index_type,
             )
             return response, HTTPStatus.OK
         except ValueError as e:

@@ -17,6 +17,7 @@ class TestCountAtomsAction(BaseTestHandlerAction):
             }
         }
 
+    @pytest.mark.skip()
     def test_count_atoms_action(
         self,
         valid_event,

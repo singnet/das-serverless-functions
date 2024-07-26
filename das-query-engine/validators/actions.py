@@ -14,6 +14,15 @@ class GetAtomValidator(PayloadValidator):
     handle = datatypes.String(required=True)
 
 
+class CountAtomsValidator(PayloadValidator):
+    strict = True
+
+    parameters = datatypes.Function(
+        lambda value, *args, **kwargs: (isinstance(value, dict) if value is not None else True),
+        required=False,
+    )
+
+
 class GetNodeValidator(PayloadValidator):
     strict = True
 
@@ -109,7 +118,7 @@ class CustomQueryValidator(PayloadValidator):
 
     index_id = datatypes.String(required=True)
     query = datatypes.Function(
-        lambda value, *args, **kwargs: (isinstance(value, dict)), required=True
+        lambda value, *args, **kwargs: isinstance(value, dict), required=True
     )
     kwargs = datatypes.Function(
         lambda value, *args, **kwargs: (isinstance(value, dict) if value is not None else True),
