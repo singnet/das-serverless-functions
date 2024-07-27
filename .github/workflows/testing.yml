@@ -2,13 +2,14 @@
 name: Run Tests & Lint
 
 on:
+  workflow_call:
+
   pull_request:
     branches:
       - develop
       - master
 
   workflow_dispatch:
-    inputs:
 
 jobs:
   lint:
