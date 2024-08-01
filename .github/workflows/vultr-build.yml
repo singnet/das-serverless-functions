@@ -69,5 +69,5 @@ jobs:
       - name: Push Image to Registry
         run: |-
           docker image push trueagi/openfaas:${{ env.FUNCTION_NAME }}-${{ env.FUNCTION_VERSION }}
-          docker image tag trueagi/openfaas:${{ env.FUNCTION_NAME }}-${{ env.FUNCTION_VERSION }} trueagi/openfaas:latest-${{ env.FUNCTION_NAME }}
-          docker image push trueagi/openfaas:latest-${{ env.FUNCTION_NAME }}
+          docker image tag trueagi/openfaas:${{ env.FUNCTION_NAME }}-${{ env.FUNCTION_VERSION }} trueagi/openfaas:${{ env.FUNCTION_NAME }}-latest
+          docker image push trueagi/openfaas:${{ env.FUNCTION_NAME }}-latest
