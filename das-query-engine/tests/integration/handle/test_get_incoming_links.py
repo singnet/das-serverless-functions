@@ -37,43 +37,42 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
         assert len(body) > 0, "body must contain at least one element."
 
         for item in body:
-            assert isinstance(item, tuple), "Each item in body must be a tuple."
-            assert len(item) == 2, "Each tuple in body must contain two elements."
-
-            item_dict, item_tuple = item
-            assert isinstance(item_dict, dict), "First element of tuple must be a dictionary."
-            assert isinstance(item_tuple, list), "Second element of tuple must be a list."
+            assert isinstance(item, dict), "Each item in body must be a dict."
+            # assert len(item) == x, "List in body must contain x elements."
 
             assert isinstance(
-                item_dict.get("handle"), str
-            ), "'handle' in item_dict must be a string."
-            assert isinstance(item_dict.get("type"), str), "'type' in item_dict must be a string."
+                item.get("handle"), str
+            ), "'handle' in item must be a string."
+            assert isinstance(item.get("type"), str), "'type' in item must be a string."
             assert isinstance(
-                item_dict.get("composite_type_hash"), str
-            ), "'composite_type_hash' in item_dict must be a string."
+                item.get("composite_type_hash"), str
+            ), "'composite_type_hash' in item must be a string."
             assert isinstance(
-                item_dict.get("is_toplevel"), bool
-            ), "'is_toplevel' in item_dict must be a boolean."
+                item.get("is_toplevel"), bool
+            ), "'is_toplevel' in item must be a boolean."
             assert isinstance(
-                item_dict.get("composite_type"), list
-            ), "'composite_type' in item_dict must be a list of strings."
+                item.get("composite_type"), list
+            ), "'composite_type' in item must be a list of strings."
             assert all(
-                isinstance(item, str) for item in item_dict.get("composite_type")
-            ), "'composite_type' elements in item_dict must be strings."
+                isinstance(item, str) for item in item.get("composite_type")
+            ), "'composite_type' elements in item must be strings."
             assert isinstance(
-                item_dict.get("named_type"), str
-            ), "'named_type' in item_dict must be a string."
+                item.get("named_type"), str
+            ), "'named_type' in item must be a string."
             assert isinstance(
-                item_dict.get("named_type_hash"), str
-            ), "'named_type_hash' in item_dict must be a string."
+                item.get("named_type_hash"), str
+            ), "'named_type_hash' in item must be a string."
             assert isinstance(
-                item_dict.get("targets"), list
-            ), "'targets' in item_dict must be a list of strings."
+                item.get("targets"), list
+            ), "'targets' in item must be a list of strings."
             assert all(
-                isinstance(item, str) for item in item_dict.get("targets")
-            ), "'targets' elements in item_dict must be strings."
+                isinstance(item, str) for item in item.get("targets")
+            ), "'targets' elements in item must be strings."
+            assert isinstance(
+                item.get("targets_document"), list
+            ), "'targets_document' in item must be a list of dictionaries."
 
-            for atom in item_tuple:
+            for atom in item.get("targets_document"):
                 assert isinstance(atom, dict), f"{type(atom)} is not a dictionary."
                 assert isinstance(atom.get("handle"), str), "'handle' in atom must be a string."
                 assert isinstance(atom.get("type"), str), "'type' in atom must be a string."
