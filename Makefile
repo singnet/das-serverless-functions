@@ -1,11 +1,11 @@
 isort:
-	@isort --settings-path .isort.cfg ./hyperon_das ./tests
+	@isort --settings-path .isort.cfg ./das-query-engine/tests
 
 black:
-	@black --config .black.cfg ./hyperon_das ./tests
+	@black --config .black.cfg ./das-query-engine/tests
 
 flake8:
-	@flake8 --config .flake8.cfg ./hyperon_das ./tests --exclude ./hyperon_das/grpc/
+	@flake8 --config .flake8.cfg ./das-query-engine/tests/
 
 lint: isort black flake8
 
