@@ -1,11 +1,11 @@
 isort:
-	@isort ./das-query-engine ./das-query-engine/tests --multi-line=3 --trailing-comma --force-grid-wrap=0 --use-parentheses --line-width=100
+	@isort --settings-path .isort.cfg ./das-query-engine/tests
 
 black:
-	@black ./das-query-engine ./das-query-engine/tests --line-length 100 -t py37 --skip-string-normalization
+	@black --config .black.cfg ./das-query-engine/tests
 
 flake8:
-	@flake8 ./das-query-engine ./das-query-engine/tests --show-source --extend-ignore E501
+	@flake8 --config .flake8.cfg ./das-query-engine/tests/
 
 lint: isort black flake8
 
@@ -18,7 +18,7 @@ unit-tests-coverage:
 integration-tests:
 	./scripts/run-tests.sh integration
 
-build: 
+build:
 	docker compose build --no-cache
 
 pre-commit: lint unit-tests-coverage unit-tests integration-tests
