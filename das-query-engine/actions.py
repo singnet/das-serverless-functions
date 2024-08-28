@@ -112,7 +112,7 @@ class Actions:
     ) -> Tuple[str | dict, int]:
         try:
             return self.das.get_node(node_type, node_name), HTTPStatus.OK
-        except atom_db_exceptions.NodeDoesNotExist as e:
+        except atom_db_exceptions.AtomDoesNotExist as e:
             return str(e), HTTPStatus.NOT_FOUND
         except Exception as e:
             return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
@@ -126,7 +126,7 @@ class Actions:
     ) -> Tuple[str | Dict, int]:
         try:
             return self.das.get_link(link_type, link_targets), HTTPStatus.OK
-        except atom_db_exceptions.LinkDoesNotExist as e:
+        except atom_db_exceptions.AtomDoesNotExist as e:
             return str(e), HTTPStatus.NOT_FOUND
         except Exception as e:
             return str(e), HTTPStatus.INTERNAL_SERVER_ERROR
@@ -145,7 +145,7 @@ class Actions:
                 self.das.get_links(link_type, target_types, link_targets, **kwargs),
                 HTTPStatus.OK,
             )
-        except (atom_db_exceptions.LinkDoesNotExist, atom_db_exceptions.AtomDoesNotExist) as e:
+        except atom_db_exceptions.AtomDoesNotExist as e:
             return str(e), HTTPStatus.NOT_FOUND
         except ValueError as e:
             return str(e), HTTPStatus.BAD_REQUEST
@@ -175,7 +175,7 @@ class Actions:
     ) -> Tuple[List[Dict[str, Any]], int] | Tuple[str, int]:
         try:
             return self.das.query(query, parameters), HTTPStatus.OK
-        except (atom_db_exceptions.LinkDoesNotExist, atom_db_exceptions.AtomDoesNotExist) as e:
+        except atom_db_exceptions.AtomDoesNotExist as e:
             return str(e), HTTPStatus.NOT_FOUND
         except (das_exceptions.UnexpectedQueryFormat, ValueError) as e:
             return str(e), HTTPStatus.BAD_REQUEST
@@ -270,7 +270,7 @@ class Actions:
         try:
             response = self.das.create_context(name=name, queries=queries)
             return response, HTTPStatus.OK
-        except (atom_db_exceptions.LinkDoesNotExist, atom_db_exceptions.AtomDoesNotExist) as e:
+        except atom_db_exceptions.AtomDoesNotExist as e:
             return str(e), HTTPStatus.NOT_FOUND
         except (
             atom_db_exceptions.AddNodeException,
