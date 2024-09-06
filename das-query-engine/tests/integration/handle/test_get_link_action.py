@@ -1,6 +1,6 @@
 import pytest
 from actions import ActionType
-from tests.integration.handle.base_test_action import BaseTestHandlerAction, metta_type
+from tests.integration.handle.base_test_action import BaseTestHandlerAction, expression
 
 
 class TestGetLinkAction(BaseTestHandlerAction):
@@ -14,10 +14,11 @@ class TestGetLinkAction(BaseTestHandlerAction):
             "body": {
                 "action": action_type,
                 "input": {
-                    "link_type": metta_type,
+                    "link_type": expression,
                     "link_targets": [
-                        "a408f6dd446cdd4fa56f82e77fe6c870",
-                        "5e50ef7542bb0fde52aed0d841335790",
+                        "0ca31260e280b30d70238d08e150b78d",
+                        "ae7ab1a9791ca0dcbf54ca7955bbdbc9",
+                        "6872b1cd2cfbc483ac52687852e5f1ad",
                     ],
                 },
             }

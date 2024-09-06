@@ -11,7 +11,7 @@ mammal = '"mammal"'
 symbol = 'Symbol'
 concept = 'Concept'
 similarity = 'Similarity'
-metta_type = 'MettaType'
+# metta_type = 'MettaType'
 expression = 'Expression'
 inheritance = 'Inheritance'
 
