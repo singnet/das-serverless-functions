@@ -102,7 +102,7 @@ This feature has been implemented to allow developers to test the integration of
    QUERY_ENGINE_PACKAGE_PATH=/path/to/your/query/engine/package
    ```
 
-   Make sure to replace `/path/to/your/atomdb/package` and `/path/to/your/query/engine/package` with the actual paths of the AtomDB and Query Engine packages on your system.
+   Make sure to make the variables point to the PACKAGE directories, not the REPOSITORY root.
 
 3. If you prefer to use the latest versions of the AtomDB and Query Engine packages published on PyPI, leave the variables empty:
 
