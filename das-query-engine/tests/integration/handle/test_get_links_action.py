@@ -1,6 +1,7 @@
 import pytest
 from actions import ActionType
 from tests.integration.handle.base_test_action import BaseTestHandlerAction, expression, symbol
+import hyperon_das.link_filters as link_filter
 
 
 class TestGetLinksAction(BaseTestHandlerAction):
@@ -14,12 +15,17 @@ class TestGetLinksAction(BaseTestHandlerAction):
             "body": {
                 "action": action_type,
                 "input": {
-                    "link_type": expression,
-                    "target_types": [
-                        symbol,
-                        symbol,
-                        symbol,
-                    ],
+                    "link_filter": {
+                        "filter_type": link_filter.LinkFilterType.FLAT_TYPE_TEMPLATE,
+                        "toplevel_only": False,
+                        "link_type": expression,
+                        "target_types": [
+                            symbol,
+                            symbol,
+                            symbol,
+                        ],
+                        "targets": []
+                    }
                 },
             }
         }

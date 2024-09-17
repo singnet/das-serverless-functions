@@ -7,6 +7,7 @@ from exceptions import UnreachableConnection
 from hyperon_das import DistributedAtomSpace
 from hyperon_das import exceptions as das_exceptions
 from hyperon_das.logger import logger
+import hyperon_das.link_filters as link_filters
 from hyperon_das_atomdb import exceptions as atom_db_exceptions
 from utils.decorators import execution_time_tracker, remove_none_args
 from utils.version import compare_minor_versions
@@ -135,14 +136,27 @@ class Actions:
     @execution_time_tracker
     def get_links(
         self,
-        link_type: str,
-        target_types: List[str] = None,
-        link_targets: List[str] = None,
-        kwargs={},
+        link_filter: dict = {}
     ) -> Tuple[List[str | dict], int] | Tuple[str, int]:
+        if link_filter["filter_type"] == link_filters.LinkFilterType.FLAT_TYPE_TEMPLATE:
+            link_filter_obj = link_filters.FlatTypeTemplate(
+                link_filter["target_types"],
+                link_filter["link_type"],
+                link_filter["toplevel_only"])
+        elif link_filter["filter_type"] == link_filters.LinkFilterType.NAMED_TYPE:
+            link_filter_obj = link_filters.NamedType(
+                link_filter["link_type"],
+                link_filter["toplevel_only"])
+        elif link_filter["filter_type"] == link_filters.LinkFilterType.TARGETS:
+            link_filter_obj = link_filters.NamedType(
+                link_filter["targets"],
+                link_filter["link_type"],
+                link_filter["toplevel_only"])
+        else:
+            return f"Invalid link_filter object: {link_filter_obj}", HTTPStatus.BAD_REQUEST
         try:
             return (
-                self.das.get_links(link_type, target_types, link_targets, **kwargs),
+                self.das.get_links(link_filter_obj),
                 HTTPStatus.OK,
             )
         except atom_db_exceptions.AtomDoesNotExist as e:

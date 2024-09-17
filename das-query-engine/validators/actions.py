@@ -40,12 +40,9 @@ class GetLinkValidator(PayloadValidator):
 class GetLinksValidator(PayloadValidator):
     strict = True
 
-    link_type = datatypes.String(required=True)
-    target_types = datatypes.Array(required=False)
-    link_targets = datatypes.Array(required=False)
-    kwargs = datatypes.Function(
+    link_filter = datatypes.Function(
         lambda value, *args, **kwargs: (isinstance(value, dict) if value is not None else True),
-        required=False,
+        required=True,
     )
 
 
