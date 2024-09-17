@@ -33,12 +33,9 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
         assert (
             status_code == expected_status_code
         ), f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
-        assert isinstance(body, tuple), "body must be a tuple."
-        assert len(body) == 2, "body must contain two elements."
-        cursor, items = body
-        assert isinstance(cursor, int) or cursor is None
-        assert isinstance(items, list)
-        
+        assert isinstance(body, list), "body must be a tuple."
+        items = body
+        assert len(items) == 9, "body must contain nine elements."
 
         for item in items:
             assert isinstance(item, dict), "Each item in body must be a dict."
