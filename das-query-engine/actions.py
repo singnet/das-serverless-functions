@@ -148,7 +148,7 @@ class Actions:
                 link_filter["link_type"],
                 link_filter["toplevel_only"])
         elif link_filter["filter_type"] == link_filters.LinkFilterType.TARGETS:
-            link_filter_obj = link_filters.NamedType(
+            link_filter_obj = link_filters.Targets(
                 link_filter["targets"],
                 link_filter["link_type"],
                 link_filter["toplevel_only"])
