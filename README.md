@@ -28,7 +28,7 @@ OpenFaaS, or Open Functions as a Service, is an open-source platform simplifying
 The project architecture consists of:
 
 - **Redis and MongoDB**: Databases used by the application.
-- **Canonical Load**: Temporary container to load initial data into Redis and MongoDB databases.
+- **Metta Parser**: Temporary container to load initial data into Redis and MongoDB databases.
 - **OpenFaaS**: Primary container hosting the OpenFaaS function, equipped with the faas-cli.
 - **Function Container**: Internal container within OpenFaaS, responsible for handling and processing requests.
 - **das-query-engine**: Operates on the same network as the 'openfaas' container.
@@ -61,11 +61,22 @@ The project architecture consists of:
    make serve
    ```
 
-   This will start containers for Redis, MongoDB, and a temporary container named 'canonical-load'. The latter is used to load initial data into the Redis and MongoDB databases. After its execution, a container named 'openfaas' will start, which includes the faas-cli.
+   This will start containers for Redis, MongoDB, and a temporary container named 'das-metta-parser'. The latter is used to load initial data into the Redis and MongoDB databases. After its execution, a container named 'openfaas' will start, which includes the faas-cli.
 
 4. **Executing the Function**
 
    Once the environment is initialized, you can execute the OpenFaaS function. The function resides within a container inside the 'openfaas' container, configured to handle requests.
+
+   To execute the function, you need to make POST requests with the header Content-Type: application/octet-stream. The request must be sent in binary format because it needs to be pickled in Python. Here's an example of how to make a request using curl:
+
+   ```bash
+   curl -X POST \
+     -H "Content-Type: application/octet-stream" \
+     --data-binary "@/tmp/data.pkl" \
+     http://localhost:8080
+   ```
+
+   In this example, `/tmp/data.pkl` is the file containing your serialized data in pickle format. Make sure to replace this path with the actual path to your data file.
 
 5. **Shutting Down the Environment**
 
