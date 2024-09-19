@@ -102,24 +102,6 @@ The local architecture includes the following components:
    make stop
    ```
 
-### Testing
-
-To execute tests, the following commands are available:
-
-- Run integration tests:
-
-  ```bash
-  make integration-tests
-  ```
-
-- Run unit tests:
-
-  ```bash
-  make unit-tests
-  ```
-
-These commands will set up the appropriate environment and execute the tests.
-
 ### Using `hyperon-das` and `hyperon-das-atomdb` Locally
 
 This feature allows developers to integrate the AtomDB and Query Engine packages locally without needing to publish them on PyPI, facilitating faster testing during development.
@@ -128,11 +110,23 @@ This feature allows developers to integrate the AtomDB and Query Engine packages
 2. Add the following environment variables, updating the paths as necessary:
 
    ```dotenv
-   ATOMDB_PACKAGE_PATH=/path/to/your/atomdb/package
-   QUERY_ENGINE_PACKAGE_PATH=/path/to/your/query/engine/package
+   ATOMDB_PACKAGE_PATH=/home/user/Documents/das-atom-db/hyperon_das_atomdb
+   QUERY_ENGINE_PACKAGE_PATH=/home/user/Documents/das-query-engine/hyperon_das
    ```
 
-   Ensure these paths point to the package directories, not the root of the repositories.
+   Ensure these paths point directly to the `hyperon_das_atomdb` and `hyperon_das` modules within your project directory. For example:
+
+   ```
+   /das-atom-db/
+   ├── hyperon_das_atomdb/
+   │   └── ...
+   │
+   /das-query-engine/
+   ├── hyperon_das/
+   │   └── ...
+   ```
+
+   This ensures that the environment variables point directly to the modules within your project structure.
 
 3. If you'd prefer to use the latest versions from PyPI, leave these variables empty:
 
