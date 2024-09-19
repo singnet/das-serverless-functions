@@ -28,3 +28,6 @@ serve:
 
 stop:
 	@docker compose down
+
+start-faas-client:
+	@python ./scripts/python/faas_desktop_client.py &
