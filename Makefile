@@ -15,7 +15,7 @@ unit-tests:
 unit-tests-coverage:
 	./scripts/run-tests.sh unit-coverage
 
-integration-tests:
+integration-tests: build
 	./scripts/run-tests.sh integration
 
 build:
