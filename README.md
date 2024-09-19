@@ -1,142 +1,172 @@
-# Documentation on DAS Serverless Functions
+# DAS Serverless Functions
 
-Serverless Functions represent an innovative approach to implementing and executing code in cloud computing environments. This architecture enables developers to create and execute code fragments in a granular manner, without concerns about the underlying infrastructure.
+Serverless Functions offer an innovative approach to cloud computing, enabling developers to execute code without worrying about managing underlying infrastructure. This architecture allows for the granular execution of code snippets, scaling efficiently according to demand.
 
 ## Pre-Commit Setup
 
-Before pushing your changes, it's recommended to set up pre-commit to run automated tests locally. Run the following command (needs to be done once):
+To ensure code quality before pushing changes, it's recommended to set up pre-commit hooks that run automated tests locally. Run this command once:
 
 ```bash
 pre-commit install
 ```
 
-## OpenFaaS: Simplifying Serverless Functions Management
+## OpenFaaS: Simplified Serverless Functions Management
 
-OpenFaaS, or Open Functions as a Service, is an open-source platform simplifying the entire life cycle of Serverless Functions. It provides a highly flexible and scalable framework for developing and executing functions in both cloud environments and local infrastructures.
+[OpenFaaS](https://www.openfaas.com/) (Open Functions as a Service) is an open-source platform designed to simplify the deployment and management of serverless functions. It supports flexible deployments in both cloud and local environments, providing a robust framework for developing and running functions at scale.
 
 ## Running an OpenFaaS Function Locally
 
 ### Requirements
 
-- Docker
-- Docker Compose
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/)
 
-### Architecture
+### Architecture Overview
 
 ![Architecture](./docs/images/local-architecture.jpg)
 
-The project architecture consists of:
+The project architecture includes the following components:
 
-- **Redis and MongoDB**: Databases used by the application.
-- **Canonical Load**: Temporary container to load initial data into Redis and MongoDB databases.
-- **OpenFaaS**: Primary container hosting the OpenFaaS function, equipped with the faas-cli.
-- **Function Container**: Internal container within OpenFaaS, responsible for handling and processing requests.
-- **das-query-engine**: Operates on the same network as the 'openfaas' container.
-- **Port 8080**: Exposed for connection to the host machine.
+- **Redis & MongoDB**: Databases used by the application.
+- **Metta Parser**: A temporary container to load initial data into Redis and MongoDB.
+- **OpenFaaS**: Primary container running OpenFaaS and the `faas-cli`.
+- **Function Container**: Internal container responsible for processing function requests.
+- **das-query-engine**: Operates on the same Docker network as the `openfaas` container.
+- **Port 8080**: Exposed for host machine access.
 
 ### Step-by-Step Guide
 
-1. **Cloning the Project**
+1. **Clone the Project**
 
-   Clone the project repository to your local environment.
+   Begin by cloning the repository:
 
    ```bash
    git clone <REPOSITORY_URL>
    cd <PROJECT_NAME>
    ```
 
-2. **Creating the Environment File**
+2. **Create an Environment File**
 
-   Create an environment file at the root of the project based on `.env.example`. This file contains the necessary environment variables for the project to function.
+   Copy the example `.env` file and modify it with your environment-specific configurations:
 
    ```bash
    cp .env.example .env
    ```
 
-3. **Starting the Environment**
+3. **Start the Environment**
 
-   Execute the following command at the root of the project to start the required services:
+   Use the following command to start the necessary services:
 
    ```bash
    make serve
    ```
 
-   This will start containers for Redis, MongoDB, and a temporary container named 'canonical-load'. The latter is used to load initial data into the Redis and MongoDB databases. After its execution, a container named 'openfaas' will start, which includes the faas-cli.
+   This command initializes containers for Redis, MongoDB, and the temporary `das-metta-parser` container to load initial data. Afterward, the `openfaas` container will start, which includes the `faas-cli`.
 
-4. **Executing the Function**
+4. **Execute the Function**
 
-   Once the environment is initialized, you can execute the OpenFaaS function. The function resides within a container inside the 'openfaas' container, configured to handle requests.
+   After the environment is set up, you can execute the OpenFaaS function through two methods:
 
-5. **Shutting Down the Environment**
+   **Option 1: Using the OpenFaaS Desktop Client**
 
-   To shut down the containers and clean up the environment, execute the following command:
+   Launch the desktop client with:
+
+   ```bash
+   make start-faas-client
+   ```
+
+   In the client interface:
+   - Ensure the URL is set to `http://localhost:8080`.
+   - Enter the function name.
+   - Input the request body (JSON format).
+   - Send the request and review the response.
+
+   **Option 2: Using Curl**
+
+   You can also trigger the function using `curl`. Since the function processes binary data, ensure the request uses the correct headers and data format:
+
+   ```bash
+   curl -X POST \
+     -H "Content-Type: application/octet-stream" \
+     --data-binary "@/tmp/data.pkl" \
+     http://localhost:8080
+   ```
+
+   Replace `/tmp/data.pkl` with the actual path to your serialized (pickle format) data.
+
+5. **Stop the Environment**
+
+   To shut down and clean up your environment, run:
 
    ```bash
    make stop
    ```
 
-### Testing
+### Using `hyperon-das` and `hyperon-das-atomdb` Locally
 
-To run automated tests for the project, use the following script:
+This feature allows developers to integrate the AtomDB and Query Engine packages locally without needing to publish them on PyPI, facilitating faster testing during development.
 
-```bash
-make integration-tests
-```
-
-```bash
-make unit-tests
-```
-
-This script will set up the necessary environment for testing.
-
-### Use the hyperon-das and hyperon-das-atomdb from the host machine
-
-This feature has been implemented to allow developers to test the integration of AtomDB and Query Engine packages locally, even before publishing them on PyPI. This facilitates efficient testing during the development phase.
-
-1. Open the `.env` file at the root of your project.
-
-2. Add the following environment variables, adjusting the paths as necessary:
+1. Open the `.env` file.
+2. Add the following environment variables, updating the paths as necessary:
 
    ```dotenv
-   ATOMDB_PACKAGE_PATH=/path/to/your/atomdb/package
-   QUERY_ENGINE_PACKAGE_PATH=/path/to/your/query/engine/package
+   ATOMDB_PACKAGE_PATH=/home/user/Documents/das-atom-db/hyperon_das_atomdb
+   QUERY_ENGINE_PACKAGE_PATH=/home/user/Documents/das-query-engine/hyperon_das
    ```
 
-   Make sure to make the variables point to the PACKAGE directories, not the REPOSITORY root.
+   Ensure these paths point directly to the `hyperon_das_atomdb` and `hyperon_das` modules within your project directory. For example:
 
-3. If you prefer to use the latest versions of the AtomDB and Query Engine packages published on PyPI, leave the variables empty:
+   ```
+   /das-atom-db/
+   ├── hyperon_das_atomdb/
+   │   └── ...
+   │
+   /das-query-engine/
+   ├── hyperon_das/
+   │   └── ...
+   ```
+
+   This ensures that the environment variables point directly to the modules within your project structure.
+
+3. If you'd prefer to use the latest versions from PyPI, leave these variables empty:
 
    ```dotenv
    ATOMDB_PACKAGE_PATH=
    QUERY_ENGINE_PACKAGE_PATH=
    ```
 
-## Obtaining Function Logs in faasd Using the `ctr` Command
+## Makefile Commands
 
-To access logs from functions running in faasd, the `ctr` command offers a direct interface with containerd, responsible for managing containers in the system, such as faasd.
+The `Makefile` includes several commands to streamline development and testing processes. Here’s a summary of the key commands:
 
-### 1. Identifying the Function
+### Formatting and Linting
 
-The initial step involves identifying the name of the function from which logs are needed. Typically, this name corresponds to the container where the function is active. For instance, let's consider a function named `query-engine`.
+- `make isort`: Sorts imports in the codebase.
+- `make black`: Formats code using [Black](https://black.readthedocs.io/en/stable/).
+- `make flake8`: Lints the code with [Flake8](https://flake8.pycqa.org/en/latest/).
+- `make lint`: Runs `isort`, `black`, and `flake8` in sequence.
 
-### 2. Using the `ctr` Command
+### Testing
 
-Employ the `ctr` command to access logs from the desired function. Here's an example:
+- `make unit-tests`: Runs the unit tests.
+- `make unit-tests-coverage`: Runs unit tests with code coverage reporting.
+- `make integration-tests`: Builds the project and runs the integration tests.
+
+### Building and Running
+
+- `make build`: Rebuilds Docker containers without cache.
+- `make serve`: Starts services via Docker Compose, recreating containers as needed.
+- `make stop`: Stops and removes the Docker containers.
+
+### Other Commands
+
+- `make pre-commit`: Runs linters and tests (unit + integration) before commit.
+- `make start-faas-client`: Launches the OpenFaaS desktop client.
+
+To execute any of these commands, simply run:
 
 ```bash
-ctr -n openfaas-fn tasks exec --exec-id shell query-engine cat /var/log/das/das-query-engine.log
+make <command>
 ```
 
-- `-n openfaas-fn`: Specifies the namespace in which the function is being executed in faasd.
-- `tasks exec --exec-id shell query-engine`: Executes a command within the `query-engine` function's container.
-- `cat /var/log/das/das-query-engine.log`: Command to display the contents of the `das-query-engine.log` log file.
-
-### 3. Viewing the Logs
-
-After executing the command, the logs from the `query-engine` function will display in the terminal. If preferred, it's possible to redirect the output to a local file:
-
-```bash
-ctr -n openfaas-fn tasks exec --exec-id shell query-engine cat /var/log/das/das-query-engine.log > logs_query-engine.txt
-```
-
-Replace `logs_query-engine.txt` with the desired filename where you want to save the logs.
+Replace `<command>` with the desired task (e.g., `serve`, `lint`).

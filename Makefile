@@ -15,7 +15,7 @@ unit-tests:
 unit-tests-coverage:
 	./scripts/run-tests.sh unit-coverage
 
-integration-tests:
+integration-tests: build
 	./scripts/run-tests.sh integration
 
 build:
@@ -28,3 +28,6 @@ serve:
 
 stop:
 	@docker compose down
+
+start-faas-client:
+	@python ./scripts/python/faas_desktop_client.py &
