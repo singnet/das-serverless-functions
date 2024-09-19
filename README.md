@@ -25,7 +25,7 @@ pre-commit install
 
 ![Architecture](./docs/images/local-architecture.jpg)
 
-The local architecture includes the following components:
+The project architecture includes the following components:
 
 - **Redis & MongoDB**: Databases used by the application.
 - **Metta Parser**: A temporary container to load initial data into Redis and MongoDB.
