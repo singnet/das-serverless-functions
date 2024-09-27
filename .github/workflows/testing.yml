@@ -120,9 +120,7 @@ jobs:
         run: pip3 install -r das-query-engine/requirements.txt
 
       - name: Set dotenv
-        run: |
-          echo ${{ secrets.LATEST_IMAGE_ENV }} | base64 -d > .env
-          export $(xargs < .env)
+        run: echo ${{ secrets.LATEST_IMAGE_ENV }} | base64 -d > .env
 
       - name: Install das-cli
         run: |
@@ -131,6 +129,8 @@ jobs:
 
       - name: Setup das-cli
         run: |
+          export $(xargs < .env)
+
           das-cli config set <<EOF
           ${DAS_REDIS_PORT}
           n
@@ -140,6 +140,8 @@ jobs:
           n
           8888
           EOF
+
+          das-cli config list
         
       - name: Start das-cli database
         run: das-cli db start
@@ -148,4 +150,6 @@ jobs:
         run: das-cli metta load $(pwd)/examples/data/animals.metta
 
       - name: Perform Integration Testing
-        run: python3 -m pytest -sx -vv das-query-engine/tests/integration
+        run: |
+          export $(xargs < .env)
+          python3 -m pytest -sx -vv das-query-engine/tests/integration
