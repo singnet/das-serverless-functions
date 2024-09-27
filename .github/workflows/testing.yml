@@ -98,7 +98,7 @@ jobs:
         run: pip3 install -r das-query-engine/requirements.txt
 
       - name: Set dotenv
-        run: echo ${{ secrets.ENV }} | base64 -d > .env
+        run: echo ${{ secrets.LOCAL_ENV }} | base64 -d > .env
 
       - name: Perform Integration Testing
         run: make integration-tests
@@ -121,7 +121,7 @@ jobs:
 
       - name: Set dotenv
         run: |
-          echo ${{ secrets.ENV }} | base64 -d > .env
+          echo ${{ secrets.LATEST_IMAGE_ENV }} | base64 -d > .env
           export $(xargs < .env)
 
       - name: Install das-cli
