@@ -44,23 +44,27 @@ def handle(event: Any, context=None):
 
     except PayloadMalformed as e:
         trace = traceback.format_exc()
-        logger().error(f"{str(e)}\n{trace}")
-        result = dict(error=str(e))
+        error_message = f"{str(e)}\n{trace}"
+        logger().error(error_message)
+        result = dict(error=error_message)
         http_code_response = 400
     except UnknownActionDispatcher as e:
         trace = traceback.format_exc()
-        logger().error(f"{str(e)}\n{trace}")
-        result = dict(error=str(e))
+        error_message = f"{str(e)}\n{trace}"
+        logger().error(error_message)
+        result = dict(error=error_message)
         http_code_response = 404
     except Conflict as e:
         trace = traceback.format_exc()
-        logger().error(f"{str(e)}\n{trace}")
-        result = dict(error=str(e))
+        error_message = f"{str(e)}\n{trace}"
+        logger().error(error_message)
+        result = dict(error=error_message)
         http_code_response = 409
-    except (Exception, UnreachableConnection) as e:
+    except Exception as e:
         trace = traceback.format_exc()
-        logger().error(f"{str(e)}\n{trace}")
-        result = dict(error=str(e))
+        error_message = f"{str(e)}\n{trace}"
+        logger().error(error_message)
+        result = dict(error=error_message)
         http_code_response = 500
 
     return _response(
