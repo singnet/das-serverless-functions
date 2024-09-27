@@ -81,7 +81,7 @@ jobs:
       - name: Generate Coverage Report
         run: make unit-tests-coverage
 
-  integration-tests:
+  build-and-integration-test:
     if: ${{ github.ref_name != 'master' }}
     runs-on: ubuntu-22.04
     steps:
@@ -98,12 +98,12 @@ jobs:
         run: pip3 install -r das-query-engine/requirements.txt
 
       - name: Set dotenv
-        run: cp .env.example .env
+        run: echo ${{ secrets.ENV }} > .env
 
       - name: Perform Integration Testing
         run: make integration-tests
 
-  integration-tests-master:
+  integration-test-with-latest-image:
     if: ${{ github.ref_name == 'master' }}
     runs-on: ubuntu-22.04
     steps:
@@ -121,7 +121,7 @@ jobs:
 
       - name: Set dotenv
         run: |
-          cp .env.example .env
+          echo ${{ secrets.ENV }} > .env
           export $(xargs < .env)
 
       - name: Install das-cli
@@ -135,13 +135,12 @@ jobs:
           ${DAS_REDIS_PORT}
           n
           ${DAS_MONGODB_PORT}
-          ${DAS_MONGODB_USERNAME}
-          ${DAS_MONGODB_PASSWORD}
+          ${DAS_DATABASE_USERNAME}
+          ${DAS_DATABASE_PASSWORD}
           n
           8888
           EOF
         
-
       - name: Start das-cli database
         run: das-cli db start
 
@@ -149,4 +148,4 @@ jobs:
         run: das-cli metta load $(pwd)/examples/data/animals.metta
 
       - name: Perform Integration Testing
-        run: make integration-tests
+        run: python3 -m pytest -sx -vv das-query-engine/tests/integration
