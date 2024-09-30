@@ -62,28 +62,9 @@ class Actions:
         return dict(message="pong"), HTTPStatus.OK
 
     @execution_time_tracker
-    def handshake(self, das_version: str, atomdb_version: str) -> Tuple[dict, int]:
+    def handshake(self) -> Tuple[dict, int]:
         remote_info = self.das.about()
         http_status_code = HTTPStatus.OK
-
-        remote_das_version = remote_info["das"]["version"]
-        remote_atomdb_version = remote_info["atom_db"]["version"]
-
-        comparison_das_version_result = compare_minor_versions(remote_das_version, das_version)
-        if comparison_das_version_result is None or comparison_das_version_result != 0:
-            logger().error(
-                f"The version sent by the on-premises Hyperon-DAS is {das_version}, but the expected version on the remote server is {remote_das_version}."
-            )
-            http_status_code = HTTPStatus.CONFLICT
-
-        comparison_atomdb_version_result = compare_minor_versions(
-            remote_atomdb_version, atomdb_version
-        )
-        if comparison_atomdb_version_result is None or comparison_atomdb_version_result != 0:
-            logger().error(
-                f"The version sent by the on-premises Hyperon-DAS-AtomDB is {atomdb_version}, but the expected version on the remote server is {remote_atomdb_version}."
-            )
-            http_status_code = HTTPStatus.CONFLICT
 
         return remote_info, http_status_code
 
