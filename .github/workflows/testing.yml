@@ -81,7 +81,8 @@ jobs:
       - name: Generate Coverage Report
         run: make unit-tests-coverage
 
-  integration-tests:
+  build-and-integration-test:
+    if: ${{ github.ref_name != 'master' }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -97,7 +98,58 @@ jobs:
         run: pip3 install -r das-query-engine/requirements.txt
 
       - name: Set dotenv
-        run: cp .env.example .env
+        run: echo ${{ secrets.LOCAL_ENV }} | base64 -d > .env
 
       - name: Perform Integration Testing
         run: make integration-tests
+
+  integration-test-with-latest-image:
+    if: ${{ github.ref_name == 'master' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ^3.10
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip3 install -r das-query-engine/requirements.txt
+
+      - name: Set dotenv
+        run: echo ${{ secrets.LATEST_IMAGE_ENV }} | base64 -d > .env
+
+      - name: Install das-cli
+        run: |
+          sudo bash -c "wget -O - http://45.77.4.33/apt-repo/setup.sh | bash"
+          sudo apt install das-cli
+
+      - name: Setup das-cli
+        run: |
+          export $(xargs < .env)
+
+          das-cli config set <<EOF
+          ${DAS_REDIS_PORT}
+          n
+          ${DAS_MONGODB_PORT}
+          ${DAS_DATABASE_USERNAME}
+          ${DAS_DATABASE_PASSWORD}
+          n
+          8888
+          EOF
+
+          das-cli config list
+        
+      - name: Start das-cli database
+        run: das-cli db start
+
+      - name: Load metta data
+        run: das-cli metta load $(pwd)/examples/data/animals.metta
+
+      - name: Perform Integration Testing
+        run: |
+          export $(xargs < .env)
+          python3 -m pytest -sx -vv das-query-engine/tests/integration
