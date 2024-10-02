@@ -16,7 +16,7 @@ def test_build_dispatcher_handshake_action():
 
     assert isinstance(dispatchers, dict)
     assert dispatchers[ActionType.HANDSHAKE]["action"] == expected_actions.handshake
-    assert dispatchers[ActionType.PING]["validator"] is None
+    assert dispatchers[ActionType.HANDSHAKE]["validator"] is None
 
 
 def test_build_dispatcher_ping_action():
