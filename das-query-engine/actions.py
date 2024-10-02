@@ -10,7 +10,6 @@ from hyperon_das.logger import logger
 import hyperon_das.link_filters as link_filters
 from hyperon_das_atomdb import exceptions as atom_db_exceptions
 from utils.decorators import execution_time_tracker, remove_none_args
-from utils.version import compare_minor_versions
 
 
 class ActionType(str, Enum):
