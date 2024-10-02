@@ -1,2 +1,2 @@
 [HOTFIX] Fixes after DAS api change in atom-db/#216
-Move handshake validation to the client-side. The server will now only send the expected library versions.
+[das-query-engine#333] Move handshake validation to the client-side. The server will now only send the expected library versions.
