@@ -53,28 +53,31 @@ class QueryValidator(PayloadValidator):
     strict = True
 
     @staticmethod
-    def validate_query(query, *args, **kwargs) -> bool:
-        if not isinstance(query, dict):
+    def validate_query(queries, *args, **kwargs) -> bool:
+        if isinstance(queries, dict):
+            queries = [queries]
+        elif not isinstance(queries, list) or not all(isinstance(query, dict) for query in queries):
             return False
+        
+        for query in queries:
+            atom_type = query.get("atom_type")
+            query_type = query.get("type")
+            name = query.get("name")
+            targets = query.get("targets")
 
-        atom_type = query.get("atom_type")
-        query_type = query.get("type")
-        name = query.get("name")
-        targets = query.get("targets")
+            if atom_type not in ["node", "link"]:
+                return False
 
-        if atom_type not in ["node", "link"]:
-            return False
+            if not isinstance(query_type, str):
+                return False
 
-        if not isinstance(query_type, str):
-            return False
+            if atom_type == "node" and not isinstance(name, str):
+                return False
 
-        if atom_type == "node" and not isinstance(name, str):
-            return False
+            if atom_type == "link" and not isinstance(targets, list):
+                return False
 
-        if atom_type == "link" and not isinstance(targets, list):
-            return False
-
-        return True
+            return True
 
     query = datatypes.Function(validate_query, required=True)
 
