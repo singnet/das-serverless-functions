@@ -59,6 +59,7 @@ class QueryValidator(PayloadValidator):
         
         if not isinstance(query, dict):
             return False
+
         atom_type = query.get("atom_type")
         query_type = query.get("type")
         name = query.get("name")
