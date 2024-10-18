@@ -5,6 +5,8 @@ from tests.integration.handle.base_test_action import (
     BaseTestHandlerAction,
     expression,
     inheritance,
+    similarity,
+    human,
     mammal,
     symbol,
 )
@@ -33,12 +35,45 @@ class TestQueryAction(BaseTestHandlerAction):
                 },
             }
         }
+    
+    @pytest.fixture
+    def query_list(self, action_type):
+        return {
+            "body": {
+                "action": action_type,
+                "input": {
+                    "query": [
+                        {
+                            "atom_type": "link",
+                            "type": expression,
+                            "targets": [
+                                {"atom_type": "node", "type": symbol, "name": inheritance},
+                                {"atom_type": "variable", "name": "$v1"},
+                                {"atom_type": "node", "type": symbol, "name": mammal},
+                            ],
+                        },
+                        {
+                            "atom_type": "link",
+                            "type": expression,
+                            "targets": [
+                                {"atom_type": "node", "type": symbol, "name": similarity},
+                                {"atom_type": "variable", "name": "$v1"},
+                                {"atom_type": "node", "type": symbol, "name": human},
+                            ],
+                        }
+                    ]
+                },
+            }
+        }
 
+    @pytest.mark.parametrize("query_input", ["valid_event", "query_list"])
     def test_query_action(
         self,
-        valid_event,
+        request,
+        query_input,
     ):
-        body, status_code = self.make_request(valid_event)
+        query_data = request.getfixturevalue(query_input)
+        body, status_code = self.make_request(query_data)
         expected_status_code = 200
 
         assert (

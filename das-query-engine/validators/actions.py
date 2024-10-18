@@ -54,6 +54,9 @@ class QueryValidator(PayloadValidator):
 
     @staticmethod
     def validate_query(query, *args, **kwargs) -> bool:
+        if isinstance(query, list):
+            return all([QueryValidator.validate_query(q) for q in query])
+        
         if not isinstance(query, dict):
             return False
 
