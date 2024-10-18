@@ -1,2 +1,3 @@
 [HOTFIX] Fixes after DAS api change in atom-db/#216
 [das-query-engine#333] Move handshake validation to the client-side. The server will now only send the expected library versions.
+[#156] Refactor QueryValidator.validate_query() to accept a list of queries
