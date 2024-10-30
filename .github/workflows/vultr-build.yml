@@ -18,6 +18,8 @@ on:
 jobs:
   code-quality:
     uses: ./.github/workflows/testing.yml
+    with:
+      integration-tests: false
     secrets: inherit
 
   tag:

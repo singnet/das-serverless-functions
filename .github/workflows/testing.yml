@@ -3,12 +3,24 @@ name: Run Tests & Lint
 
 on:
   workflow_call:
+    inputs:
+      integration-tests:
+        type: boolean
+        default: true
+        required: false
+        description: Define if should run the integration test, sometimes you need to disable it if you running a release and need to create the version and update server before you attempt to run the integration test.
 
   pull_request:
     branches:
       - master
 
   workflow_dispatch:
+    inputs:
+      integration-tests:
+        type: boolean
+        default: true
+        required: false
+        description: Define if should run the integration test, sometimes you need to disable it if you running a release and need to create the version and update server before you attempt to run the integration test.
 
 jobs:
   lint:
@@ -82,7 +94,7 @@ jobs:
         run: make unit-tests-coverage
 
   build-and-integration-test:
-    if: ${{ github.ref_name != 'master' }}
+    if: ${{ inputs.integration-tests && github.ref_name != 'master' }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -104,7 +116,7 @@ jobs:
         run: make integration-tests
 
   integration-test-with-latest-image:
-    if: ${{ github.ref_name == 'master' }}
+    if: ${{ inputs.integration-tests && github.ref_name == 'master' }}
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -142,7 +154,7 @@ jobs:
           EOF
 
           das-cli config list
-        
+
       - name: Start das-cli database
         run: das-cli db start
 
