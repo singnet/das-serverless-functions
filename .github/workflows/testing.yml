@@ -8,7 +8,7 @@ on:
         type: boolean
         default: true
         required: false
-        description: Define if should run the integration test, sometimes you need to disable it if you running a relase and need to create the version and update server before you attempt to run the integration test.
+        description: Define if should run the integration test, sometimes you need to disable it if you running a release and need to create the version and update server before you attempt to run the integration test.
 
   pull_request:
     branches:
