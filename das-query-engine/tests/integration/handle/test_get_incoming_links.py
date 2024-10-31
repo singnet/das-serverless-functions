@@ -1,5 +1,6 @@
 import pytest
 from actions import ActionType
+from hyperon_das_atomdb.database import Link, Node
 from hyperon_das_atomdb.utils.expression_hasher import ExpressionHasher
 from tests.integration.handle.base_test_action import BaseTestHandlerAction, human, symbol
 
@@ -38,55 +39,45 @@ class TestGetIncomingLinksAction(BaseTestHandlerAction):
         assert len(items) == 8, "body must contain eight elements."
 
         for item in items:
-            assert isinstance(item, dict), "Each item in body must be a dict."
-            # assert len(item) == x, "List in body must contain x elements."
+            assert isinstance(item, Link), "Each item in body must be a Link instance."
 
+            assert isinstance(item.handle, str), "'handle' in item must be a string."
             assert isinstance(
-                item.get("handle"), str
-            ), "'handle' in item must be a string."
-            assert isinstance(item.get("type"), str), "'type' in item must be a string."
-            assert isinstance(
-                item.get("composite_type_hash"), str
+                item.composite_type_hash, str
             ), "'composite_type_hash' in item must be a string."
+            assert isinstance(item.is_toplevel, bool), "'is_toplevel' in item must be a boolean."
             assert isinstance(
-                item.get("is_toplevel"), bool
-            ), "'is_toplevel' in item must be a boolean."
-            assert isinstance(
-                item.get("composite_type"), list
+                item.composite_type, list
             ), "'composite_type' in item must be a list of strings."
             assert all(
-                isinstance(item, str) for item in item.get("composite_type")
+                isinstance(item, str) for item in item.composite_type
             ), "'composite_type' elements in item must be strings."
+            assert isinstance(item.named_type, str), "'named_type' in item must be a string."
             assert isinstance(
-                item.get("named_type"), str
-            ), "'named_type' in item must be a string."
-            assert isinstance(
-                item.get("named_type_hash"), str
+                item.named_type_hash, str
             ), "'named_type_hash' in item must be a string."
-            assert isinstance(
-                item.get("targets"), list
-            ), "'targets' in item must be a list of strings."
+            assert isinstance(item.targets, list), "'targets' in item must be a list of strings."
             assert all(
-                isinstance(item, str) for item in item.get("targets")
+                isinstance(item, str) for item in item.targets
             ), "'targets' elements in item must be strings."
             assert isinstance(
-                item.get("targets_document"), list
-            ), "'targets_document' in item must be a list of dictionaries."
+                item.targets_documents, list
+            ), "'targets_documents' in item must be a list of Atoms instances (Nodes or Links)."
 
-            for atom in item.get("targets_document"):
-                assert isinstance(atom, dict), f"{type(atom)} is not a dictionary."
-                assert isinstance(atom.get("handle"), str), "'handle' in atom must be a string."
-                assert isinstance(atom.get("type"), str), "'type' in atom must be a string."
+            for atom in item.targets_documents:
+                assert isinstance(atom, (Node, Link)), f"{type(atom)} is not a Node or Link."
+                assert isinstance(atom.handle, str), "'handle' in atom must be a string."
                 assert isinstance(
-                    atom.get("composite_type_hash"), str
+                    atom.composite_type_hash, str
                 ), "'composite_type_hash' in atom must be a string."
-                assert isinstance(atom.get("name"), str), "'name' in atom must be a string."
-                assert isinstance(
-                    atom.get("named_type"), str
-                ), "'named_type' in atom must be a string."
-                assert isinstance(
-                    atom.get("is_literal"), bool
-                ), "'is_literal' in atom must be a boolean."
+                assert isinstance(atom.name, str), "'name' in atom must be a string."
+                assert isinstance(atom.named_type, str), "'named_type' in atom must be a string."
+
+                # TODO: Uncomment when 'is_literal' is added as a custom attribute to Atom
+                # See: https://github.com/singnet/das-query-engine/issues/358
+                # assert isinstance(
+                #     atom.custom_attributes.get("is_literal"), bool
+                # ), "'is_literal' in custom attributes must be a boolean."
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)

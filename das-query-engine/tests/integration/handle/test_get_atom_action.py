@@ -1,5 +1,6 @@
 import pytest
 from actions import ActionType
+from hyperon_das_atomdb.database import Link, Node
 from hyperon_das_atomdb.utils.expression_hasher import ExpressionHasher
 from tests.integration.handle.base_test_action import BaseTestHandlerAction, human, symbol
 
@@ -32,15 +33,19 @@ class TestGetAtomAction(BaseTestHandlerAction):
         assert (
             status_code == expected_status_code
         ), f"Unexpected status code: {status_code}. Expected: {expected_status_code}"
-        assert isinstance(body, dict), "body must be a dictionary"
-        assert isinstance(body.get("handle"), str), "'handle' in body must be a string."
+        assert isinstance(body, (Node, Link)), "body must be an Atom instance (Node or Link)."
+        assert isinstance(body.handle, str), "'handle' in body must be a string."
         assert isinstance(
-            body.get("composite_type_hash"), str
+            body.composite_type_hash, str
         ), "'composite_type_hash' in body must be a string."
-        assert isinstance(body.get("name"), str), "'name' in body must be a string."
-        assert isinstance(body.get("named_type"), str), "'named_type' in body must be a string."
-        assert isinstance(body.get("type"), str), "'type' in body must be a string."
-        assert isinstance(body.get("is_literal"), bool), "'is_literal' in body must be a boolean."
+        assert isinstance(body.name, str), "'name' in body must be a string."
+        assert isinstance(body.named_type, str), "'named_type' in body must be a string."
+
+        # TODO: Uncomment when 'is_literal' is added as a custom attribute to Atom
+        # See: https://github.com/singnet/das-query-engine/issues/358
+        # assert isinstance(
+        #     body.custom_attributes.get("is_literal"), bool
+        # ), "'is_literal' in custom attributes must be a boolean."
 
     def test_malformed_payload(self, malformed_event):
         self.assert_payload_malformed(malformed_event)

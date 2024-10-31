@@ -4,10 +4,10 @@ from hyperon_das.utils import QueryAnswer
 from tests.integration.handle.base_test_action import (
     BaseTestHandlerAction,
     expression,
-    inheritance,
-    similarity,
     human,
+    inheritance,
     mammal,
+    similarity,
     symbol,
 )
 
@@ -35,7 +35,7 @@ class TestQueryAction(BaseTestHandlerAction):
                 },
             }
         }
-    
+
     @pytest.fixture
     def query_list(self, action_type):
         return {
@@ -60,7 +60,7 @@ class TestQueryAction(BaseTestHandlerAction):
                                 {"atom_type": "variable", "name": "$v1"},
                                 {"atom_type": "node", "type": symbol, "name": human},
                             ],
-                        }
+                        },
                     ]
                 },
             }
